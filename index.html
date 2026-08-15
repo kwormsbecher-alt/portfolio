@@ -78,9 +78,16 @@
 
     <div class="container hero-inhalt reveal">
 
-      <h1 class="wortmarke">[DEIN NAME]</h1>
+      <p class="wortmarke">[DEIN NAME]</p>
 
-      <h2 class="hero-titel">Ihre Praxis verdient eine Website, die Patienten wirklich erreicht.</h2>
+      <!-- Zweistufige Überschrift: ruhiger Einstieg, große Aussage.
+           Bewusst EIN <h1> mit zwei Zeilen statt zwei Überschriften —
+           optisch zwei Ebenen, für Google und Screenreader aber ein
+           zusammenhängender Satz. -->
+      <h1 class="hero-titel">
+        <span class="titel-klein">Ihre Praxis verdient eine Website,</span>
+        <span class="titel-gross">die Patienten wirklich erreicht.</span>
+      </h1>
 
       <p class="lead">
         Ich baue Websites für Arztpraxen und lokale Betriebe in
@@ -919,6 +926,17 @@
     </nav>
   </div>
 </footer>
+
+<!-- Taucht auf dem Handy auf, sobald der Landing-Bereich durchgescrollt
+     ist — dort verschwindet dann das Logo oben. -->
+<a class="heim-knopf" href="#willkommen" aria-label="Zurück nach oben">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+       stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3.5 10.6L12 3.8l8.5 6.8" />
+    <path d="M5.6 9.4V20h12.8V9.4" />
+    <path d="M9.9 20v-5.4h4.2V20" />
+  </svg>
+</a>
 
 <script src="JAVA/main.js"></script>
 

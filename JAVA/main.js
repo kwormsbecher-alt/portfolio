@@ -109,6 +109,85 @@ function navAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   2b. KOPFLEISTE BEIM SCROLLEN
+
+   Nach unten: die Menüpunkte fahren in den Termin-Knopf ein.
+   Nach oben: sie kommen bewusst nicht sofort zurück, sondern erst,
+   wenn man einen neuen Block anschneidet.
+   Auf dem Handy verschwindet stattdessen das Logo und der Haus-Knopf
+   unten rechts taucht auf.
+   ─────────────────────────────────────────────────────────── */
+
+function kopfleisteVerwandelnAufsetzen() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+
+  const heim = document.querySelector('.heim-knopf');
+  const hero = document.getElementById('willkommen');
+  const abschnitte = Array.prototype.slice.call(
+    document.querySelectorAll('main section[id]')
+  );
+
+  let letzteHoehe = window.scrollY;
+  let letzterBlock = 0;
+  let letzterLauf = 0;
+  let nachzuegler = null;
+
+  /* Welcher Block steht gerade oben an? */
+  function aktuellerBlock() {
+    const grenze = nav.getBoundingClientRect().height + 8;
+    let index = 0;
+    abschnitte.forEach(function (abschnitt, i) {
+      if (abschnitt.getBoundingClientRect().top <= grenze) index = i;
+    });
+    return index;
+  }
+
+  function pruefen() {
+    const hoehe = window.scrollY;
+    const geht_runter = hoehe > letzteHoehe;
+    const block = aktuellerBlock();
+
+    /* Landing-Bereich durch? */
+    const heroDurch = hero ? hero.getBoundingClientRect().bottom <= 80 : hoehe > 400;
+    nav.classList.toggle('hat-hero-verlassen', heroDurch);
+    if (heim) heim.classList.toggle('ist-sichtbar', heroDurch);
+
+    if (hoehe <= 140) {
+      nav.classList.remove('ist-eingeklappt');
+    } else if (geht_runter) {
+      nav.classList.add('ist-eingeklappt');
+    } else if (block < letzterBlock) {
+      /* Beim Hochscrollen erst beim nächsten Block wieder ausfahren */
+      nav.classList.remove('ist-eingeklappt');
+    }
+
+    letzterBlock = block;
+    letzteHoehe = hoehe;
+  }
+
+  /* Höchstens alle 60 ms rechnen, aber am Ende einer Scroll-Bewegung
+     auf jeden Fall noch einmal — sonst bliebe der Zustand hängen. */
+  window.addEventListener('scroll', function () {
+    const jetzt = Date.now();
+    if (jetzt - letzterLauf >= 60) {
+      letzterLauf = jetzt;
+      pruefen();
+      return;
+    }
+    if (nachzuegler) return;
+    nachzuegler = window.setTimeout(function () {
+      nachzuegler = null;
+      letzterLauf = Date.now();
+      pruefen();
+    }, 60);
+  }, { passive: true });
+
+  pruefen();
+}
+
+
+/* ───────────────────────────────────────────────────────────
    3. AKTIVER MENÜPUNKT — hebt hervor, wo man gerade ist
    ─────────────────────────────────────────────────────────── */
 
@@ -300,7 +379,7 @@ function spielfeldAufsetzen() {
   /* Wie lange man auf dem Handy draufbleiben muss, damit aus dem
      Berühren ein Ziehen wird. Darunter bleibt es ein Wischen und die
      Seite scrollt ganz normal weiter. */
-  const HALTEDAUER = 320;
+  const HALTEDAUER = 260;
   const WACKELWEG  = 12;
 
   /* Die Plätze aus dem ursprünglichen Raster und wer gerade wo liegt */
@@ -581,6 +660,7 @@ function jahrEintragen() {
 document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
+  kopfleisteVerwandelnAufsetzen();
   aktivenMenuepunktVerfolgen();
   auswahlAufsetzen();
   spielfeldAufsetzen();

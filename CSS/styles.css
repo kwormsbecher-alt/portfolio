@@ -251,9 +251,8 @@ body.platzhalter-zeigen .platzhalter {
 .nav > .container { display: flex; align-items: center; gap: var(--space-3); }
 .nav-logo, .nav-links, .nav-toggle { pointer-events: auto; }
 
-/* Gemeinsames Aussehen der schwebenden Inseln — ohne Umrandung,
-   die milchige Fläche allein trägt sie. */
-.nav-logo,
+/* Menü und Menü-Knopf schweben als milchige Inseln. Das Logo nicht —
+   das steht frei, ohne Fläche darunter. */
 .nav-links,
 .nav-toggle {
   background: rgba(255, 255, 255, 0.74);
@@ -271,7 +270,8 @@ body.platzhalter-zeigen .platzhalter {
   text-decoration: none;
   line-height: 1.2;
   flex-shrink: 0;
-  padding: 0.42rem 1rem;
+  transition: opacity var(--duration) var(--ease),
+              transform var(--duration) var(--ease);
 }
 .nav-logo small {
   display: block;
@@ -303,6 +303,94 @@ body.platzhalter-zeigen .platzhalter {
   color: var(--surface);
   background: var(--accent);
   font-weight: var(--weight-medium);
+}
+
+
+/* ── Die Menüpunkte fahren in den Knopf ein ────────────────
+   Beim Scrollen nach unten rutschen die Punkte nacheinander in den
+   Termin-Knopf und verblassen — die Insel schrumpft auf den Knopf
+   zusammen. Beim Hochscrollen kommen sie erst wieder heraus, wenn man
+   einen neuen Block anschneidet (das steuert main.js). */
+@media (min-width: 1041px) {
+  .nav-links a:not(.btn) {
+    max-width: 12rem;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.28s var(--ease),
+                max-width 0.38s var(--ease),
+                padding 0.38s var(--ease),
+                transform 0.38s var(--ease);
+  }
+
+  /* Bewusst KEIN visibility: hidden — das würde die Punkte
+     unfokussierbar machen und die Tastatur-Ausnahme unten könnte
+     nie greifen. Bei Breite 0 kann man sie ohnehin nicht treffen. */
+  .nav.ist-eingeklappt .nav-links a:not(.btn) {
+    max-width: 0;
+    opacity: 0;
+    padding-left: 0; padding-right: 0;
+    transform: translateX(18px);
+  }
+
+  /* Der hinterste Punkt geht zuerst — dadurch wirkt es wie ein
+     Einfädeln in den Knopf statt wie ein gleichzeitiges Ausblenden. */
+  .nav.ist-eingeklappt .nav-links a:nth-child(6) { transition-delay: 0s;    }
+  .nav.ist-eingeklappt .nav-links a:nth-child(5) { transition-delay: 0.04s; }
+  .nav.ist-eingeklappt .nav-links a:nth-child(4) { transition-delay: 0.08s; }
+  .nav.ist-eingeklappt .nav-links a:nth-child(3) { transition-delay: 0.12s; }
+  .nav.ist-eingeklappt .nav-links a:nth-child(2) { transition-delay: 0.16s; }
+  .nav.ist-eingeklappt .nav-links a:nth-child(1) { transition-delay: 0.20s; }
+
+  /* Tastatur-Nutzer nicht aussperren: sobald etwas in der Insel den
+     Fokus bekommt, fährt sie sofort wieder aus. */
+  .nav.ist-eingeklappt .nav-links:focus-within a:not(.btn) {
+    max-width: 12rem;
+    opacity: 1;
+    padding-left: 0.85rem; padding-right: 0.85rem;
+    transform: none;
+    transition-delay: 0s;
+  }
+}
+
+/* Auf dem Handy verschwindet das Logo hinter dem Landing-Bereich —
+   zurück kommt man über den Haus-Knopf unten rechts. */
+@media (max-width: 1040px) {
+  .nav.hat-hero-verlassen .nav-logo {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+  }
+}
+
+
+/* ── Haus-Knopf ────────────────────────────────────────────── */
+
+.heim-knopf {
+  position: fixed;
+  right: var(--page-gutter);
+  bottom: calc(var(--page-gutter) + env(safe-area-inset-bottom, 0px));
+  z-index: 90;
+  display: none;
+  align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  color: var(--surface);
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(14px) scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.heim-knopf svg { width: 22px; height: 22px; }
+
+@media (max-width: 1040px) {
+  .heim-knopf { display: flex; }
+}
+.heim-knopf.ist-sichtbar {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 .nav-links .btn { margin-left: var(--space-2); padding: 0.6rem 1.2rem; min-height: 42px; }
 /* Muss sein: .nav-links a setzt eine dunkle Schriftfarbe und ist
@@ -458,13 +546,29 @@ body.platzhalter-zeigen .platzhalter {
   margin-bottom: var(--space-4);
 }
 
-/* Mehr Zeilenabstand und weniger enge Buchstaben als bei den übrigen
-   Überschriften — bei dieser Größe wirkt die Standard-Enge gequetscht. */
+/* Zweistufige Überschrift: erst eine ruhige, kleinere Zeile, dann die
+   große Aussage. Beide Zeilen bekommen eigenen Zeilenabstand — bei
+   dieser Größe wirkt die Standard-Enge sonst gequetscht. */
 .hero-titel {
-  font-size: var(--size-hero);
-  line-height: 1.24;
-  letter-spacing: -0.008em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
   margin-bottom: var(--space-4);
+  letter-spacing: -0.008em;
+}
+.titel-klein {
+  font-size: clamp(1.05rem, 1.3vw + 0.55rem, 1.55rem);
+  font-weight: var(--weight-normal);
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--text-mid);
+  text-wrap: balance;
+}
+.titel-gross {
+  font-size: var(--size-hero);
+  font-weight: var(--weight-bold);
+  line-height: 1.14;
+  text-wrap: balance;
 }
 .hero .lead {
   max-width: 46ch;
