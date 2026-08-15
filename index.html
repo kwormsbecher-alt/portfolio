@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ══ PLATZHALTER: Name, Titel und Beschreibung vor dem Launch ersetzen ══ -->
+  <title>[DEIN NAME] — Websites für Arztpraxen</title>
+  <meta name="description" content="Ich baue Websites für Arztpraxen und lokale Betriebe — persönlich betreut, schnell, bei Google auffindbar. Jetzt unverbindlich anfragen." />
+  <meta name="theme-color" content="#3F5D50" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="CSS/tokens.css" />
+  <link rel="stylesheet" href="CSS/styles.css" />
+</head>
+
+<body>
+
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+<!-- ══════════ KOPFLEISTE ══════════ -->
+<header class="nav">
+  <div class="container">
+
+    <a class="nav-logo" href="#willkommen">
+      [DEIN NAME]
+      <small>Websites für Praxen</small>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="hauptmenue">
+      <span></span>
+      <span class="sr-only">Menü öffnen</span>
+    </button>
+
+    <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
+      <a href="#ueber">Über mich</a>
+      <a href="#leistungen">Leistungen</a>
+      <a href="#bildung">Werdegang</a>
+      <a href="#referenz">Referenz</a>
+      <a href="#faq">Fragen</a>
+      <a class="btn btn--primary" href="#kontakt" data-mail="link">Termin anfragen</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<main id="inhalt">
+
+  <!-- ══════════ 1. WILLKOMMEN ══════════ -->
+  <section class="hero" id="willkommen">
+    <div class="container">
+      <div class="split">
+
+        <div class="reveal">
+          <span class="label">Willkommen</span>
+          <h1>Ihre Praxis verdient eine Website, die Patienten wirklich erreicht.</h1>
+          <p class="lead">
+            Ich bin <span class="platzhalter">[DEIN NAME]</span> und baue Websites für Arztpraxen
+            und lokale Betriebe in <span class="platzhalter">Pforzheim und Umgebung</span> —
+            von Hand gebaut, schnell geladen, bei Google auffindbar.
+            Kein Baukasten, keine Vorlage von der Stange.
+          </p>
+
+          <div class="btn-row">
+            <a class="btn btn--primary" href="#kontakt" data-mail="link">Kostenloses Erstgespräch</a>
+            <a class="btn btn--ghost" href="#referenz">Meine Arbeit ansehen</a>
+          </div>
+
+          <dl class="facts">
+            <div>
+              <dt>Schwerpunkt</dt>
+              <dd>Arztpraxen</dd>
+            </div>
+            <div>
+              <dt>Ladezeit</dt>
+              <dd>unter 1 Sek.</dd>
+            </div>
+            <div>
+              <dt>Ansprechpartner</dt>
+              <dd>immer ich</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-media reveal">
+          <div class="image-slot ratio-portrait">
+            <!-- Wenn dein Foto da ist: <img src="bilder/kevin.jpg" alt="Porträt von [DEIN NAME]" /> -->
+            <div class="image-slot-note">
+              <strong>Dein Porträtfoto</strong>
+              <small>Hochformat, ca. 4:5 · nach <code>bilder/</code> legen</small>
+              <small>Ein echtes Gesicht schlägt jedes Stockfoto.</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 2. WER BIN ICH ══════════ -->
+  <section class="section section--soft" id="ueber">
+    <div class="container">
+      <div class="split split--media-left">
+
+        <div class="reveal">
+          <span class="label">Wer bin ich</span>
+          <h2>Ein Ansprechpartner. Vom ersten Gespräch bis nach dem Launch.</h2>
+          <p class="lead" style="margin-top: var(--space-3);">
+            <span class="platzhalter">
+              Hier kommt dein persönlicher Text hin: wer du bist, wie du zum Webdesign
+              gekommen bist, was dich ausmacht.
+            </span>
+          </p>
+          <p style="margin-top: var(--space-3); color: var(--text-mid);">
+            <span class="platzhalter">
+              Zweiter Absatz: Was ein Kunde von der Zusammenarbeit mit dir erwarten kann.
+              Zum Beispiel, dass du erreichbar bist, verständlich erklärst und nach dem
+              Launch nicht verschwindest. Diesen Text schreiben wir gemeinsam im Interview.
+            </span>
+          </p>
+        </div>
+
+        <div class="reveal">
+          <div class="image-slot ratio-wide">
+            <div class="image-slot-note">
+              <strong>Foto vom Arbeitsplatz</strong>
+              <small>Querformat · zeigt dich beim Arbeiten</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 3. WAS ICH MACHE ══════════ -->
+  <section class="section" id="leistungen">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="label">Was ich mache</span>
+        <h2>Drei Dinge, damit Ihre Praxis online gefunden wird.</h2>
+        <p class="lead">
+          Alles aus einer Hand — Sie müssen sich nicht um Technik, Anbieter
+          oder Zuständigkeiten kümmern.
+        </p>
+      </div>
+
+      <div class="card-grid">
+
+        <article class="card reveal">
+          <span class="card-num">01</span>
+          <h3>Website erstellen</h3>
+          <p>
+            Individuell gebaut, nicht aus dem Baukasten. Auf dem Handy genauso gut
+            wie am Rechner, mit kurzen Ladezeiten und einer Struktur, die Patienten
+            sofort verstehen.
+          </p>
+        </article>
+
+        <article class="card reveal">
+          <span class="card-num">02</span>
+          <h3>Bei Google gefunden werden</h3>
+          <p>
+            Google-Unternehmensprofil einrichten, lokale Suchbegriffe sauber
+            hinterlegen, technische Grundlagen erledigen. Damit Sie erscheinen,
+            wenn jemand in Ihrer Stadt sucht.
+          </p>
+        </article>
+
+        <article class="card reveal">
+          <span class="card-num">03</span>
+          <h3>Bewertungen einsammeln</h3>
+          <p>
+            Ein einfacher Weg, wie zufriedene Patienten Ihnen eine Rezension
+            hinterlassen — ohne dass Sie jemanden aktiv darum bitten müssen.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 4. WARUM ICH DAS MACHE ══════════ -->
+  <section class="section section--soft" id="warum">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="label">Warum ich das mache</span>
+        <h2>Weil gute Arbeit im Internet oft schlecht aussieht.</h2>
+      </div>
+
+      <div class="container-text reveal" style="padding-inline: 0;">
+        <p class="lead">
+          <span class="platzhalter">
+            Hier kommt deine Haltung hin — der Abschnitt, der dich von jedem
+            Baukasten-Anbieter unterscheidet.
+          </span>
+        </p>
+        <p style="margin-top: var(--space-3); color: var(--text-mid);">
+          <span class="platzhalter">
+            Zum Beispiel: Warum es dich stört, wenn eine hervorragende Praxis
+            eine Website von 2011 hat. Warum du findest, dass auch ein kleiner
+            Betrieb ordentliche Technik verdient. Was dich beim Bauen antreibt.
+            Ehrlich und in deinen eigenen Worten — das überzeugt mehr als jeder
+            Werbetext.
+          </span>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════ 5. BILDUNGSWEG ══════════ -->
+  <section class="section" id="bildung">
+    <div class="container">
+      <div class="split">
+
+        <div class="reveal">
+          <span class="label">Schulung &amp; Bildungsweg</span>
+          <h2>Wo ich gelernt habe, was ich kann.</h2>
+          <p class="lead" style="margin-top: var(--space-3);">
+            Die Stationen meiner Ausbildung — fachlich und praktisch.
+          </p>
+        </div>
+
+        <div class="timeline reveal">
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">Jahr – Jahr</span>
+            <h3 class="platzhalter">Abschluss oder Ausbildung</h3>
+            <p class="platzhalter">
+              Wo, was, und was du dort konkret gelernt hast, das dir heute nützt.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">Jahr – Jahr</span>
+            <h3 class="platzhalter">Weiterbildung oder Kurs</h3>
+            <p class="platzhalter">
+              Auch Selbstgelerntes gehört hierhin — wichtig ist, dass man sieht,
+              dass du dranbleibst.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">Jahr</span>
+            <h3 class="platzhalter">Zertifikat oder Nachweis</h3>
+            <p class="platzhalter">
+              Wenn du etwas Offizielles hast, kommt es hier hin.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 6. ERFAHRUNG ══════════ -->
+  <section class="section section--soft" id="erfahrung">
+    <div class="container">
+      <div class="split split--media-left">
+
+        <div class="timeline reveal">
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">seit Jahr</span>
+            <h3 class="platzhalter">Selbstständig — Websites für lokale Betriebe</h3>
+            <p class="platzhalter">
+              Was du machst, für wen, und womit du dich am besten auskennst.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">Jahr – Jahr</span>
+            <h3 class="platzhalter">Frühere Station</h3>
+            <p class="platzhalter">
+              Auch Erfahrung außerhalb der Webentwicklung zählt — sie erklärt oft,
+              warum du Kunden gut verstehst.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">Jahr – Jahr</span>
+            <h3 class="platzhalter">Noch frühere Station</h3>
+            <p class="platzhalter">
+              Kurz halten. Zwei Sätze reichen.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="reveal">
+          <span class="label">Erfahrung</span>
+          <h2>Was ich bisher gemacht habe.</h2>
+          <p class="lead" style="margin-top: var(--space-3);">
+            <span class="platzhalter">
+              Ein oder zwei Sätze, die den roten Faden erklären — wie eins zum
+              anderen geführt hat.
+            </span>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 7. REFERENZ ══════════ -->
+  <section class="section" id="referenz">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="label">Referenz</span>
+        <h2>Zahnarztpraxis in Pforzheim</h2>
+      </div>
+
+      <div class="split">
+
+        <div class="reveal">
+          <div class="image-slot ratio-wide">
+            <div class="image-slot-note">
+              <strong>Screenshot der Praxis-Website</strong>
+              <small>Startseite, Desktop-Ansicht</small>
+              <small>Erzeuge ich aus deiner index-v4.html</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <span class="badge">Launch in Kürze</span>
+          <h3>Eine Praxis-Website, die Vertrauen aufbaut.</h3>
+          <p style="margin-top: var(--space-2); color: var(--text-mid);">
+            Eine komplett neu gebaute Website für eine Zahnarztpraxis: ruhiges,
+            warmes Design, klare Struktur für Leistungen und Team, alle Angaben
+            zu Sprechzeiten und Anfahrt sofort auffindbar — und ein Ablauf für
+            Terminanfragen, der auch auf dem Handy funktioniert.
+          </p>
+          <p style="margin-top: var(--space-2); color: var(--text-mid);">
+            Die Seite geht in Kürze online. Sobald sie freigegeben ist, findest
+            du hier die ausführliche Fallstudie mit Vorher-Nachher.
+          </p>
+
+          <dl class="referenz-meta">
+            <div>
+              <dt>Branche</dt>
+              <dd>Zahnmedizin</dd>
+            </div>
+            <div>
+              <dt>Leistung</dt>
+              <dd>Design &amp; Umsetzung</dd>
+            </div>
+            <div>
+              <dt>Umfang</dt>
+              <dd>Startseite + Unterseiten</dd>
+            </div>
+          </dl>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 8. HÄUFIGE FRAGEN ══════════ -->
+  <section class="section section--soft" id="faq">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="label">Häufige Fragen</span>
+        <h2>Was Kunden mich vorher fragen.</h2>
+      </div>
+
+      <div class="faq reveal">
+
+        <details class="faq-item">
+          <summary>Was kostet eine Website bei Ihnen?</summary>
+          <div class="faq-answer">
+            <span class="platzhalter">
+              Das hängt vom Umfang ab. Nach einem kurzen Gespräch bekommen Sie ein
+              festes Angebot — keine Stundenabrechnung, keine Überraschungen.
+              Hier später deine tatsächliche Antwort einsetzen.
+            </span>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Wie lange dauert es, bis die Seite online ist?</summary>
+          <div class="faq-answer">
+            <span class="platzhalter">
+              In der Regel wenige Wochen. Der größte Faktor sind meist die Texte
+              und Bilder, die von Ihnen kommen — dabei helfe ich aber.
+            </span>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Muss ich Texte und Fotos selbst liefern?</summary>
+          <div class="faq-answer">
+            <span class="platzhalter">
+              Fotos von Praxis und Team sind wertvoll und sollten echt sein.
+              Bei den Texten mache ich Vorschläge, die Sie nur noch korrigieren.
+            </span>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Kann ich die Seite später selbst ändern?</summary>
+          <div class="faq-answer">
+            <span class="platzhalter">
+              Kleine Änderungen wie Sprechzeiten oder Urlaubshinweise übernehme ich
+              für Sie. Auf Wunsch richte ich Ihnen einen Bereich ein, in dem Sie das
+              selbst erledigen können.
+            </span>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Was passiert nach dem Launch?</summary>
+          <div class="faq-answer">
+            <span class="platzhalter">
+              Ich bleibe erreichbar. Auf Wunsch kümmere ich mich weiter um Hosting,
+              Sicherheitszertifikat und Aktualisierungen, damit Sie sich um nichts
+              kümmern müssen.
+            </span>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Arbeiten Sie auch außerhalb Ihrer Region?</summary>
+          <div class="faq-answer">
+            <span class="platzhalter">
+              Ja. Das Erstgespräch führe ich gerne persönlich, alles Weitere geht
+              genauso gut per Telefon und Video.
+            </span>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ 9. KONTAKT ══════════ -->
+  <section class="section" id="kontakt">
+    <div class="container">
+      <div class="kontakt-box reveal">
+
+        <span class="label" style="justify-content: center;">Kontakt</span>
+        <h2>Lassen Sie uns kurz sprechen.</h2>
+        <p class="lead" style="margin-top: var(--space-2);">
+          Ein unverbindliches Erstgespräch, in dem wir klären, was Ihre Praxis
+          wirklich braucht. Ohne Verkaufsdruck, ohne Kosten.
+        </p>
+
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#" data-mail="link">Termin per Mail anfragen</a>
+        </div>
+
+        <p class="mail-hint">
+          Der Knopf öffnet Ihr Mailprogramm mit einem fertigen Text.
+          Klappt das nicht, schreiben Sie einfach an
+          <code data-mail="text">platzhalter@beispiel.de</code>
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ══════════ FUSSZEILE ══════════ -->
+<footer class="footer">
+  <div class="container">
+    <p>© <span data-jahr>2026</span> [DEIN NAME]</p>
+    <nav aria-label="Rechtliches">
+      <a href="HTML/impressum.html">Impressum</a>
+      <a href="HTML/datenschutz.html">Datenschutz</a>
+      <a href="#willkommen">Nach oben</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="JAVA/main.js"></script>
+
+</body>
+</html>

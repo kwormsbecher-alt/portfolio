@@ -1,0 +1,608 @@
+/* ═══════════════════════════════════════════════════════════
+   STYLES — Aufbau der Seite.
+   Regel: hier NIEMALS eine feste Farbe (#abc) schreiben.
+   Immer var(--token) benutzen, damit tokens.css alles steuert.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 1. RESET ──────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + var(--space-3));
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-body);
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+a { color: inherit; }
+
+/* Sichtbarer Fokusrahmen für Tastatur-Bedienung — nicht entfernen. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* Für Screenreader sichtbar, optisch versteckt */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Sprunglink für Tastatur-Nutzer */
+.skip-link {
+  position: absolute; top: 0; left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 999;
+  padding: var(--space-1) var(--space-3);
+  background: var(--accent); color: var(--surface);
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-size: var(--size-small);
+  transition: transform var(--duration) var(--ease);
+}
+.skip-link:focus { transform: translate(-50%, 0); }
+
+
+/* ── 2. TYPOGRAFIE ─────────────────────────────────────── */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--size-hero); }
+h2 { font-size: var(--size-h2); }
+h3 { font-size: var(--size-h3); }
+
+p { text-wrap: pretty; }
+p + p { margin-top: var(--space-2); }
+
+.lead {
+  font-size: var(--size-lead);
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+
+/* Kleines Label über Überschriften, z. B. "01 — WER BIN ICH" */
+.label {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: var(--size-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+.label::before {
+  content: ''; width: 24px; height: 1px;
+  background: var(--accent-line);
+}
+
+
+/* ── 3. LAYOUT ─────────────────────────────────────────── */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.container-text { max-width: var(--container-text); }
+
+.section { padding-block: var(--section-padding); }
+.section--soft { background: var(--bg-soft); }
+
+.section-head { max-width: var(--container-text); margin-bottom: var(--space-5); }
+.section-head p { margin-top: var(--space-2); }
+
+/* Zwei Spalten, die auf dem Handy untereinander rutschen */
+.split {
+  display: grid;
+  gap: clamp(var(--space-4), 5vw, var(--space-6));
+  align-items: center;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 860px) {
+  .split { grid-template-columns: 1fr 1fr; }
+  .split--media-left > :first-child { order: 2; }
+  .split--media-left > :last-child  { order: 1; }
+}
+
+
+/* ── 4. PLATZHALTER-SYSTEM ─────────────────────────────── */
+/* Übernommen aus dem Zahnarzt-Projekt: gestrichelte Fläche mit
+   Hinweistext. Sobald ein echtes <img> drin liegt, klasse
+   "has-image" ans .image-slot setzen — der Hinweis verschwindet. */
+
+.image-slot {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+.image-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+.image-slot-note {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  text-align: center;
+  background: var(--bg-soft);
+  border: 1.5px dashed var(--accent-line);
+  border-radius: var(--radius);
+  color: var(--text-soft);
+  font-size: var(--size-small);
+  line-height: 1.5;
+}
+.image-slot-note strong {
+  color: var(--text-mid);
+  font-weight: var(--weight-medium);
+}
+.image-slot-note small { font-size: var(--size-label); opacity: 0.75; }
+.image-slot.has-image .image-slot-note { display: none; }
+
+/* Seitenverhältnisse für Bildflächen */
+.ratio-portrait { aspect-ratio: 4 / 5; }
+.ratio-square   { aspect-ratio: 1 / 1; }
+.ratio-wide     { aspect-ratio: 16 / 10; }
+
+/* Markiert Text, der noch ersetzt werden muss.
+   Zum Ausschalten: im <body> die Klasse "platzhalter-aus" setzen. */
+.platzhalter {
+  background: linear-gradient(transparent 60%, var(--accent-soft) 60%);
+  border-bottom: 1px dashed var(--accent-line);
+}
+body.platzhalter-aus .platzhalter {
+  background: none;
+  border-bottom: 0;
+}
+
+
+/* ── 5. KNÖPFE ─────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-1);
+  padding: 0.85rem 1.6rem;
+  min-height: 48px;                    /* gut mit dem Daumen treffbar */
+  font-size: var(--size-body);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  transition: background var(--duration) var(--ease),
+              color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover { background: var(--accent-dark); box-shadow: var(--shadow); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.btn--ghost:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+
+.btn-row {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+/* Hinweiszeile unter dem Termin-Knopf */
+.mail-hint {
+  margin-top: var(--space-2);
+  font-size: var(--size-small);
+  color: var(--text-soft);
+}
+.mail-hint code {
+  font-family: inherit;
+  padding: 0.1em 0.45em;
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  color: var(--accent-dark);
+}
+
+
+/* ── 6. KOPFLEISTE ─────────────────────────────────────── */
+
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-height);
+  display: flex; align-items: center;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: height var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+.nav.is-scrolled {
+  height: var(--nav-height-sm);
+  border-bottom-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.nav > .container { display: flex; align-items: center; gap: var(--space-3); }
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: 1.05rem;
+  letter-spacing: var(--tracking-tight);
+  text-decoration: none;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+.nav-logo small {
+  display: block;
+  font-size: var(--size-label);
+  font-weight: var(--weight-normal);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 0.15rem;
+}
+
+.nav-links { display: flex; align-items: center; gap: 0.15rem; margin-left: auto; }
+.nav-links a {
+  padding: 0.5rem 0.85rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+.nav-links a:hover { color: var(--text); background: var(--accent-soft); }
+.nav-links a.is-active { color: var(--accent); font-weight: var(--weight-medium); }
+.nav-links .btn { margin-left: var(--space-2); padding: 0.6rem 1.2rem; min-height: 42px; }
+.nav-links .btn:hover { background: var(--accent-dark); color: var(--surface); }
+
+/* Hamburger — nur auf schmalen Schirmen sichtbar */
+.nav-toggle {
+  display: none;
+  margin-left: auto;
+  width: 44px; height: 44px;
+  align-items: center; justify-content: center;
+  border-radius: var(--radius-sm);
+}
+.nav-toggle span {
+  display: block; position: relative;
+  width: 22px; height: 2px; border-radius: 2px;
+  background: var(--text);
+  transition: background var(--duration) var(--ease);
+}
+.nav-toggle span::before,
+.nav-toggle span::after {
+  content: ''; position: absolute; left: 0;
+  width: 22px; height: 2px; border-radius: 2px;
+  background: var(--text);
+  transition: transform var(--duration) var(--ease), top var(--duration) var(--ease);
+}
+.nav-toggle span::before { top: -7px; }
+.nav-toggle span::after  { top:  7px; }
+
+.nav.is-open .nav-toggle span { background: transparent; }
+.nav.is-open .nav-toggle span::before { top: 0; transform: rotate(45deg); }
+.nav.is-open .nav-toggle span::after  { top: 0; transform: rotate(-45deg); }
+
+@media (max-width: 900px) {
+  .nav-toggle { display: flex; }
+
+  .nav-links {
+    position: fixed;
+    top: var(--nav-height); left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    gap: 0;
+    margin-left: 0;
+    padding: var(--space-2) var(--page-gutter) var(--space-4);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition: opacity var(--duration) var(--ease),
+                transform var(--duration) var(--ease),
+                visibility var(--duration) var(--ease);
+  }
+  .nav.is-open .nav-links { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .nav-links a { padding: 0.9rem 0.5rem; font-size: 1rem; border-radius: var(--radius-sm); }
+  .nav-links .btn { margin-left: 0; margin-top: var(--space-2); }
+}
+
+
+/* ── 7. WILLKOMMEN (HERO) ──────────────────────────────── */
+
+.hero {
+  padding-top: calc(var(--nav-height) + var(--section-padding));
+  padding-bottom: var(--section-padding);
+}
+.hero h1 { margin-bottom: var(--space-3); }
+.hero .lead { max-width: 52ch; }
+
+.hero-media { position: relative; }
+.hero-media .image-slot { box-shadow: var(--shadow-lg); }
+
+/* Kleine Kennzahlen unter dem Hero */
+.facts {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.facts div { min-width: 120px; }
+.facts dt {
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+.facts dd {
+  font-family: var(--font-display);
+  font-size: var(--size-h3);
+  font-weight: var(--weight-bold);
+  color: var(--text);
+  margin-top: 0.2rem;
+}
+
+
+/* ── 8. KARTEN (Leistungen, Warum) ─────────────────────── */
+
+.card-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+}
+
+.card {
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--accent-line);
+}
+.card h3 { margin-bottom: var(--space-1); }
+.card p { color: var(--text-mid); font-size: var(--size-small); }
+
+.card-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--size-small);
+  font-weight: var(--weight-bold);
+  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+
+/* ── 9. ZEITLEISTE (Bildungsweg & Erfahrung) ───────────── */
+
+.timeline { position: relative; padding-left: var(--space-4); }
+.timeline::before {
+  content: '';
+  position: absolute; top: 6px; bottom: 6px; left: 5px;
+  width: 1px;
+  background: var(--accent-line);
+}
+
+.timeline-item { position: relative; padding-bottom: var(--space-4); }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: '';
+  position: absolute; top: 8px; left: calc(-1 * var(--space-4) + 1px);
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+}
+.section--soft .timeline-item::before { background: var(--bg-soft); }
+
+.timeline-time {
+  display: block;
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 0.2rem;
+}
+.timeline-item h3 { font-size: 1.1rem; }
+.timeline-item p { color: var(--text-mid); font-size: var(--size-small); margin-top: 0.3rem; }
+
+
+/* ── 10. REFERENZ ──────────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  font-size: var(--size-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.04em;
+  color: var(--accent-dark);
+  background: var(--accent-soft);
+  border-radius: var(--radius-pill);
+  margin-bottom: var(--space-2);
+}
+
+.referenz-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.referenz-meta dt {
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 0.2rem;
+}
+.referenz-meta dd { font-size: var(--size-small); color: var(--text-mid); }
+
+
+/* ── 11. HÄUFIGE FRAGEN ────────────────────────────────── */
+/* <details>/<summary> — funktioniert von Haus aus mit Tastatur. */
+
+.faq { max-width: var(--container-text); }
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-item summary {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  padding: var(--space-3) 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--duration) var(--ease);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover { color: var(--accent); }
+
+/* Das Plus-/Minus-Zeichen rechts */
+.faq-item summary::after {
+  content: '';
+  flex-shrink: 0;
+  width: 14px; height: 14px;
+  margin-left: auto; margin-top: 0.4rem;
+  background:
+    linear-gradient(var(--accent), var(--accent)) center/14px 1.5px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) center/1.5px 14px no-repeat;
+  transition: transform var(--duration) var(--ease);
+}
+.faq-item[open] summary::after {
+  transform: rotate(90deg);
+  background: linear-gradient(var(--accent), var(--accent)) center/14px 1.5px no-repeat;
+}
+
+.faq-answer {
+  padding-bottom: var(--space-3);
+  color: var(--text-mid);
+  font-size: var(--size-small);
+  max-width: 60ch;
+}
+
+
+/* ── 12. KONTAKT ───────────────────────────────────────── */
+
+.kontakt-box {
+  padding: clamp(var(--space-4), 6vw, var(--space-7));
+  background: var(--accent-soft);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.kontakt-box .lead { margin-inline: auto; max-width: 46ch; }
+.kontakt-box .btn-row { justify-content: center; }
+
+
+/* ── 13. FUSSZEILE ─────────────────────────────────────── */
+
+.footer {
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--border);
+  font-size: var(--size-small);
+  color: var(--text-soft);
+}
+.footer > .container {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: var(--space-2);
+}
+.footer nav { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.footer a { text-decoration: none; transition: color var(--duration) var(--ease); }
+.footer a:hover { color: var(--accent); }
+
+
+/* ── 14. UNTERSEITEN (Impressum, Datenschutz, Fallstudie) ─ */
+
+.page-head {
+  padding-top: calc(var(--nav-height) + var(--space-6));
+  padding-bottom: var(--space-4);
+}
+.prose { max-width: var(--container-text); }
+.prose h2 { font-size: var(--size-h3); margin-top: var(--space-5); margin-bottom: var(--space-2); }
+.prose h2:first-child { margin-top: 0; }
+.prose p, .prose ul { color: var(--text-mid); font-size: var(--size-small); }
+.prose ul { padding-left: 1.2rem; margin-top: var(--space-1); }
+.prose li { margin-bottom: 0.3rem; }
+.prose a { color: var(--accent); }
+
+.hinweis {
+  padding: var(--space-3);
+  margin-bottom: var(--space-5);
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: var(--size-small);
+  color: var(--accent-dark);
+}
+
+
+/* ── 15. EINBLENDEN BEIM SCROLLEN ──────────────────────── */
+
+/* Sicherheitsnetz: Ohne JavaScript ist alles ganz normal sichtbar.
+   Erst wenn main.js läuft, setzt es .js auf <html> und die Animation
+   schaltet sich ein. So bleibt die Seite auch dann lesbar, wenn das
+   Skript blockiert wird oder nicht lädt. */
+.reveal {
+  transition: opacity var(--duration-lg) var(--ease),
+              transform var(--duration-lg) var(--ease);
+}
+html.js .reveal { opacity: 0; transform: translateY(20px); }
+html.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Wer Bewegung im System abgeschaltet hat, bekommt keine. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html.js .reveal { opacity: 1; transform: none; }
+}

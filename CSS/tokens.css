@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════════════════════════
+   TOKENS — Hier und NUR hier stehen Farben, Schriften, Maße.
+
+   Wenn dein skandinavischer Entwurf fertig ist, ändern wir
+   diese Datei. Die ganze Seite dreht sich mit.
+   In styles.css steht niemals eine feste Farbe.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ── FARBEN ────────────────────────────────────────────── */
+  /* Grundton: heller, ruhiger Sand-/Papierton (skandinavisch) */
+  --bg:            #FBFAF8;   /* Seitenhintergrund             */
+  --bg-soft:       #F3F1EC;   /* Abschnitte zum Absetzen       */
+  --surface:       #FFFFFF;   /* Karten, Kästen                */
+
+  --text:          #1B1B19;   /* Überschriften, Fließtext      */
+  --text-mid:      #5A5854;   /* Nebentext                     */
+  --text-soft:     #96938D;   /* Bildunterschriften, Labels    */
+
+  --accent:        #3F5D50;   /* Hauptakzent (gedecktes Grün)  */
+  --accent-dark:   #2E453B;   /* Hover-Zustand                 */
+  --accent-soft:   #E7EDE9;   /* Akzent-Flächen, Badges        */
+  --accent-line:   #C6D3CB;   /* Akzent-Linien                 */
+
+  --border:        rgba(27, 27, 25, 0.10);
+  --border-strong: rgba(27, 27, 25, 0.18);
+
+  /* ── SCHRIFTEN ─────────────────────────────────────────── */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold:   600;
+
+  /* Schriftgrößen — passen sich automatisch an die Bildschirmbreite an.
+     clamp(kleinster Wert, wächst mit, größter Wert) */
+  --size-hero:  clamp(2.4rem, 6vw,   4.2rem);
+  --size-h2:    clamp(1.7rem, 3.6vw, 2.6rem);
+  --size-h3:    clamp(1.15rem, 2vw,  1.4rem);
+  --size-lead:  clamp(1.05rem, 1.6vw, 1.25rem);
+  --size-body:  1rem;
+  --size-small: 0.875rem;
+  --size-label: 0.75rem;
+
+  --leading-tight: 1.15;
+  --leading-body:  1.7;
+  --tracking-tight: -0.02em;
+  --tracking-label:  0.12em;
+
+  /* ── ABSTÄNDE ──────────────────────────────────────────── */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+
+  --section-padding: clamp(4rem, 9vw, 7.5rem);
+  --page-gutter:     clamp(1.25rem, 5vw, 3rem);
+
+  /* ── MASSE ─────────────────────────────────────────────── */
+  --container:      1180px;   /* maximale Inhaltsbreite        */
+  --container-text: 720px;    /* maximale Breite für Fließtext */
+  --nav-height:     72px;
+  --nav-height-sm:  60px;
+
+  /* ── RUNDUNGEN & SCHATTEN ──────────────────────────────── */
+  --radius-sm:  6px;
+  --radius:     12px;
+  --radius-lg:  20px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 3px rgba(27, 27, 25, 0.05);
+  --shadow:    0 4px 24px rgba(27, 27, 25, 0.07);
+  --shadow-lg: 0 16px 48px rgba(27, 27, 25, 0.10);
+
+  /* ── BEWEGUNG ──────────────────────────────────────────── */
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --duration:    0.25s;
+  --duration-lg: 0.6s;
+}
