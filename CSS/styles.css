@@ -1087,6 +1087,158 @@ body.platzhalter-zeigen .platzhalter {
               border-color var(--duration) var(--ease);
 }
 .spielfeld-fuss button:hover { color: var(--accent); border-color: var(--accent); }
+.spielfeld-knoepfe { display: flex; gap: var(--space-1); flex-shrink: 0; }
+
+/* Rückmeldung beim Schütteln: erst ab der dritten Richtungsänderung,
+   damit ein normales Verschieben nichts auslöst. */
+.spielfeld.ist-spielbar .baustein.wackelt {
+  box-shadow: 0 0 0 3px var(--spiel-ruecken), var(--shadow-lg);
+  border-color: var(--spiel-ruecken);
+}
+
+
+/* ── 8e. MEMORY ────────────────────────────────────────────
+   Die ganze Seite wird weiß, übrig bleiben nur die Karten.
+   Als <dialog>, damit Escape-Taste und Tastaturführung mitkommen. */
+
+.memory {
+  width: 100vw;  max-width: 100vw;
+  height: 100vh; max-height: 100vh;
+  height: 100dvh; max-height: 100dvh;
+  margin: 0; padding: 0;
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  overflow: auto;
+}
+.memory::backdrop { background: var(--surface); }
+.memory[open] { animation: memoryEin 0.45s var(--ease); }
+@keyframes memoryEin {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.memory-innenraum {
+  min-height: 100%;
+  display: flex; flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--page-gutter);
+}
+
+.memory-kopf {
+  display: flex; align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+.memory-titel {
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-right: auto;              /* Punktestand steht rechts */
+}
+.memory-punkte { font-size: var(--size-small); color: var(--text-mid); }
+.memory-punkte strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-inline: 0.15rem;
+}
+.memory-zu {
+  width: 42px; height: 42px;
+  font-size: 1.5rem; line-height: 1;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background var(--duration) var(--ease);
+}
+.memory-zu:hover { background: var(--accent-soft); }
+
+.memory-brett {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.5rem, 2vw, 1rem);
+  width: 100%;
+  max-width: 900px;
+  margin: auto;                    /* mittig im übrigen Platz */
+}
+@media (min-width: 760px) {
+  .memory-brett { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+/* Auf schmalen Schirmen füllt das Brett die verfügbare Höhe aus, statt
+   über den Rand hinauszuwachsen. Bei Memory muss man alle Karten auf
+   einen Blick sehen — Scrollen wäre hier ein Spielfehler. */
+@media (max-width: 759px) {
+  .memory { overflow: hidden; }
+  .memory-innenraum { height: 100%; gap: var(--space-3); }
+  .memory-brett {
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    flex: 1;
+    min-height: 0;
+    margin: 0 auto;
+  }
+}
+
+/* Kein festes Seitenverhältnis als Grundregel: auf schmalen Schirmen
+   bestimmt die Reihenhöhe die Karte, damit alle zehn ins Bild passen.
+   Erst ab 760px bekommen sie wieder Hochformat. */
+.memory-karte {
+  position: relative;
+  padding: 0;
+  min-height: 0;
+  background: none;
+  perspective: 900px;
+}
+@media (min-width: 760px) {
+  .memory-karte { aspect-ratio: 3 / 4; }
+}
+.memory-innen {
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease);
+}
+.memory-karte.ist-offen .memory-innen { transform: rotateY(180deg); }
+
+.memory-seite {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.memory-ruecken {
+  background: var(--spiel-ruecken);
+  box-shadow: var(--shadow-sm);
+}
+/* Ein feines Muster, damit die Rückseite nicht nur eine Farbfläche ist */
+.memory-ruecken::after {
+  content: '';
+  position: absolute; inset: 14%;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: calc(var(--radius) - 4px);
+}
+.memory-vorne {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transform: rotateY(180deg);
+  font-size: clamp(1.9rem, 7vw, 3.2rem);
+  line-height: 1;
+}
+
+.memory-karte.ist-weg {
+  opacity: 0;
+  transform: scale(0.86);
+  pointer-events: none;
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+}
+
+.memory-fertig {
+  flex-shrink: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--size-h3);
+  font-weight: var(--weight-bold);
+}
 
 /* Der Hinweis erscheint erst, wenn das Spielfeld wirklich läuft */
 .spielfeld-fuss { display: none; }

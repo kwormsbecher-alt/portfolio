@@ -350,6 +350,133 @@ function auswahlAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   4bb. MEMORY
+
+   Fünf Paare, zehn Karten — genauso viele Felder wie das Spielfeld
+   hat. Die ganze Seite wird weiß, übrig bleiben nur die Karten.
+   Gestartet wird durch Schütteln eines Bausteins (siehe unten) oder
+   über den Knopf unter dem Spielfeld.
+   ─────────────────────────────────────────────────────────── */
+
+/* Wird beim Start gesetzt und vom Spielfeld aus aufgerufen. */
+let memoryStarten = null;
+
+function memoryAufsetzen() {
+  const fenster = document.querySelector('.memory');
+  if (!fenster || typeof fenster.showModal !== 'function') return null;
+
+  const brett    = fenster.querySelector('[data-memory-brett]');
+  const anzeige  = fenster.querySelector('[data-memory-punkte]');
+  const fertig   = fenster.querySelector('[data-memory-fertig]');
+  const zuKnopf  = fenster.querySelector('[data-memory-zu]');
+  if (!brett || !anzeige) return null;
+
+  /* Platzhalter — später gegen Symbole aus Kevins Welt tauschen. */
+  const MOTIVE = ['🕐', '👥', '📅', '📍', '⭐'];
+
+  let offen = [];
+  let gefunden = 0;
+  let sperre = false;
+  let merkeScroll = 0;
+
+  function mischen(liste) {
+    const kopie = liste.slice();
+    for (let i = kopie.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const zwischen = kopie[i]; kopie[i] = kopie[j]; kopie[j] = zwischen;
+    }
+    return kopie;
+  }
+
+  function bauen() {
+    brett.innerHTML = '';
+    offen = [];
+    gefunden = 0;
+    sperre = false;
+    anzeige.textContent = '0';
+    if (fertig) fertig.hidden = true;
+
+    mischen(MOTIVE.concat(MOTIVE)).forEach(function (motiv, i) {
+      const karte = document.createElement('button');
+      karte.type = 'button';
+      karte.className = 'memory-karte';
+      karte.dataset.motiv = motiv;
+      karte.setAttribute('aria-label', 'Karte ' + (i + 1) + ', verdeckt');
+      karte.innerHTML =
+        '<span class="memory-innen">' +
+          '<span class="memory-seite memory-ruecken" aria-hidden="true"></span>' +
+          '<span class="memory-seite memory-vorne" aria-hidden="true">' + motiv + '</span>' +
+        '</span>';
+      karte.addEventListener('click', function () { aufdecken(karte); });
+      brett.appendChild(karte);
+    });
+  }
+
+  function aufdecken(karte) {
+    if (sperre) return;
+    if (karte.classList.contains('ist-offen')) return;
+    if (karte.classList.contains('ist-weg')) return;
+
+    karte.classList.add('ist-offen');
+    karte.setAttribute('aria-label', 'Karte zeigt ' + karte.dataset.motiv);
+    offen.push(karte);
+    if (offen.length < 2) return;
+
+    sperre = true;
+    const erste = offen[0];
+    const zweite = offen[1];
+
+    if (erste.dataset.motiv === zweite.dataset.motiv) {
+      window.setTimeout(function () {
+        erste.classList.add('ist-weg');
+        zweite.classList.add('ist-weg');
+        erste.disabled = true;
+        zweite.disabled = true;
+        gefunden += 1;
+        anzeige.textContent = String(gefunden);
+        offen = [];
+        sperre = false;
+        if (gefunden === MOTIVE.length) gewonnen();
+      }, 480);
+    } else {
+      window.setTimeout(function () {
+        erste.classList.remove('ist-offen');
+        zweite.classList.remove('ist-offen');
+        erste.setAttribute('aria-label', 'Karte, verdeckt');
+        zweite.setAttribute('aria-label', 'Karte, verdeckt');
+        offen = [];
+        sperre = false;
+      }, 850);
+    }
+  }
+
+  function gewonnen() {
+    if (fertig) fertig.hidden = false;
+    window.setTimeout(function () {
+      if (fenster.open) fenster.close();
+    }, 1700);
+  }
+
+  /* Zurück an die Stelle, an der man vorher war */
+  fenster.addEventListener('close', function () {
+    window.scrollTo({ top: merkeScroll, behavior: 'instant' });
+  });
+  if (zuKnopf) {
+    zuKnopf.addEventListener('click', function () {
+      if (fenster.open) fenster.close();
+    });
+  }
+
+  return function starten() {
+    if (fenster.open) return;
+    merkeScroll = window.scrollY;
+    bauen();
+    try { fenster.showModal(); } catch (fehler) { /* dann eben nicht */ }
+  };
+}
+
+
+/* ───────────────────────────────────────────────────────────
    4c. SPIELFELD — die Bausteine lassen sich herumschieben
 
    Der Kniff: Erst wird das ganz normale Raster ausgemessen, dann
@@ -510,6 +637,34 @@ function spielfeldAufsetzen() {
     let aktiv = false;
     let halteUhr = null;
 
+    /* Schütteln erkennen: Richtungswechsel nach links und rechts
+       zählen. Sieben Wechsel dicht hintereinander starten Memory.
+       Normales Verschieben hat höchstens ein bis zwei Wechsel. */
+    let letzteX = 0, richtung = 0, wechsel = 0, letzterWechsel = 0;
+
+    function schuettelnPruefen(e) {
+      const dx = e.clientX - letzteX;
+      if (Math.abs(dx) < 6) return false;
+
+      const neueRichtung = dx > 0 ? 1 : -1;
+      if (richtung !== 0 && neueRichtung !== richtung) {
+        const jetzt = Date.now();
+        if (jetzt - letzterWechsel > 900) wechsel = 0;   /* zu lange her */
+        wechsel += 1;
+        letzterWechsel = jetzt;
+        karte.classList.toggle('wackelt', wechsel >= 3);
+
+        if (wechsel >= 7 && typeof memoryStarten === 'function') {
+          wechsel = 0;
+          karte.classList.remove('wackelt');
+          return true;
+        }
+      }
+      richtung = neueRichtung;
+      letzteX = e.clientX;
+      return false;
+    }
+
     function uhrStoppen() {
       if (halteUhr) { window.clearTimeout(halteUhr); halteUhr = null; }
       karte.classList.remove('wird-scharf');
@@ -536,6 +691,9 @@ function spielfeldAufsetzen() {
       greifY = e.clientY - r.top;
       startX = e.clientX;
       startY = e.clientY;
+      letzteX = e.clientX;
+      richtung = 0;
+      wechsel = 0;
 
       if (e.pointerType === 'touch') {
         /* Mit dem Finger erst nach kurzem Halten. Wischt jemand nur
@@ -569,6 +727,19 @@ function spielfeldAufsetzen() {
         return;
       }
 
+      /* Genug geschüttelt? Dann Ziehen sauber beenden und Memory
+         starten — sonst klebte die Karte am Zeiger. */
+      if (schuettelnPruefen(e)) {
+        aktiv = false;
+        karte.classList.remove('wird-gezogen');
+        try {
+          if (karte.hasPointerCapture(e.pointerId)) karte.releasePointerCapture(e.pointerId);
+        } catch (fehler) { /* egal */ }
+        einrasten(karte);
+        memoryStarten();
+        return;
+      }
+
       const rahmen = liste.getBoundingClientRect();
       let x = e.clientX - rahmen.left - greifX;
       let y = e.clientY - rahmen.top  - greifY;
@@ -583,6 +754,8 @@ function spielfeldAufsetzen() {
 
     function loslassen(e) {
       uhrStoppen();
+      karte.classList.remove('wackelt');
+      wechsel = 0;
       if (!aktiv) return;
       aktiv = false;
       karte.classList.remove('wird-gezogen');
@@ -598,7 +771,15 @@ function spielfeldAufsetzen() {
   karten.forEach(ziehenAufsetzen);
 
   const aufraeumKnopf = document.querySelector('[data-spielfeld-reset]');
-  if (aufraeumKnopf) aufraeumKnopf.addEventListener('click', anordnen);
+  if (aufraeumKnopf) aufraeumKnopf.addEventListener('click', function () { anordnen(); });
+
+  /* Ohne Maus kann man nicht schütteln — deshalb auch ein Knopf. */
+  const memoryKnopf = document.querySelector('[data-memory-start]');
+  if (memoryKnopf) {
+    memoryKnopf.addEventListener('click', function () {
+      if (typeof memoryStarten === 'function') memoryStarten();
+    });
+  }
 
   /* Neu ausrichten, sobald der Rahmen seine Breite ändert — beim
      Drehen des Geräts, beim Ziehen am Fenster, beim Wechsel der
@@ -663,6 +844,7 @@ document.addEventListener('DOMContentLoaded', function () {
   kopfleisteVerwandelnAufsetzen();
   aktivenMenuepunktVerfolgen();
   auswahlAufsetzen();
+  memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
   spielfeldAufsetzen();
   einblendenAufsetzen();
   bildflaechenPruefen();

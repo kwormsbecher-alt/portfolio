@@ -599,8 +599,11 @@
       </div>
 
       <div class="spielfeld-fuss">
-        <span>Steine verschieben — am Handy kurz gedrückt halten. Sie rasten von selbst ein.</span>
-        <button type="button" data-spielfeld-reset>Wieder aufräumen</button>
+        <span>Steine verschieben — am Handy kurz gedrückt halten. Und wer einen Stein schüttelt, findet etwas. 🧩</span>
+        <span class="spielfeld-knoepfe">
+          <button type="button" data-memory-start>Memory</button>
+          <button type="button" data-spielfeld-reset>Wieder aufräumen</button>
+        </span>
       </div>
 
     </div>
@@ -927,6 +930,27 @@
     </nav>
   </div>
 </footer>
+
+<!-- ══════════ MEMORY ══════════
+     Wird geöffnet, wenn jemand einen Baustein schüttelt (oder den
+     Memory-Knopf drückt). Die ganze Seite wird weiß, übrig bleiben
+     nur die Karten. main.js baut das Spielfeld beim Start neu auf. -->
+<dialog class="memory" aria-label="Memory-Spiel">
+  <div class="memory-innenraum">
+
+    <div class="memory-kopf">
+      <span class="memory-titel">Memory</span>
+      <span class="memory-punkte">Paare <strong data-memory-punkte>0</strong> von 5</span>
+      <button type="button" class="memory-zu" data-memory-zu aria-label="Spiel beenden">&times;</button>
+    </div>
+
+    <div class="memory-brett" data-memory-brett></div>
+
+    <p class="memory-fertig" data-memory-fertig hidden>Alle Paare gefunden. 🎉</p>
+
+  </div>
+</dialog>
+
 
 <!-- Taucht auf dem Handy auf, sobald der Landing-Bereich durchgescrollt
      ist — dort verschwindet dann das Logo oben. -->

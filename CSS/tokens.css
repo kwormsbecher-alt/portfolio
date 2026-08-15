@@ -36,6 +36,10 @@
   --ton:           #5F7469;
   --ton-soft:      #E8EDE9;
 
+  /* Rückseite der Memory-Karten. Bewusst die einzige kräftige Farbe
+     der Seite — ändere diesen Wert, wenn dir eine andere lieber ist. */
+  --spiel-ruecken: #5F7469;
+
   --border:        rgba(23, 24, 26, 0.11);
   --border-strong: rgba(23, 24, 26, 0.20);
 
