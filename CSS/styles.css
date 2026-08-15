@@ -235,24 +235,33 @@ body.platzhalter-zeigen .platzhalter {
 
 /* ── 6. KOPFLEISTE ─────────────────────────────────────── */
 
+/* Kein durchgehender Balken mehr. Die Leiste selbst ist unsichtbar,
+   Logo und Menü schweben als eigene Inseln darüber. Die milchige
+   Fläche mit Weichzeichner sorgt dafür, dass beide auf jedem
+   Hintergrund lesbar bleiben — auch auf dem Bild. */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   height: var(--nav-height);
   display: flex; align-items: center;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid transparent;
-  transition: height var(--duration) var(--ease),
-              box-shadow var(--duration) var(--ease),
-              border-color var(--duration) var(--ease);
+  background: transparent;
+  transition: height var(--duration) var(--ease);
+  pointer-events: none;          /* nur die Inseln fangen Klicks */
 }
-.nav.is-scrolled {
-  height: var(--nav-height-sm);
-  border-bottom-color: var(--border);
+.nav.is-scrolled { height: var(--nav-height-sm); }
+.nav > .container { display: flex; align-items: center; gap: var(--space-3); }
+.nav-logo, .nav-links, .nav-toggle { pointer-events: auto; }
+
+/* Gemeinsames Aussehen der schwebenden Inseln */
+.nav-logo,
+.nav-links,
+.nav-toggle {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
   box-shadow: var(--shadow-sm);
 }
-.nav > .container { display: flex; align-items: center; gap: var(--space-3); }
 
 .nav-logo {
   font-family: var(--font-display);
@@ -262,6 +271,7 @@ body.platzhalter-zeigen .platzhalter {
   text-decoration: none;
   line-height: 1.2;
   flex-shrink: 0;
+  padding: 0.42rem 1rem;
 }
 .nav-logo small {
   display: block;
@@ -273,9 +283,14 @@ body.platzhalter-zeigen .platzhalter {
   margin-top: 0.15rem;
 }
 
-.nav-links { display: flex; align-items: center; gap: 0.15rem; margin-left: auto; }
+.nav-links {
+  display: flex; align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+  padding: 0.28rem;
+}
 .nav-links a {
-  padding: 0.5rem 0.85rem;
+  padding: 0.48rem 0.85rem;
   font-size: var(--size-small);
   color: var(--text-mid);
   text-decoration: none;
@@ -284,7 +299,11 @@ body.platzhalter-zeigen .platzhalter {
   transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
 }
 .nav-links a:hover { color: var(--text); background: var(--accent-soft); }
-.nav-links a.is-active { color: var(--accent); font-weight: var(--weight-medium); }
+.nav-links a.is-active {
+  color: var(--surface);
+  background: var(--accent);
+  font-weight: var(--weight-medium);
+}
 .nav-links .btn { margin-left: var(--space-2); padding: 0.6rem 1.2rem; min-height: 42px; }
 /* Muss sein: .nav-links a setzt eine dunkle Schriftfarbe und ist
    spezifischer als .btn--primary — ohne diese Zeile stünde dunkelgrüne
@@ -301,9 +320,9 @@ body.platzhalter-zeigen .platzhalter {
 .nav-toggle {
   display: none;
   margin-left: auto;
-  width: 44px; height: 44px;
+  width: 46px; height: 46px;
   align-items: center; justify-content: center;
-  border-radius: var(--radius-sm);
+  flex-shrink: 0;
 }
 
 .nav-toggle-striche {
@@ -336,16 +355,18 @@ body.platzhalter-zeigen .platzhalter {
 @media (max-width: 1040px) {
   .nav-toggle { display: flex; }
 
+  /* Das offene Menü ist eine schwebende Karte, kein Balken über die
+     ganze Breite. */
   .nav-links {
     position: fixed;
-    top: var(--nav-height); left: 0; right: 0;
+    top: calc(var(--nav-height) - 4px);
+    left: var(--page-gutter); right: var(--page-gutter);
     flex-direction: column; align-items: stretch;
     gap: 0;
     margin-left: 0;
-    padding: var(--space-2) var(--page-gutter) var(--space-4);
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow);
+    padding: var(--space-2);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
 
     opacity: 0;
     visibility: hidden;
@@ -378,31 +399,49 @@ body.platzhalter-zeigen .platzhalter {
   overflow: hidden;
 }
 
-/* Solange kein Foto da ist, liegt hier ein feines Raster statt eines
-   gestrichelten Kastens mit Hinweistext — der lag sonst mitten in der
-   Überschrift. Der Hinweis steht jetzt als Kommentar im HTML. */
-.hero-hintergrund {
+/* Die Bildfläche. Auf schmalen Schirmen liegt sie als Hintergrund
+   unter dem ganzen Text, ab 940px steht sie als eigene Fläche rechts
+   und läuft bis an den Bildschirmrand — wie in Kevins Vorlage.
+   Das Motiv ist sehr hell, deshalb bleibt die Schrift dunkel; ein
+   leichter Weißschleier sorgt für den nötigen Kontrast. */
+.hero-bild {
   position: absolute; inset: 0;
   z-index: -2;
-  background:
-    repeating-linear-gradient(90deg, var(--border) 0 1px, transparent 1px 72px),
-    repeating-linear-gradient( 0deg, var(--border) 0 1px, transparent 1px 72px),
-    linear-gradient(155deg, var(--accent-soft) 0%, var(--bg-soft) 55%, var(--bg) 100%);
+  background: var(--bg-soft);
 }
-.hero-hintergrund img {
+.hero-bild img {
   width: 100%; height: 100%;
   object-fit: cover;
+  object-position: 50% 58%;      /* die Baumspitzen bleiben im Bild */
 }
-
-.hero.hat-bild::after {
+.hero-bild::after {
   content: '';
   position: absolute; inset: 0;
-  z-index: -1;
-  background: var(--hero-schleier);
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.90) 0%,
+    rgba(255, 255, 255, 0.70) 52%,
+    rgba(255, 255, 255, 0.88) 100%);
+}
+
+@media (min-width: 940px) {
+  .hero-bild {
+    left: auto; right: 0;
+    width: 46%;
+  }
+  /* Nur noch eine weiche Kante nach links, damit die Fläche nicht
+     wie ein aufgeklebtes Rechteck wirkt */
+  .hero-bild::after {
+    background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0) 38%);
+  }
 }
 
 .hero-inhalt { position: relative; z-index: 1; }
-.hero-inhalt > * { max-width: 42rem; }
+.hero-inhalt > * { max-width: min(30rem, 44vw); }
+@media (max-width: 939px) {
+  .hero-inhalt > * { max-width: 34rem; }
+}
 
 /* H1 klein als Wortmarke, wie in der Skizze ganz oben */
 .wortmarke {
@@ -419,20 +458,6 @@ body.platzhalter-zeigen .platzhalter {
   margin-bottom: var(--space-3);
 }
 .hero .lead { max-width: 52ch; }
-
-/* Helle Schrift, sobald ein Hintergrundbild da ist */
-.hero.hat-bild,
-.hero.hat-bild .wortmarke { color: var(--hero-text); }
-.hero.hat-bild .lead      { color: var(--hero-text-mid); }
-.hero.hat-bild .btn--ghost {
-  color: var(--hero-text);
-  border-color: rgba(255, 255, 255, 0.45);
-}
-.hero.hat-bild .btn--ghost:hover {
-  background: var(--hero-text);
-  color: var(--text);
-  border-color: var(--hero-text);
-}
 
 
 /* ── 7b. ZWISCHENSTÜCK ─────────────────────────────────── */
@@ -738,11 +763,29 @@ body.platzhalter-zeigen .platzhalter {
 /* ── 8c. BAUSTEINE ─────────────────────────────────────── */
 /* Kacheln unterschiedlicher Größe, wie in der Skizze. */
 
+/* Alle Kacheln gleich groß, dazu eine Lücke als zehntes Feld.
+   Dadurch gilt für jeden Baustein dasselbe: jeder passt auf jeden
+   Platz, und es bleibt immer genau ein Feld frei, in das man rutschen
+   kann. 2 oder 5 Spalten, damit zehn Felder immer volle Reihen ergeben. */
+/* minmax(0, 1fr) statt 1fr: sonst darf eine Spalte nicht schmaler
+   werden als das längste Wort darin, und das Raster wird breiter als
+   der Rahmen. Mit der Silbentrennung unten passt auch "Stellenanzeigen". */
 .bausteine {
   display: grid;
   gap: var(--space-2);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   list-style: none;
+}
+@media (min-width: 1024px) {
+  .bausteine { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+/* Die freie Stelle. Sitzt immer auf dem Feld, das gerade leer ist. */
+.luecke {
+  border: 1.5px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: transparent;
+  pointer-events: none;
 }
 
 .baustein {
@@ -761,8 +804,29 @@ body.platzhalter-zeigen .platzhalter {
   box-shadow: var(--shadow);
   border-color: var(--accent-line);
 }
+.baustein h3,
+.baustein p {
+  overflow-wrap: break-word;
+  hyphens: auto;                 /* lange deutsche Wörter dürfen trennen */
+}
 .baustein h3 { font-size: 0.98rem; }
 .baustein p  { font-size: var(--size-small); color: var(--text-mid); margin-top: 0.2rem; }
+
+/* Auf kleinen Schirmen bleibt sonst kaum Textbreite übrig */
+@media (max-width: 719px) {
+  .baustein { padding: var(--space-2); gap: var(--space-1); }
+  .baustein p { font-size: 0.8rem; }
+}
+
+/* Auf dem Handy nur Symbol und Titel. Bei 129 px Spaltenbreite würde
+   der Beisatz auf acht Zeilen umbrechen und die Steine 250 px hoch
+   machen — als Kachel-Raster ist es so deutlich lesbarer. */
+@media (max-width: 480px) {
+  .baustein p { display: none; }
+  .baustein h3 { font-size: 0.9rem; }
+  .baustein-symbol { width: 34px; height: 34px; }
+  .baustein-symbol svg { width: 17px; height: 17px; }
+}
 
 .baustein-symbol {
   display: inline-flex; align-items: center; justify-content: center;
@@ -772,12 +836,6 @@ body.platzhalter-zeigen .platzhalter {
   color: var(--accent);
 }
 .baustein-symbol svg { width: 19px; height: 19px; }
-
-/* Zwei Kacheln dürfen doppelt so breit sein — nur wenn wirklich
-   mehrere Spalten da sind, sonst würde die Reihe überlaufen. */
-@media (min-width: 720px) {
-  .baustein--breit { grid-column: span 2; }
-}
 
 /* Die Kachel, die erklärt, was hier los ist */
 .baustein--spiel {
@@ -799,10 +857,14 @@ body.platzhalter-zeigen .platzhalter {
    "ist-spielbar" setzt erst main.js, und nur ab 720px Breite. Auf dem
    Handy würde das Ziehen sonst das Scrollen der Seite blockieren. */
 
+/* Der graue Rahmen. Er sitzt jetzt auf einem weißen Abschnitt statt
+   umgekehrt — vorher stieß der weiße Rahmen direkt an den weißen
+   Abschnitt darunter und sah abgeschnitten aus. */
 .spielfeld {
   position: relative;
   padding: var(--space-3);
-  background: var(--bg);
+  margin-bottom: var(--space-5);
+  background: var(--bg-soft);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 }
@@ -813,44 +875,47 @@ body.platzhalter-zeigen .platzhalter {
 @media (min-width: 720px) {
   .spielfeld { padding-right: calc(var(--space-3) + var(--spiel-rand)); }
 }
-
-
-/* ── Karussell auf dem Handy ────────────────────────────── */
-/* Kein selbstgebautes Wischen, sondern das eingebaute Scroll-Rasten
-   des Browsers: links und rechts läuft es flüssig mit Schwung, am Ende
-   federt iOS von selbst zurück, und Wischen nach oben scrollt weiter
-   die Seite. Genau das Gummiband-Gefühl, das du beschrieben hast. */
 @media (max-width: 719px) {
-  .spielfeld { padding: var(--space-2); }
-
-  .bausteine {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: 78%;        /* die nächste Kachel lugt hervor */
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-  }
-  .bausteine::-webkit-scrollbar { display: none; }
-
-  .baustein { scroll-snap-align: center; }
-  .baustein--breit { grid-column: auto; }
+  .spielfeld { padding: var(--space-2); padding-right: calc(var(--space-2) + 28px); }
 }
 
 .spielfeld.ist-spielbar .bausteine {
   display: block;
   position: relative;
 }
-.spielfeld.ist-spielbar .baustein {
+.spielfeld.ist-spielbar .baustein,
+.spielfeld.ist-spielbar .luecke {
   position: absolute;
   margin: 0;
+}
+
+/* Während main.js das Raster ausmisst, dürfen keine Übergänge laufen —
+   sonst liest es Zwischenwerte ab und die Steine bekommen krumme,
+   unterschiedliche Breiten. */
+.spielfeld.misst .baustein,
+.spielfeld.misst .luecke {
+  transition: none !important;
+  animation: none !important;
+}
+.spielfeld.ist-spielbar .baustein {
   cursor: grab;
-  touch-action: none;      /* sonst scrollt beim Ziehen die Seite */
   user-select: none;
   -webkit-user-select: none;
+  /* pan-y statt none: senkrecht wischen scrollt weiterhin ganz normal
+     die Seite. Erst wenn man lange genug draufbleibt, greift main.js
+     ein und macht daraus ein Ziehen. */
+  touch-action: pan-y;
+}
+
+/* Kurz bevor das Ziehen scharf wird, zuckt die Kachel einmal —
+   so merkt man auf dem Handy, dass sie jetzt „klebt". */
+.spielfeld.ist-spielbar .baustein.wird-scharf {
+  animation: kachelZuckt 0.22s var(--ease);
+}
+@keyframes kachelZuckt {
+  0%   { transform: scale(1); }
+  55%  { transform: scale(1.06); }
+  100% { transform: scale(1.03); }
 }
 .spielfeld.ist-spielbar .baustein:hover {
   transform: none;         /* das Anheben stört beim Ziehen */
@@ -898,13 +963,9 @@ body.platzhalter-zeigen .platzhalter {
 }
 .spielfeld-fuss button:hover { color: var(--accent); border-color: var(--accent); }
 
-/* Der Hinweis richtet sich danach, was gerade möglich ist:
-   ziehen auf dem Desktop, wischen auf dem Handy. */
-.spielfeld-fuss .nur-ziehen,
-.spielfeld-fuss button { display: none; }
-.spielfeld.ist-spielbar + .spielfeld-fuss .nur-ziehen { display: inline; }
-.spielfeld.ist-spielbar + .spielfeld-fuss button { display: inline-block; }
-.spielfeld.ist-spielbar + .spielfeld-fuss .nur-wischen { display: none; }
+/* Der Hinweis erscheint erst, wenn das Spielfeld wirklich läuft */
+.spielfeld-fuss { display: none; }
+.spielfeld.ist-spielbar + .spielfeld-fuss { display: flex; }
 
 
 /* ── 9. ZEITLEISTE (Bildungsweg & Erfahrung) ───────────── */
@@ -1144,12 +1205,13 @@ body.platzhalter-zeigen .platzhalter {
 
 @keyframes schwung {
   0%   { transform: translateY(0); }
-  32%  { transform: translateY(12px); }
-  62%  { transform: translateY(-4px); }
-  84%  { transform: translateY(1px); }
+  22%  { transform: translateY(26px); }
+  46%  { transform: translateY(-9px); }
+  68%  { transform: translateY(4px); }
+  86%  { transform: translateY(-1.5px); }
   100% { transform: translateY(0); }
 }
-.schwingt { animation: schwung 0.6s var(--ease); }
+.schwingt { animation: schwung 0.95s cubic-bezier(0.33, 0, 0.15, 1); }
 
 
 /* ── 15. EINBLENDEN BEIM SCROLLEN ──────────────────────── */

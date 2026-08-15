@@ -63,14 +63,18 @@
 
   <!-- ══════════ 1. WILLKOMMEN ══════════ -->
   <section class="hero" id="willkommen">
-    <!-- ══ HINTERGRUNDBILD ══
-         Datei nach bilder/ legen und die nächste Zeile einkommentieren:
-             <img src="bilder/hero.jpg" alt="" />
-         Querformat, mindestens 1600 px breit, ruhiges Motiv — die Schrift
-         liegt links darauf. Sobald ein Bild da ist, schaltet main.js
-         automatisch auf dunklen Schleier mit heller Schrift um.
-         Bis dahin liegt hier ein feines Raster. -->
-    <div class="hero-hintergrund" aria-hidden="true"></div>
+    <!-- ══ BILDFLÄCHE ══
+         Drei Größen derselben Datei: das Handy lädt 19 KB, der Rechner
+         72 KB. Das Original mit 3000 px bleibt als Reserve liegen.
+         Zum Austauschen einfach neue Dateien gleichen Namens ablegen. -->
+    <div class="hero-bild" aria-hidden="true">
+      <img src="bilder/wallpaper_version1_1600.jpg"
+           srcset="bilder/wallpaper_version1_800.jpg   800w,
+                   bilder/wallpaper_version1_1600.jpg 1600w,
+                   bilder/wallpaper_version1.jpg      3000w"
+           sizes="(min-width: 940px) 46vw, 100vw"
+           alt="" fetchpriority="high" decoding="async" />
+    </div>
 
     <div class="container hero-inhalt reveal">
 
@@ -161,7 +165,7 @@
 
 
   <!-- ══════════ 2. WER BIN ICH ══════════ -->
-  <section class="section section--soft" id="ueber">
+  <section class="section" id="ueber">
     <div class="container">
       <div class="split split--media-left">
 
@@ -200,7 +204,7 @@
 
 
   <!-- ══════════ 3. WAS ICH MACHE ══════════ -->
-  <section class="section" id="leistungen">
+  <section class="section section--soft" id="leistungen">
     <div class="container">
 
       <div class="section-head reveal">
@@ -427,7 +431,7 @@
        Bilderrahmen zeigt die Galerie hier, woraus eine Praxis-Website
        zusammengesetzt wird — Inhalt, den es schon gibt. Sobald echte
        Projekte da sind, kann jede Kachel einen Screenshot bekommen. -->
-  <section class="section section--soft" id="bausteine">
+  <section class="section" id="bausteine">
     <div class="container">
 
       <div class="section-head reveal">
@@ -436,6 +440,9 @@
         <p class="lead">
           Jede Praxis braucht etwas anderes. Das hier sind die Bausteine —
           Sie suchen aus, was zu Ihnen passt, den Rest lassen wir weg.
+          Und weil es sich anbietet: schieben Sie die Steine ruhig herum.
+          Genau solche Einfälle meine ich, wenn ich von Kreativität und
+          Programmierung rede.
         </p>
       </div>
 
@@ -445,7 +452,7 @@
       <div class="spielfeld reveal">
       <ul class="bausteine">
 
-        <li class="baustein baustein--spiel baustein--breit">
+        <li class="baustein baustein--spiel">
           <span class="baustein-symbol" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -456,17 +463,12 @@
             </svg>
           </span>
           <div>
-            <h3>Bausteine zum Spielen 🧩</h3>
-            <p>
-              Schieben Sie die Kacheln herum — mit der Maus oder dem Finger.
-              Genau das meine ich, wenn ich von Kreativität und Programmierung
-              rede: kleine Einfälle, die eine Seite lebendig machen. Solche
-              baue ich auch für Sie ein.
-            </p>
+            <h3>Zum Spielen 🧩</h3>
+            <p>Steine verschieben — ein Feld bleibt immer frei.</p>
           </div>
         </li>
 
-        <li class="baustein baustein--breit">
+        <li class="baustein">
           <span class="baustein-symbol" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -474,10 +476,9 @@
             </svg>
           </span>
           <div>
-            <h3>Sprechzeiten auf einen Blick</h3>
+            <h3>Sprechzeiten</h3>
             <p>
-              Die meistgesuchte Information überhaupt. Immer sichtbar, ohne Klick,
-              mit Hinweis auf Urlaub oder abweichende Zeiten an Feiertagen.
+              Die meistgesuchte Angabe überhaupt — immer sichtbar, ohne Klick.
             </p>
           </div>
         </li>
@@ -493,7 +494,7 @@
           </span>
           <div>
             <h3>Team &amp; Ärzte</h3>
-            <p>Ein Gesicht zum Namen schafft Vertrauen schon vor dem ersten Besuch.</p>
+            <p>Ein Gesicht zum Namen schafft Vertrauen.</p>
           </div>
         </li>
 
@@ -506,11 +507,11 @@
           </span>
           <div>
             <h3>Leistungen erklärt</h3>
-            <p>In verständlicher Sprache, nicht in Fachbegriffen aus dem Lehrbuch.</p>
+            <p>In verständlicher Sprache statt in Fachbegriffen.</p>
           </div>
         </li>
 
-        <li class="baustein baustein--breit">
+        <li class="baustein">
           <span class="baustein-symbol" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -519,11 +520,9 @@
             </svg>
           </span>
           <div>
-            <h3>Terminanfrage, die auch nachts funktioniert</h3>
+            <h3>Terminanfrage</h3>
             <p>
-              Viele Patienten schauen abends auf dem Sofa nach einer Praxis. Ein
-              Formular nimmt die Anfrage entgegen, wenn niemand ans Telefon geht —
-              und entlastet gleichzeitig Ihren Empfang.
+              Nimmt Anfragen entgegen, wenn niemand ans Telefon geht.
             </p>
           </div>
         </li>
@@ -538,7 +537,7 @@
           </span>
           <div>
             <h3>Anfahrt &amp; Parken</h3>
-            <p>Karte, Bus und Bahn, und die Frage, wo man das Auto abstellt.</p>
+            <p>Karte, Bus und Bahn — und wo das Auto hin soll.</p>
           </div>
         </li>
 
@@ -551,7 +550,7 @@
           </span>
           <div>
             <h3>Notfall-Hinweis</h3>
-            <p>Auffällig platziert: Was tun außerhalb der Sprechzeiten?</p>
+            <p>Was tun außerhalb der Sprechzeiten?</p>
           </div>
         </li>
 
@@ -565,7 +564,7 @@
           </span>
           <div>
             <h3>Stellenanzeigen</h3>
-            <p>Personal finden ist schwer genug — die Seite hilft dabei mit.</p>
+            <p>Personal finden ist schwer genug.</p>
           </div>
         </li>
 
@@ -579,17 +578,20 @@
             </svg>
           </span>
           <div>
-            <h3>Rundgang durch die Praxis</h3>
-            <p>Wer die Räume vorher sieht, kommt entspannter zum Termin.</p>
+            <h3>Praxis-Rundgang</h3>
+            <p>Wer die Räume vorher sieht, kommt entspannter.</p>
           </div>
         </li>
+
+        <!-- Die freie Stelle. Neun Steine, zehn Felder — dadurch bleibt
+             immer genau eins offen, in das man hineinschieben kann. -->
+        <li class="luecke" aria-hidden="true"></li>
 
       </ul>
       </div>
 
       <div class="spielfeld-fuss">
-        <span class="nur-ziehen">Kacheln festhalten und verschieben — sie rasten von selbst wieder ein.</span>
-        <span class="nur-wischen">Zum Blättern seitwärts wischen →</span>
+        <span>Steine verschieben — am Handy kurz gedrückt halten. Sie rasten von selbst ein.</span>
         <button type="button" data-spielfeld-reset>Wieder aufräumen</button>
       </div>
 
@@ -598,7 +600,7 @@
 
 
   <!-- ══════════ 4. WARUM ICH DAS MACHE ══════════ -->
-  <section class="section" id="warum">
+  <section class="section section--soft" id="warum">
     <div class="container">
 
       <div class="section-head reveal">
@@ -629,7 +631,7 @@
 
 
   <!-- ══════════ 5. BILDUNGSWEG ══════════ -->
-  <section class="section section--soft" id="bildung">
+  <section class="section" id="bildung">
     <div class="container">
       <div class="split">
 
@@ -676,7 +678,7 @@
 
 
   <!-- ══════════ 6. ERFAHRUNG ══════════ -->
-  <section class="section" id="erfahrung">
+  <section class="section section--soft" id="erfahrung">
     <div class="container">
       <div class="split split--media-left">
 
@@ -726,7 +728,7 @@
 
 
   <!-- ══════════ 7. REFERENZ ══════════ -->
-  <section class="section section--soft" id="referenz">
+  <section class="section" id="referenz">
     <div class="container">
 
       <div class="section-head reveal">
@@ -799,7 +801,7 @@
 
 
   <!-- ══════════ 8. HÄUFIGE FRAGEN ══════════ -->
-  <section class="section" id="faq">
+  <section class="section section--soft" id="faq">
     <div class="container">
 
       <div class="section-head reveal">

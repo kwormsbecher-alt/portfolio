@@ -147,13 +147,22 @@ function nachObenAufsetzen() {
         return;
       }
 
-      const dauer = Math.min(900, 320 + start * 0.22);
+      /* Ruhig und gleichmäßig hoch — nicht hetzen. Sanft anfahren,
+         die lange Mitte fast gleichbleibend schnell, sanft ankommen.
+         Der Abprall passiert danach in schwingen(). */
+      const dauer = Math.min(2200, 900 + start * 0.30);
       const t0 = performance.now();
+
+      function ruhigeFahrt(x) {
+        /* weiches Anfahren und Ankommen, dazwischen gleichmäßig */
+        return x < 0.5
+          ? 2 * x * x
+          : 1 - Math.pow(-2 * x + 2, 2) / 2;
+      }
 
       (function schritt(jetzt) {
         const anteil = Math.min(1, (jetzt - t0) / dauer);
-        const weich = 1 - Math.pow(1 - anteil, 3);
-        window.scrollTo(0, Math.round(start * (1 - weich)));
+        window.scrollTo(0, Math.round(start * (1 - ruhigeFahrt(anteil))));
         if (anteil < 1) window.requestAnimationFrame(schritt);
         else schwingen();
       })(performance.now());
@@ -343,10 +352,19 @@ function spielfeldAufsetzen() {
 
   const liste  = feld.querySelector('.bausteine');
   const karten = Array.prototype.slice.call(feld.querySelectorAll('.baustein'));
+  const luecke = feld.querySelector('.luecke');
   if (!liste || !karten.length) return;
 
-  const grossGenug = window.matchMedia('(min-width: 720px)');
+  /* Alle Felder des Rasters — die Steine plus das eine freie. */
+  const felder = karten.concat(luecke ? [luecke] : []);
+
   let obenauf = 10;
+
+  /* Wie lange man auf dem Handy draufbleiben muss, damit aus dem
+     Berühren ein Ziehen wird. Darunter bleibt es ein Wischen und die
+     Seite scrollt ganz normal weiter. */
+  const HALTEDAUER = 420;
+  const WACKELWEG  = 12;
 
   /* Die Plätze aus dem ursprünglichen Raster und wer gerade wo liegt */
   let plaetze = [];
@@ -355,40 +373,66 @@ function spielfeldAufsetzen() {
   function zurueckInsRaster() {
     feld.classList.remove('ist-spielbar');
     liste.style.height = '';
-    karten.forEach(function (k) {
+    felder.forEach(function (k) {
       k.style.left = ''; k.style.top = '';
       k.style.width = ''; k.style.height = ''; k.style.zIndex = '';
     });
   }
 
-  function setzen(karte, platzIndex, mitGleiten) {
+  function setzen(element, platzIndex, mitGleiten) {
     const p = plaetze[platzIndex];
     if (!p) return;
     if (mitGleiten) {
-      karte.classList.add('rastet-ein');
-      window.setTimeout(function () { karte.classList.remove('rastet-ein'); }, 420);
+      element.classList.add('rastet-ein');
+      window.setTimeout(function () { element.classList.remove('rastet-ein'); }, 420);
     }
-    karte.style.width  = p.breite + 'px';
-    karte.style.height = p.hoehe  + 'px';
-    karte.style.left   = p.x + 'px';
-    karte.style.top    = p.y + 'px';
+    element.style.width  = p.breite + 'px';
+    element.style.height = p.hoehe  + 'px';
+    element.style.left   = p.x + 'px';
+    element.style.top    = p.y + 'px';
   }
 
-  function anordnen() {
+  /* Die gestrichelte Markierung wandert auf das Feld, das gerade
+     niemand belegt — so sieht man immer, wohin man schieben kann. */
+  function lueckeNachziehen(mitGleiten) {
+    if (!luecke) return;
+    const belegt = new Set();
+    platzVon.forEach(function (index) { belegt.add(index); });
+    for (let i = 0; i < plaetze.length; i++) {
+      if (!belegt.has(i)) { setzen(luecke, i, mitGleiten); return; }
+    }
+  }
+
+  function anordnen(zweiterVersuch) {
+    /* Übergänge stilllegen, sonst werden Zwischenwerte abgelesen */
+    feld.classList.add('misst');
+    felder.forEach(function (k) { k.classList.remove('rastet-ein'); });
+
     zurueckInsRaster();
     plaetze = [];
     platzVon.clear();
-    if (!grossGenug.matches) return;
 
     /* Maße aus dem normalen Raster ablesen. Die Höhe kommt mit, weil
        Rasterzellen sich auf Zeilenhöhe strecken — ohne sie würden die
        Kacheln beim Festnageln zusammenschnurren. */
     const rahmen = liste.getBoundingClientRect();
-    plaetze = karten.map(function (k) {
+    plaetze = felder.map(function (k) {
       const r = k.getBoundingClientRect();
       return { x: r.left - rahmen.left, y: r.top - rahmen.top, breite: r.width, hoehe: r.height };
     });
     const gesamthoehe = liste.offsetHeight;
+
+    /* Notbremse: Passt irgendein Feld rechnerisch nicht in den Rahmen,
+       wurde mitten in einer Größenänderung gemessen. Dann einmal auf
+       das nächste Bild warten und neu rechnen. */
+    const passtNicht = plaetze.some(function (p) {
+      return p.x + p.breite > rahmen.width + 2;
+    });
+    if (passtNicht && !zweiterVersuch) {
+      feld.classList.remove('misst');
+      window.requestAnimationFrame(function () { anordnen(true); });
+      return;
+    }
 
     liste.style.height = gesamthoehe + 'px';
     feld.classList.add('ist-spielbar');
@@ -396,12 +440,16 @@ function spielfeldAufsetzen() {
       platzVon.set(k, i);
       setzen(k, i, false);
     });
+    lueckeNachziehen(false);
+
+    /* Erst im nächsten Bild wieder freigeben, damit das Setzen oben
+       nicht doch noch animiert wird. */
+    window.requestAnimationFrame(function () { feld.classList.remove('misst'); });
   }
 
-  /* Nächstgelegener Platz — aber nur gleich breite kommen infrage,
-     sonst würde eine doppelt breite Kachel in eine schmale Lücke
-     rutschen und alles überlappen. */
-  function naechsterPlatz(karte) {
+  /* Nächstgelegenes Feld. Alle Steine sind gleich groß, also passt
+     jeder auf jedes Feld — es gelten für alle dieselben Regeln. */
+  function naechstesFeld(karte) {
     const eigener = plaetze[platzVon.get(karte)];
     if (!eigener) return null;
 
@@ -411,7 +459,6 @@ function spielfeldAufsetzen() {
     let besterIndex = platzVon.get(karte);
     let kuerzeste = Infinity;
     plaetze.forEach(function (p, i) {
-      if (Math.abs(p.breite - eigener.breite) > 2) return;
       const dx = (p.x + p.breite / 2) - mx;
       const dy = (p.y + p.hoehe  / 2) - my;
       const abstand = dx * dx + dy * dy;
@@ -422,10 +469,12 @@ function spielfeldAufsetzen() {
 
   function einrasten(karte) {
     const von = platzVon.get(karte);
-    const nach = naechsterPlatz(karte);
+    const nach = naechstesFeld(karte);
     if (nach === null || nach === von) { setzen(karte, von, true); return; }
 
-    /* Wer dort liegt, rückt auf den frei gewordenen Platz */
+    /* Liegt dort ein Stein, tauschen die beiden. Ist das Feld die
+       Lücke, rutscht der Stein einfach hinein und die Lücke wandert
+       auf den frei gewordenen Platz. */
     let andere = null;
     platzVon.forEach(function (index, k) { if (index === nach) andere = k; });
 
@@ -436,10 +485,31 @@ function spielfeldAufsetzen() {
       platzVon.set(andere, von);
       setzen(andere, von, true);
     }
+    lueckeNachziehen(true);
   }
 
   function ziehenAufsetzen(karte) {
-    let greifX = 0, greifY = 0, aktiv = false;
+    let greifX = 0, greifY = 0;
+    let startX = 0, startY = 0;
+    let aktiv = false;
+    let halteUhr = null;
+
+    function uhrStoppen() {
+      if (halteUhr) { window.clearTimeout(halteUhr); halteUhr = null; }
+      karte.classList.remove('wird-scharf');
+    }
+
+    function anheben(zeigerId) {
+      uhrStoppen();
+      aktiv = true;
+      obenauf += 1;
+      karte.style.zIndex = String(obenauf);
+      karte.classList.add('wird-gezogen');
+      /* Ohne Einfangen würde die Karte am Zeiger kleben bleiben,
+         sobald man ihn zu schnell aus der Kachel herauszieht.
+         Verweigert der Browser es, ziehen wir trotzdem weiter. */
+      try { karte.setPointerCapture(zeigerId); } catch (fehler) { /* egal */ }
+    }
 
     karte.addEventListener('pointerdown', function (e) {
       if (!feld.classList.contains('ist-spielbar')) return;
@@ -448,20 +518,41 @@ function spielfeldAufsetzen() {
       const r = karte.getBoundingClientRect();      /* vor dem Anheben messen */
       greifX = e.clientX - r.left;
       greifY = e.clientY - r.top;
-      aktiv = true;
+      startX = e.clientX;
+      startY = e.clientY;
 
-      obenauf += 1;
-      karte.style.zIndex = String(obenauf);
-      karte.classList.add('wird-gezogen');
-      /* Ohne Einfangen würde die Karte am Zeiger kleben bleiben,
-         sobald man ihn zu schnell aus der Kachel herauszieht.
-         Verweigert der Browser es, ziehen wir trotzdem weiter. */
-      try { karte.setPointerCapture(e.pointerId); } catch (fehler) { /* egal */ }
-      e.preventDefault();
+      if (e.pointerType === 'touch') {
+        /* Mit dem Finger erst nach kurzem Halten. Wischt jemand nur
+           schnell durch, bleibt es beim normalen Scrollen. */
+        karte.classList.add('wird-scharf');
+        halteUhr = window.setTimeout(function () {
+          anheben(e.pointerId);
+          if (navigator.vibrate) navigator.vibrate(10);
+        }, HALTEDAUER);
+      } else {
+        anheben(e.pointerId);
+        e.preventDefault();
+      }
     });
 
+    /* Solange gezogen wird, darf der Browser nicht mitscrollen.
+       Muss passive:false sein, sonst wird preventDefault ignoriert. */
+    karte.addEventListener('touchmove', function (e) {
+      if (aktiv) e.preventDefault();
+    }, { passive: false });
+
     karte.addEventListener('pointermove', function (e) {
-      if (!aktiv) return;
+      if (!aktiv) {
+        /* Noch in der Wartezeit: Bewegt sich der Finger, war es ein
+           Wischen — dann Ziehen abblasen und weiterscrollen lassen. */
+        if (halteUhr &&
+            (Math.abs(e.clientX - startX) > WACKELWEG ||
+             Math.abs(e.clientY - startY) > WACKELWEG)) {
+          uhrStoppen();
+        }
+        return;
+      }
+
       const rahmen = liste.getBoundingClientRect();
       let x = e.clientX - rahmen.left - greifX;
       let y = e.clientY - rahmen.top  - greifY;
@@ -475,6 +566,7 @@ function spielfeldAufsetzen() {
     });
 
     function loslassen(e) {
+      uhrStoppen();
       if (!aktiv) return;
       aktiv = false;
       karte.classList.remove('wird-gezogen');
@@ -492,11 +584,28 @@ function spielfeldAufsetzen() {
   const aufraeumKnopf = document.querySelector('[data-spielfeld-reset]');
   if (aufraeumKnopf) aufraeumKnopf.addEventListener('click', anordnen);
 
+  /* Neu ausrichten, sobald der Rahmen seine Breite ändert — beim
+     Drehen des Geräts, beim Ziehen am Fenster, beim Wechsel der
+     Spaltenzahl. Nur die Breite zählt: die Höhe setzen wir selbst,
+     die dürfte sich sonst gegenseitig hochschaukeln. */
   let wartend;
-  window.addEventListener('resize', function () {
+  let letzteBreite = 0;
+
+  function neuRechnenSpaeter() {
     window.clearTimeout(wartend);
-    wartend = window.setTimeout(anordnen, 200);
-  });
+    wartend = window.setTimeout(anordnen, 180);
+  }
+
+  if (typeof ResizeObserver === 'function') {
+    letzteBreite = Math.round(feld.getBoundingClientRect().width);
+    new ResizeObserver(function (eintraege) {
+      const breite = Math.round(eintraege[0].contentRect.width);
+      if (Math.abs(breite - letzteBreite) < 2) return;
+      letzteBreite = breite;
+      neuRechnenSpaeter();
+    }).observe(feld);
+  }
+  window.addEventListener('resize', neuRechnenSpaeter);
 
   /* Erst rechnen, wenn Schriften geladen sind — sonst stimmen die
      abgelesenen Höhen nicht und die Kacheln überlappen. */
@@ -514,14 +623,6 @@ function bildflaechenPruefen() {
     const bild = slot.querySelector('img[src]');
     if (bild && bild.getAttribute('src')) slot.classList.add('has-image');
   });
-
-  /* Landing-Bereich: Erst wenn wirklich ein Hintergrundbild liegt,
-     kommt der dunkle Schleier und die helle Schrift. Ohne Bild bliebe
-     sonst weiße Schrift auf hellem Platzhalter — unlesbar. */
-  const hero = document.querySelector('.hero');
-  if (hero && hero.querySelector('.hero-hintergrund img[src]')) {
-    hero.classList.add('hat-bild');
-  }
 }
 
 
