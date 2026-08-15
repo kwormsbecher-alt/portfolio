@@ -45,11 +45,18 @@ schreiben, immer nur `var(--accent)`. Sonst bricht genau dieser Mechanismus.
 
 ## Lokal anschauen
 
-`index.html` doppelklicken reicht. Für die richtige Vorschau auf Handy und
-Tablet im selben WLAN:
+`index.html` doppelklicken reicht zum schnellen Draufschauen.
+
+Für die richtige Vorschau — und um sie auf iPad und iPhone im selben WLAN zu
+öffnen — liegt ein Mini-Server eine Ebene höher (`WEBSITE/Claude/dev-server.js`,
+absichtlich außerhalb dieses Ordners, damit das Repo sauber bleibt):
 
 ```bash
-python -m http.server 8080
+node ../dev-server.js
 ```
 
-Dann am PC `http://localhost:8080` öffnen, am Handy die IP-Adresse des PCs.
+- Am PC: `http://localhost:8080`
+- Am iPad/iPhone: `http://192.168.2.33:8080` (WLAN-IP des PCs)
+
+Beim ersten Start fragt die Windows-Firewall nach — für **private Netzwerke**
+erlauben, sonst kommt das iPad nicht durch.
