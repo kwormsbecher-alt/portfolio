@@ -9,30 +9,43 @@
 :root {
 
   /* ── FARBEN ────────────────────────────────────────────── */
-  /* Grundton: heller, ruhiger Sand-/Papierton (skandinavisch) */
-  --bg:            #FBFAF8;   /* Seitenhintergrund             */
-  --bg-soft:       #F3F1EC;   /* Abschnitte zum Absetzen       */
+  /* Aus Kevins drei Vorlagen, gewichtet:
+     Bild 1 (Sweater Weather) gibt die Richtung vor — konsequent
+     schwarz-weiß, viel Weißraum, ein tiefdunkler Block als Signatur.
+     Bild 3 (&Tradition) steuert das neutrale Hellgrau und die
+     Haarlinien bei. Bild 2 (Scandi) bleibt als leiser Zweitton:
+     ein gedecktes Salbeigrün, nur für kleine Akzente. */
+
+  --bg:            #FFFFFF;   /* Seitenhintergrund             */
+  --bg-soft:       #F1F1EF;   /* Abschnitte zum Absetzen       */
   --surface:       #FFFFFF;   /* Karten, Kästen                */
 
-  --text:          #1B1B19;   /* Überschriften, Fließtext      */
-  --text-mid:      #5A5854;   /* Nebentext                     */
-  --text-soft:     #96938D;   /* Bildunterschriften, Labels    */
+  --text:          #17181A;   /* Überschriften, Fließtext      */
+  --text-mid:      #55565A;   /* Nebentext                     */
+  --text-soft:     #67696F;   /* Bildunterschriften, Labels.
+                                 Nicht heller machen — auf dem grauen
+                                 Abschnitt fällt der Kontrast sonst unter
+                                 die Lesbarkeitsgrenze von 4,5:1. */
 
-  --accent:        #3F5D50;   /* Hauptakzent (gedecktes Grün)  */
-  --accent-dark:   #2E453B;   /* Hover-Zustand                 */
-  --accent-soft:   #E7EDE9;   /* Akzent-Flächen, Badges        */
-  --accent-line:   #C6D3CB;   /* Akzent-Linien                 */
+  --accent:        #1F2023;   /* Hauptakzent: fast Schwarz     */
+  --accent-dark:   #000000;   /* Hover-Zustand                 */
+  --accent-soft:   #EFEFEC;   /* Akzent-Flächen, Badges        */
+  --accent-line:   #D6D7D3;   /* Akzent-Linien                 */
 
-  --border:        rgba(27, 27, 25, 0.10);
-  --border-strong: rgba(27, 27, 25, 0.18);
+  /* Zweitton — sparsam einsetzen: Rubriken, kleine Details */
+  --ton:           #5F7469;
+  --ton-soft:      #E8EDE9;
+
+  --border:        rgba(23, 24, 26, 0.11);
+  --border-strong: rgba(23, 24, 26, 0.20);
 
   /* Landing-Bereich mit Hintergrundbild.
      Der Schleier legt sich über das Foto, damit die Schrift lesbar bleibt.
      Links dunkler, rechts heller — so bleibt vom Bild noch etwas übrig. */
   --hero-schleier:  linear-gradient(100deg,
-                      rgba(20, 22, 21, 0.82) 0%,
-                      rgba(20, 22, 21, 0.62) 45%,
-                      rgba(20, 22, 21, 0.28) 100%);
+                      rgba(23, 24, 26, 0.84) 0%,
+                      rgba(23, 24, 26, 0.64) 45%,
+                      rgba(23, 24, 26, 0.26) 100%);
   --hero-text:      #FFFFFF;
   --hero-text-mid:  rgba(255, 255, 255, 0.84);
   --hero-hoehe:     min(90vh, 820px);

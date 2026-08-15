@@ -7,7 +7,7 @@
   <!-- ══ PLATZHALTER: Name, Titel und Beschreibung vor dem Launch ersetzen ══ -->
   <title>[DEIN NAME] — Websites für Arztpraxen</title>
   <meta name="description" content="Ich baue Websites für Arztpraxen und lokale Betriebe — persönlich betreut, schnell, bei Google auffindbar. Jetzt unverbindlich anfragen." />
-  <meta name="theme-color" content="#3F5D50" />
+  <meta name="theme-color" content="#1F2023" />
 
   <!-- ══ BAUSTELLEN-SPERRE ══
        Hält Google von der halbfertigen Seite fern. Die Seite bleibt
@@ -39,7 +39,9 @@
     </a>
 
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="hauptmenue">
-      <span></span>
+      <span class="nav-toggle-striche" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
       <span class="sr-only">Menü öffnen</span>
     </button>
 
@@ -61,17 +63,14 @@
 
   <!-- ══════════ 1. WILLKOMMEN ══════════ -->
   <section class="hero" id="willkommen">
-    <!-- Hintergrundbild. Sobald hier ein echtes <img> liegt, schaltet
-         main.js den Bereich automatisch auf dunklen Schleier mit heller
-         Schrift um — bis dahin bleibt der helle Platzhalter stehen. -->
-    <div class="hero-hintergrund image-slot" aria-hidden="true">
-      <!-- <img src="bilder/hero.jpg" alt="" /> -->
-      <div class="image-slot-note">
-        <strong>Hintergrundbild</strong>
-        <small>Querformat, mindestens 1600 px breit · nach <code>bilder/</code> legen</small>
-        <small>Ruhiges Motiv — die Schrift liegt links darauf.</small>
-      </div>
-    </div>
+    <!-- ══ HINTERGRUNDBILD ══
+         Datei nach bilder/ legen und die nächste Zeile einkommentieren:
+             <img src="bilder/hero.jpg" alt="" />
+         Querformat, mindestens 1600 px breit, ruhiges Motiv — die Schrift
+         liegt links darauf. Sobald ein Bild da ist, schaltet main.js
+         automatisch auf dunklen Schleier mit heller Schrift um.
+         Bis dahin liegt hier ein feines Raster. -->
+    <div class="hero-hintergrund" aria-hidden="true"></div>
 
     <div class="container hero-inhalt reveal">
 
@@ -82,8 +81,8 @@
       <p class="lead">
         Ich baue Websites für Arztpraxen und lokale Betriebe in
         <span class="platzhalter">Pforzheim und Umgebung</span> —
-        von Hand gebaut, schnell geladen, bei Google auffindbar.
-        Kein Baukasten, keine Vorlage von der Stange.
+        von Hand gebaut, auf Ihre Praxis zugeschnitten, schnell geladen
+        und bei Google auffindbar.
       </p>
 
       <div class="btn-row">
@@ -435,7 +434,32 @@
         </p>
       </div>
 
-      <ul class="bausteine reveal">
+      <!-- Der graue Rahmen ist ein Spielfeld: main.js macht die Kacheln
+           ab 720px Breite mit Maus und Finger verschiebbar. Ohne
+           JavaScript bleibt es ein ganz normales Raster. -->
+      <div class="spielfeld reveal">
+      <ul class="bausteine">
+
+        <li class="baustein baustein--spiel baustein--breit">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.5" />
+              <rect x="13" y="3.5" width="7.5" height="7.5" rx="1.5" />
+              <rect x="3.5" y="13" width="7.5" height="7.5" rx="1.5" />
+              <path d="M17 13.8v6M14 16.8h6" />
+            </svg>
+          </span>
+          <div>
+            <h3>Bausteine zum Spielen 🧩</h3>
+            <p>
+              Schieben Sie die Kacheln herum — mit der Maus oder dem Finger.
+              Genau das meine ich, wenn ich von Kreativität und Programmierung
+              rede: kleine Einfälle, die eine Seite lebendig machen. Solche
+              baue ich auch für Sie ein.
+            </p>
+          </div>
+        </li>
 
         <li class="baustein baustein--breit">
           <span class="baustein-symbol" aria-hidden="true">
@@ -464,7 +488,7 @@
           </span>
           <div>
             <h3>Team &amp; Ärzte</h3>
-            <p>Gesichter statt Textwüste — das schafft Vertrauen vor dem ersten Besuch.</p>
+            <p>Ein Gesicht zum Namen schafft Vertrauen schon vor dem ersten Besuch.</p>
           </div>
         </li>
 
@@ -556,6 +580,13 @@
         </li>
 
       </ul>
+      </div>
+
+      <div class="spielfeld-fuss">
+        <span>Die Kacheln lassen sich im Rahmen frei verschieben.</span>
+        <button type="button" data-spielfeld-reset>Wieder aufräumen</button>
+      </div>
+
     </div>
   </section>
 
@@ -566,23 +597,23 @@
 
       <div class="section-head reveal">
         <span class="label">Warum ich das mache</span>
-        <h2>Weil gute Arbeit im Internet oft schlecht aussieht.</h2>
+        <h2>Weil gute Arbeit es verdient, auch gut auszusehen. 🙂</h2>
       </div>
 
       <div class="container-text reveal" style="padding-inline: 0;">
         <p class="lead">
           <span class="platzhalter">
-            Hier kommt deine Haltung hin — der Abschnitt, der dich von jedem
-            Baukasten-Anbieter unterscheidet.
+            Hier kommt deine Haltung hin — in deinen eigenen Worten, ohne
+            Werbesprache.
           </span>
         </p>
         <p style="margin-top: var(--space-3); color: var(--text-mid);">
           <span class="platzhalter">
-            Zum Beispiel: Warum es dich stört, wenn eine hervorragende Praxis
-            eine Website von 2011 hat. Warum du findest, dass auch ein kleiner
-            Betrieb ordentliche Technik verdient. Was dich beim Bauen antreibt.
-            Ehrlich und in deinen eigenen Worten — das überzeugt mehr als jeder
-            Werbetext.
+            Zum Beispiel: was dich an sauber gebauter Technik begeistert.
+            Warum eine Praxis mit vier Mitarbeitern dieselbe Sorgfalt verdient
+            wie ein großes Unternehmen. Was du empfindest, wenn eine Seite nach
+            dem Launch einfach läuft und der Kunde sich nicht mehr melden muss.
+            Ehrlich erzählt überzeugt das mehr als jeder Werbetext.
           </span>
         </p>
       </div>
@@ -699,14 +730,31 @@
 
       <div class="split">
 
-        <div class="reveal">
-          <div class="image-slot ratio-wide">
-            <div class="image-slot-note">
-              <strong>Screenshot der Praxis-Website</strong>
-              <small>Startseite, Desktop-Ansicht</small>
-              <small>Erzeuge ich aus deiner index-v4.html</small>
+        <div class="mockup reveal">
+
+          <div class="browser-rahmen">
+            <div class="browser-leiste" aria-hidden="true">
+              <span class="browser-punkte"><span></span><span></span><span></span></span>
+              <span class="browser-adresse platzhalter">zahnarztpraxis-pforzheim.de</span>
+            </div>
+            <div class="image-slot ratio-wide">
+              <!-- Screenshot Startseite: <img src="bilder/referenz-desktop.png" alt="Startseite der Praxis-Website" /> -->
+              <div class="image-slot-note">
+                <strong>Startseite</strong>
+                <small>Desktop-Ansicht</small>
+              </div>
             </div>
           </div>
+
+          <div class="handy-rahmen" aria-hidden="true">
+            <div class="image-slot ratio-phone">
+              <!-- Screenshot Handy: <img src="bilder/referenz-handy.png" alt="" /> -->
+              <div class="image-slot-note">
+                <small>Handy</small>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div class="reveal">

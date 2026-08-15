@@ -88,7 +88,7 @@ p + p { margin-top: var(--space-2); }
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--ton);
   margin-bottom: var(--space-2);
 }
 .label::before {
@@ -167,15 +167,13 @@ p + p { margin-top: var(--space-2); }
 .ratio-square   { aspect-ratio: 1 / 1; }
 .ratio-wide     { aspect-ratio: 16 / 10; }
 
-/* Markiert Text, der noch ersetzt werden muss.
-   Zum Ausschalten: im <body> die Klasse "platzhalter-aus" setzen. */
-.platzhalter {
+/* Die Klasse "platzhalter" markiert Text, der noch ersetzt werden muss.
+   Sie ist absichtlich UNSICHTBAR — sie bleibt nur als Haken im HTML,
+   damit wir die Stellen wiederfinden. Zum Sichtbarmachen beim Aufräumen
+   im <body> die Klasse "platzhalter-zeigen" ergänzen. */
+body.platzhalter-zeigen .platzhalter {
   background: linear-gradient(transparent 60%, var(--accent-soft) 60%);
   border-bottom: 1px dashed var(--accent-line);
-}
-body.platzhalter-aus .platzhalter {
-  background: none;
-  border-bottom: 0;
 }
 
 
@@ -271,7 +269,7 @@ body.platzhalter-aus .platzhalter {
   font-weight: var(--weight-normal);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--ton);
   margin-top: 0.15rem;
 }
 
@@ -288,9 +286,18 @@ body.platzhalter-aus .platzhalter {
 .nav-links a:hover { color: var(--text); background: var(--accent-soft); }
 .nav-links a.is-active { color: var(--accent); font-weight: var(--weight-medium); }
 .nav-links .btn { margin-left: var(--space-2); padding: 0.6rem 1.2rem; min-height: 42px; }
+/* Muss sein: .nav-links a setzt eine dunkle Schriftfarbe und ist
+   spezifischer als .btn--primary — ohne diese Zeile stünde dunkelgrüne
+   Schrift auf dunkelgrünem Knopf. */
+.nav-links .btn--primary { color: var(--surface); }
 .nav-links .btn:hover { background: var(--accent-dark); color: var(--surface); }
 
-/* Hamburger — nur auf schmalen Schirmen sichtbar */
+/* Menü-Symbol — nur auf schmalen Schirmen sichtbar.
+   Drei Striche: lang, kurz, lang. Der kurze in der Mitte ist in der
+   Akzentfarbe und wächst beim Draufzeigen auf volle Länge. Beim Öffnen
+   verschwindet er und die beiden langen legen sich zum X.
+   Wichtig: nur .nav-toggle-striche span ansprechen, sonst erwischt die
+   Regel auch den unsichtbaren Screenreader-Text daneben. */
 .nav-toggle {
   display: none;
   margin-left: auto;
@@ -298,25 +305,30 @@ body.platzhalter-aus .platzhalter {
   align-items: center; justify-content: center;
   border-radius: var(--radius-sm);
 }
-.nav-toggle span {
-  display: block; position: relative;
-  width: 22px; height: 2px; border-radius: 2px;
-  background: var(--text);
-  transition: background var(--duration) var(--ease);
-}
-.nav-toggle span::before,
-.nav-toggle span::after {
-  content: ''; position: absolute; left: 0;
-  width: 22px; height: 2px; border-radius: 2px;
-  background: var(--text);
-  transition: transform var(--duration) var(--ease), top var(--duration) var(--ease);
-}
-.nav-toggle span::before { top: -7px; }
-.nav-toggle span::after  { top:  7px; }
 
-.nav.is-open .nav-toggle span { background: transparent; }
-.nav.is-open .nav-toggle span::before { top: 0; transform: rotate(45deg); }
-.nav.is-open .nav-toggle span::after  { top: 0; transform: rotate(-45deg); }
+.nav-toggle-striche {
+  position: relative;
+  display: block;
+  width: 24px; height: 16px;
+}
+.nav-toggle-striche span {
+  position: absolute; left: 0;
+  height: 2px; border-radius: 2px;
+  background: var(--text);
+  transition: width var(--duration) var(--ease),
+              top var(--duration) var(--ease),
+              opacity var(--duration) var(--ease),
+              transform var(--duration) var(--ease);
+}
+.nav-toggle-striche span:nth-child(1) { top:  0;   width: 24px; }
+.nav-toggle-striche span:nth-child(2) { top:  7px; width: 13px; background: var(--ton); }
+.nav-toggle-striche span:nth-child(3) { top: 14px; width: 24px; }
+
+.nav-toggle:hover .nav-toggle-striche span:nth-child(2) { width: 24px; }
+
+.nav.is-open .nav-toggle-striche span:nth-child(1) { top: 7px; transform: rotate(45deg); }
+.nav.is-open .nav-toggle-striche span:nth-child(2) { width: 0; opacity: 0; }
+.nav.is-open .nav-toggle-striche span:nth-child(3) { top: 7px; transform: rotate(-45deg); }
 
 /* Umschaltpunkt aufs Hamburger-Menü. Mit sieben Punkten plus Knopf
    wird die Leiste darunter zu eng und Logo und Menü stoßen zusammen.
@@ -366,12 +378,21 @@ body.platzhalter-aus .platzhalter {
   overflow: hidden;
 }
 
+/* Solange kein Foto da ist, liegt hier ein feines Raster statt eines
+   gestrichelten Kastens mit Hinweistext — der lag sonst mitten in der
+   Überschrift. Der Hinweis steht jetzt als Kommentar im HTML. */
 .hero-hintergrund {
   position: absolute; inset: 0;
   z-index: -2;
-  border-radius: 0;
+  background:
+    repeating-linear-gradient(90deg, var(--border) 0 1px, transparent 1px 72px),
+    repeating-linear-gradient( 0deg, var(--border) 0 1px, transparent 1px 72px),
+    linear-gradient(155deg, var(--accent-soft) 0%, var(--bg-soft) 55%, var(--bg) 100%);
 }
-.hero-hintergrund .image-slot-note { border-radius: 0; border-width: 0 0 1.5px 0; }
+.hero-hintergrund img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
 
 .hero.hat-bild::after {
   content: '';
@@ -691,6 +712,83 @@ body.platzhalter-aus .platzhalter {
   .baustein--breit { grid-column: span 2; }
 }
 
+/* Die Kachel, die erklärt, was hier los ist */
+.baustein--spiel {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--hero-text);
+}
+.baustein--spiel h3 { color: var(--hero-text); }
+.baustein--spiel p  { color: var(--hero-text-mid); }
+.baustein--spiel .baustein-symbol {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--hero-text);
+}
+
+
+/* ── 8d. SPIELFELD ─────────────────────────────────────── */
+/* Der graue Rahmen, in dem sich die Kacheln herumschieben lassen.
+   Ohne JavaScript bleibt alles ein ganz normales Raster — die Klasse
+   "ist-spielbar" setzt erst main.js, und nur ab 720px Breite. Auf dem
+   Handy würde das Ziehen sonst das Scrollen der Seite blockieren. */
+
+.spielfeld {
+  position: relative;
+  padding: var(--space-3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.spielfeld.ist-spielbar .bausteine {
+  display: block;
+  position: relative;
+}
+.spielfeld.ist-spielbar .baustein {
+  position: absolute;
+  margin: 0;
+  cursor: grab;
+  touch-action: none;      /* sonst scrollt beim Ziehen die Seite */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.spielfeld.ist-spielbar .baustein:hover {
+  transform: none;         /* das Anheben stört beim Ziehen */
+}
+/* Muss nach der Hover-Regel stehen und gleich spezifisch sein,
+   sonst gewinnt beim Ziehen "transform: none" und die Karte
+   hebt sich nicht sichtbar an. */
+.spielfeld.ist-spielbar .baustein.wird-gezogen {
+  cursor: grabbing;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent);
+  transform: scale(1.03) rotate(-0.7deg);
+}
+
+.spielfeld-fuss {
+  display: flex; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-size: var(--size-small);
+  color: var(--text-soft);
+}
+.spielfeld-fuss button {
+  padding: 0.45rem 1rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  transition: color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+.spielfeld-fuss button:hover { color: var(--accent); border-color: var(--accent); }
+
+/* Der Hinweis ergibt nur Sinn, wenn man wirklich ziehen kann */
+.spielfeld-fuss { display: none; }
+.spielfeld.ist-spielbar + .spielfeld-fuss { display: flex; }
+
 
 /* ── 9. ZEITLEISTE (Bildungsweg & Erfahrung) ───────────── */
 
@@ -738,6 +836,69 @@ body.platzhalter-aus .platzhalter {
   background: var(--accent-soft);
   border-radius: var(--radius-pill);
   margin-bottom: var(--space-2);
+}
+
+/* Geräte-Rahmen: ein Browserfenster mit Adressleiste, davor ein Handy.
+   Rein aus CSS gezeichnet — dadurch wirkt die Fläche auch dann
+   gestaltet, wenn noch gar kein Screenshot drin liegt. */
+
+.mockup { position: relative; padding-bottom: var(--space-5); }
+
+.browser-rahmen {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.browser-leiste {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: 0.55rem 0.8rem;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+}
+.browser-punkte { display: flex; gap: 6px; flex-shrink: 0; }
+.browser-punkte span {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+.browser-adresse {
+  flex: 1; min-width: 0;
+  padding: 0.22rem 0.75rem;
+  font-size: var(--size-label);
+  color: var(--text-soft);
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.browser-rahmen .image-slot { border-radius: 0; }
+
+.handy-rahmen {
+  position: absolute;
+  left: 6%; bottom: 0;
+  width: 23%; max-width: 126px;
+  padding: 7px;
+  background: var(--text);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+}
+.handy-rahmen .image-slot { border-radius: 13px; }
+.handy-rahmen::before {          /* der Lautsprecher-Schlitz oben */
+  content: '';
+  position: absolute; top: 13px; left: 50%;
+  transform: translateX(-50%);
+  width: 26%; height: 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.35);
+  z-index: 2;
+}
+.ratio-phone { aspect-ratio: 9 / 19; }
+
+/* Auf schmalen Schirmen wird das Handy zu klein zum Erkennen */
+@media (max-width: 620px) {
+  .handy-rahmen { display: none; }
+  .mockup { padding-bottom: 0; }
 }
 
 .referenz-meta {

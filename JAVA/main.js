@@ -240,6 +240,126 @@ function auswahlAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   4c. SPIELFELD — die Bausteine lassen sich herumschieben
+
+   Der Kniff: Erst wird das ganz normale Raster ausgemessen, dann
+   werden die Kacheln genau an dieser Stelle festgenagelt. Das Bild
+   bleibt dadurch exakt gleich, die Kacheln sind aber ab jetzt frei
+   beweglich — und bei einer Größenänderung wird neu gerechnet.
+
+   Nur ab 720 px Breite. Auf dem Handy füllt eine Kachel die ganze
+   Breite; würde man dort ziehen können, käme man nicht mehr am
+   Abschnitt vorbei zum Weiterscrollen.
+   ─────────────────────────────────────────────────────────── */
+
+function spielfeldAufsetzen() {
+  const feld = document.querySelector('.spielfeld');
+  if (!feld) return;
+
+  const liste  = feld.querySelector('.bausteine');
+  const karten = Array.prototype.slice.call(feld.querySelectorAll('.baustein'));
+  if (!liste || !karten.length) return;
+
+  const grossGenug = window.matchMedia('(min-width: 720px)');
+  let obenauf = 10;
+
+  function zurueckInsRaster() {
+    feld.classList.remove('ist-spielbar');
+    liste.style.height = '';
+    karten.forEach(function (k) {
+      k.style.left = ''; k.style.top = ''; k.style.width = ''; k.style.zIndex = '';
+    });
+  }
+
+  function anordnen() {
+    zurueckInsRaster();
+    if (!grossGenug.matches) return;
+
+    /* Maße aus dem normalen Raster ablesen */
+    const rahmen = liste.getBoundingClientRect();
+    const masse = karten.map(function (k) {
+      const r = k.getBoundingClientRect();
+      return { x: r.left - rahmen.left, y: r.top - rahmen.top, breite: r.width };
+    });
+    const gesamthoehe = liste.offsetHeight;
+
+    /* und die Kacheln genau dort festnageln */
+    liste.style.height = gesamthoehe + 'px';
+    feld.classList.add('ist-spielbar');
+    karten.forEach(function (k, i) {
+      k.style.width = masse[i].breite + 'px';
+      k.style.left  = masse[i].x + 'px';
+      k.style.top   = masse[i].y + 'px';
+    });
+  }
+
+  function ziehenAufsetzen(karte) {
+    let greifX = 0, greifY = 0, aktiv = false;
+
+    karte.addEventListener('pointerdown', function (e) {
+      if (!feld.classList.contains('ist-spielbar')) return;
+      if (e.button > 0) return;                     /* nur linke Maustaste */
+
+      const r = karte.getBoundingClientRect();      /* vor dem Anheben messen */
+      greifX = e.clientX - r.left;
+      greifY = e.clientY - r.top;
+      aktiv = true;
+
+      obenauf += 1;
+      karte.style.zIndex = String(obenauf);
+      karte.classList.add('wird-gezogen');
+      /* Ohne Einfangen würde die Karte am Zeiger kleben bleiben,
+         sobald man ihn zu schnell aus der Kachel herauszieht.
+         Verweigert der Browser es, ziehen wir trotzdem weiter. */
+      try { karte.setPointerCapture(e.pointerId); } catch (fehler) { /* egal */ }
+      e.preventDefault();
+    });
+
+    karte.addEventListener('pointermove', function (e) {
+      if (!aktiv) return;
+      const rahmen = liste.getBoundingClientRect();
+      let x = e.clientX - rahmen.left - greifX;
+      let y = e.clientY - rahmen.top  - greifY;
+
+      /* im Rahmen bleiben */
+      x = Math.max(0, Math.min(x, rahmen.width  - karte.offsetWidth));
+      y = Math.max(0, Math.min(y, rahmen.height - karte.offsetHeight));
+
+      karte.style.left = x + 'px';
+      karte.style.top  = y + 'px';
+    });
+
+    function loslassen(e) {
+      if (!aktiv) return;
+      aktiv = false;
+      karte.classList.remove('wird-gezogen');
+      try {
+        if (karte.hasPointerCapture(e.pointerId)) karte.releasePointerCapture(e.pointerId);
+      } catch (fehler) { /* egal */ }
+    }
+    karte.addEventListener('pointerup', loslassen);
+    karte.addEventListener('pointercancel', loslassen);
+  }
+
+  karten.forEach(ziehenAufsetzen);
+
+  const aufraeumKnopf = document.querySelector('[data-spielfeld-reset]');
+  if (aufraeumKnopf) aufraeumKnopf.addEventListener('click', anordnen);
+
+  let wartend;
+  window.addEventListener('resize', function () {
+    window.clearTimeout(wartend);
+    wartend = window.setTimeout(anordnen, 200);
+  });
+
+  /* Erst rechnen, wenn Schriften geladen sind — sonst stimmen die
+     abgelesenen Höhen nicht und die Kacheln überlappen. */
+  if (document.readyState === 'complete') anordnen();
+  else window.addEventListener('load', anordnen);
+}
+
+
+/* ───────────────────────────────────────────────────────────
    5. BILDFLÄCHEN — Hinweis ausblenden, sobald ein Bild drin ist
    ─────────────────────────────────────────────────────────── */
 
@@ -279,6 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
   navAufsetzen();
   aktivenMenuepunktVerfolgen();
   auswahlAufsetzen();
+  spielfeldAufsetzen();
   einblendenAufsetzen();
   bildflaechenPruefen();
   jahrEintragen();
