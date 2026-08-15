@@ -467,7 +467,13 @@ function memoryAufsetzen() {
     });
   }
 
+  /* Nur in der Web-Ansicht. Auf dem Handy wäre das Brett winzig und
+     das Schütteln würde sich mit dem Scrollen in die Quere kommen.
+     Der Wert muss zu ".nur-web" in styles.css passen. */
+  const nurWeb = window.matchMedia('(min-width: 1041px)');
+
   return function starten() {
+    if (!nurWeb.matches) return;
     if (fenster.open) return;
     merkeScroll = window.scrollY;
     bauen();

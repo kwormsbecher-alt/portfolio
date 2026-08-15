@@ -23,6 +23,41 @@
 
   <link rel="stylesheet" href="CSS/tokens.css" />
   <link rel="stylesheet" href="CSS/styles.css" />
+
+  <!-- ══ ZUFALLSSCHRIFT FÜR DIE ÜBERSCHRIFT ══
+       Bei jedem Aufruf und jedem Neuladen bekommt die H1 eine andere
+       Schrift. Bewusst hier oben und nicht in main.js: so steht die
+       Schrift schon beim ersten Zeichnen fest und springt nicht
+       nachträglich um. Geladen wird immer nur die eine ausgewählte
+       Schrift, nicht alle sechs.
+       Die Skalierung gleicht aus, dass Serifenschriften optisch
+       kleiner wirken als Inter — sonst würde die Überschrift bei
+       jedem Laden ihre Größe wechseln. -->
+  <script>
+    (function () {
+      var SCHRIFTEN = [
+        { name: 'Inter',               abruf: 'Inter:wght@400;600',                     ersatz: 'system-ui, sans-serif', skalierung: 1.00, gewicht: 600 },
+        { name: 'Fraunces',            abruf: 'Fraunces:opsz,wght@9..144,400;9..144,600', ersatz: 'Georgia, serif',      skalierung: 0.97, gewicht: 600 },
+        { name: 'Playfair Display',    abruf: 'Playfair+Display:wght@400;600',          ersatz: 'Georgia, serif',        skalierung: 1.00, gewicht: 600 },
+        { name: 'Space Grotesk',       abruf: 'Space+Grotesk:wght@400;600',             ersatz: 'system-ui, sans-serif', skalierung: 0.98, gewicht: 600 },
+        { name: 'Instrument Serif',    abruf: 'Instrument+Serif',                       ersatz: 'Georgia, serif',        skalierung: 1.14, gewicht: 400 },
+        { name: 'Bricolage Grotesque', abruf: 'Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600', ersatz: 'system-ui, sans-serif', skalierung: 0.96, gewicht: 600 }
+      ];
+
+      var gewaehlt = SCHRIFTEN[Math.floor(Math.random() * SCHRIFTEN.length)];
+
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=' + gewaehlt.abruf + '&display=swap';
+      document.head.appendChild(link);
+
+      var wurzel = document.documentElement;
+      wurzel.style.setProperty('--titel-schrift', "'" + gewaehlt.name + "', " + gewaehlt.ersatz);
+      wurzel.style.setProperty('--titel-skalierung', gewaehlt.skalierung);
+      wurzel.style.setProperty('--titel-gewicht', gewaehlt.gewicht);
+      wurzel.dataset.titelschrift = gewaehlt.name;
+    })();
+  </script>
 </head>
 
 <body>
@@ -599,9 +634,9 @@
       </div>
 
       <div class="spielfeld-fuss">
-        <span>Steine verschieben — am Handy kurz gedrückt halten. Und wer einen Stein schüttelt, findet etwas. 🧩</span>
+        <span>Steine verschieben — am Handy kurz gedrückt halten.<span class="nur-web"> Und wer einen Stein schüttelt, findet etwas. 🧩</span></span>
         <span class="spielfeld-knoepfe">
-          <button type="button" data-memory-start>Memory</button>
+          <button type="button" class="nur-web" data-memory-start>Memory</button>
           <button type="button" data-spielfeld-reset>Wieder aufräumen</button>
         </span>
       </div>

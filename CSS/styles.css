@@ -555,12 +555,15 @@ body.platzhalter-zeigen .platzhalter {
 /* Zweistufige Überschrift: erst eine ruhige, kleinere Zeile, dann die
    große Aussage. Beide Zeilen bekommen eigenen Zeilenabstand — bei
    dieser Größe wirkt die Standard-Enge sonst gequetscht. */
+/* Die Schriftart kommt aus dem kleinen Skript im <head> und wechselt
+   bei jedem Neuladen. Fehlt sie, greift die normale Hausschrift. */
 .hero-titel {
   display: flex;
   flex-direction: column;
   gap: 0.15em;
   margin-bottom: var(--space-4);
   letter-spacing: -0.008em;
+  font-family: var(--titel-schrift, var(--font-display));
 }
 .titel-klein {
   font-size: clamp(1.05rem, 1.3vw + 0.55rem, 1.55rem);
@@ -574,8 +577,8 @@ body.platzhalter-zeigen .platzhalter {
    Stücke zerlegt. Zusammen mit dem geschützten Leerzeichen im HTML
    bleibt "wirklich erreicht." jetzt beisammen. */
 .titel-gross {
-  font-size: var(--size-hero);
-  font-weight: var(--weight-bold);
+  font-size: calc(var(--size-hero) * var(--titel-skalierung, 1));
+  font-weight: var(--titel-gewicht, var(--weight-bold));
   line-height: 1.14;
 }
 .hero .lead {
@@ -1088,6 +1091,14 @@ body.platzhalter-zeigen .platzhalter {
 }
 .spielfeld-fuss button:hover { color: var(--accent); border-color: var(--accent); }
 .spielfeld-knoepfe { display: flex; gap: var(--space-1); flex-shrink: 0; }
+
+/* Memory gibt es nur in der Web-Ansicht. Derselbe Umschaltpunkt wie
+   beim Menü — ab hier sieht die Seite nach Desktop aus. */
+.nur-web { display: none; }
+@media (min-width: 1041px) {
+  span.nur-web   { display: inline; }
+  button.nur-web { display: inline-block; }
+}
 
 /* Rückmeldung beim Schütteln: erst ab der dritten Richtungsänderung,
    damit ein normales Verschieben nichts auslöst. */
