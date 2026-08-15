@@ -1,7 +1,24 @@
 # Portfolio-Website
 
+**Live:** https://kwormsbecher-alt.github.io/portfolio/
+**Repo:** https://github.com/kwormsbecher-alt/portfolio
+
 Statische Website — reines HTML, CSS und JavaScript. Kein Build-Schritt,
 keine Abhängigkeiten. Dateien hochladen, fertig.
+
+> **Baustellen-Sperre aktiv.** In `index.html` steht
+> `<meta name="robots" content="noindex, nofollow" />`.
+> Die Seite ist über den Link erreichbar, taucht aber in keiner Google-Suche auf.
+> **Vor dem Launch diese Zeile löschen.**
+
+## Änderungen live bringen
+
+```bash
+git add -A && git commit -m "was geändert wurde" && git push
+```
+
+Nach etwa einer Minute ist die neue Fassung unter der Live-Adresse da.
+Auf dem iPhone einmal hart neu laden, sonst zeigt Safari die alte Version.
 
 ## Aufbau
 
