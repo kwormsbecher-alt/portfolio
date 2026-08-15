@@ -177,6 +177,14 @@ function bildflaechenPruefen() {
     const bild = slot.querySelector('img[src]');
     if (bild && bild.getAttribute('src')) slot.classList.add('has-image');
   });
+
+  /* Landing-Bereich: Erst wenn wirklich ein Hintergrundbild liegt,
+     kommt der dunkle Schleier und die helle Schrift. Ohne Bild bliebe
+     sonst weiße Schrift auf hellem Platzhalter — unlesbar. */
+  const hero = document.querySelector('.hero');
+  if (hero && hero.querySelector('.hero-hintergrund img[src]')) {
+    hero.classList.add('hat-bild');
+  }
 }
 
 

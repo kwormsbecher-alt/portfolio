@@ -346,39 +346,138 @@ body.platzhalter-aus .platzhalter {
 }
 
 
-/* ── 7. WILLKOMMEN (HERO) ──────────────────────────────── */
+/* ── 7. LANDING-BEREICH ────────────────────────────────── */
+/* Vollflächiges Hintergrundbild, Inhalt links darüber.
+   Solange kein Bild da ist, bleibt der helle Platzhalter stehen und
+   die Schrift ist dunkel. Sobald main.js ein echtes Bild findet,
+   setzt es .hat-bild — dann kommt der Schleier und helle Schrift. */
 
 .hero {
-  padding-top: calc(var(--nav-height) + var(--section-padding));
-  padding-bottom: var(--section-padding);
+  position: relative;
+  isolation: isolate;            /* hält die Hintergrund-Ebenen im Griff */
+  display: flex;
+  align-items: center;
+  min-height: var(--hero-hoehe);
+  padding-top: calc(var(--nav-height) + var(--space-5));
+  padding-bottom: calc(var(--section-padding) + var(--zwischen-hub));
+  overflow: hidden;
 }
-.hero h1 { margin-bottom: var(--space-3); }
-.hero .lead { max-width: 52ch; }
 
-.hero-media { position: relative; }
-.hero-media .image-slot { box-shadow: var(--shadow-lg); }
-
-/* Kleine Kennzahlen unter dem Hero */
-.facts {
-  display: flex; flex-wrap: wrap;
-  gap: var(--space-3) var(--space-5);
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border);
+.hero-hintergrund {
+  position: absolute; inset: 0;
+  z-index: -2;
+  border-radius: 0;
 }
-.facts div { min-width: 120px; }
-.facts dt {
-  font-size: var(--size-label);
+.hero-hintergrund .image-slot-note { border-radius: 0; border-width: 0 0 1.5px 0; }
+
+.hero.hat-bild::after {
+  content: '';
+  position: absolute; inset: 0;
+  z-index: -1;
+  background: var(--hero-schleier);
+}
+
+.hero-inhalt { position: relative; z-index: 1; }
+.hero-inhalt > * { max-width: 42rem; }
+
+/* H1 klein als Wortmarke, wie in der Skizze ganz oben */
+.wortmarke {
+  font-size: var(--size-small);
+  font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--text-soft);
+  color: var(--accent);
+  margin-bottom: var(--space-4);
 }
-.facts dd {
-  font-family: var(--font-display);
-  font-size: var(--size-h3);
-  font-weight: var(--weight-bold);
+
+.hero-titel {
+  font-size: var(--size-hero);
+  margin-bottom: var(--space-3);
+}
+.hero .lead { max-width: 52ch; }
+
+/* Helle Schrift, sobald ein Hintergrundbild da ist */
+.hero.hat-bild,
+.hero.hat-bild .wortmarke { color: var(--hero-text); }
+.hero.hat-bild .lead      { color: var(--hero-text-mid); }
+.hero.hat-bild .btn--ghost {
+  color: var(--hero-text);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.hero.hat-bild .btn--ghost:hover {
+  background: var(--hero-text);
   color: var(--text);
-  margin-top: 0.2rem;
+  border-color: var(--hero-text);
+}
+
+
+/* ── 7b. ZWISCHENSTÜCK ─────────────────────────────────── */
+/* Die Karte aus der Skizze: liegt halb im Bild, halb im nächsten
+   Abschnitt. Vier Punkte nebeneinander, getrennt durch senkrechte
+   Striche. Kommen mehr dazu, bricht es sauber in eine zweite Reihe um. */
+
+.zwischenstueck {
+  position: relative;
+  z-index: 5;
+  margin-top: calc(-1 * var(--zwischen-hub));
+}
+
+.leistungsleiste {
+  display: grid;
+  grid-template-columns: 1fr;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.leistung {
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+}
+.leistung + .leistung { border-top: 1px solid var(--border); }
+
+.leistung-symbol {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  margin-bottom: var(--space-2);
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.leistung-symbol svg { width: 22px; height: 22px; }
+
+.leistung h3 { font-size: 1rem; margin-bottom: 0.35rem; }
+.leistung p  { font-size: var(--size-small); color: var(--text-mid); }
+
+/* Zwei nebeneinander */
+@media (min-width: 600px) {
+  .leistungsleiste { grid-template-columns: repeat(2, 1fr); }
+  .leistung + .leistung        { border-top: 0; }
+  .leistung                    { border-left: 1px solid var(--border); }
+  .leistung:nth-child(2n + 1)  { border-left: 0; }
+  .leistung:nth-child(n + 3)   { border-top: 1px solid var(--border); }
+}
+
+/* Alle vier nebeneinander, wie gezeichnet.
+   Die Reihen-Regeln müssen hier gleich spezifisch sein wie oben
+   (:nth-child), sonst gewinnt die Zwei-Spalten-Regel und Punkt 3 und 4
+   bekämen eine Linie nach oben, obwohl sie noch in Reihe eins stehen. */
+@media (min-width: 940px) {
+  .leistungsleiste { grid-template-columns: repeat(4, 1fr); }
+  .leistung                   { border-left: 1px solid var(--border); }
+  .leistung:nth-child(2n + 1) { border-left: 1px solid var(--border); }
+  .leistung:nth-child(4n + 1) { border-left: 0; }
+  .leistung:nth-child(n + 3)  { border-top: 0; }
+  .leistung:nth-child(n + 5)  { border-top: 1px solid var(--border); }
+}
+
+/* Auf dem Handy weniger tief ins Bild ragen lassen */
+@media (max-width: 599px) {
+  .zwischenstueck { margin-top: calc(-1 * var(--zwischen-hub) / 2); }
 }
 
 

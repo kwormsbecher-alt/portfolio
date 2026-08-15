@@ -60,54 +60,104 @@
 
   <!-- ══════════ 1. WILLKOMMEN ══════════ -->
   <section class="hero" id="willkommen">
-    <div class="container">
-      <div class="split">
-
-        <div class="reveal">
-          <span class="label">Willkommen</span>
-          <h1>Ihre Praxis verdient eine Website, die Patienten wirklich erreicht.</h1>
-          <p class="lead">
-            Ich bin <span class="platzhalter">[DEIN NAME]</span> und baue Websites für Arztpraxen
-            und lokale Betriebe in <span class="platzhalter">Pforzheim und Umgebung</span> —
-            von Hand gebaut, schnell geladen, bei Google auffindbar.
-            Kein Baukasten, keine Vorlage von der Stange.
-          </p>
-
-          <div class="btn-row">
-            <a class="btn btn--primary" href="#kontakt" data-mail="link">Kostenloses Erstgespräch</a>
-            <a class="btn btn--ghost" href="#referenz">Meine Arbeit ansehen</a>
-          </div>
-
-          <dl class="facts">
-            <div>
-              <dt>Schwerpunkt</dt>
-              <dd>Arztpraxen</dd>
-            </div>
-            <div>
-              <dt>Ladezeit</dt>
-              <dd>unter 1 Sek.</dd>
-            </div>
-            <div>
-              <dt>Ansprechpartner</dt>
-              <dd>immer ich</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div class="hero-media reveal">
-          <div class="image-slot ratio-portrait">
-            <!-- Wenn dein Foto da ist: <img src="bilder/kevin.jpg" alt="Porträt von [DEIN NAME]" /> -->
-            <div class="image-slot-note">
-              <strong>Dein Porträtfoto</strong>
-              <small>Hochformat, ca. 4:5 · nach <code>bilder/</code> legen</small>
-              <small>Ein echtes Gesicht schlägt jedes Stockfoto.</small>
-            </div>
-          </div>
-        </div>
-
+    <!-- Hintergrundbild. Sobald hier ein echtes <img> liegt, schaltet
+         main.js den Bereich automatisch auf dunklen Schleier mit heller
+         Schrift um — bis dahin bleibt der helle Platzhalter stehen. -->
+    <div class="hero-hintergrund image-slot" aria-hidden="true">
+      <!-- <img src="bilder/hero.jpg" alt="" /> -->
+      <div class="image-slot-note">
+        <strong>Hintergrundbild</strong>
+        <small>Querformat, mindestens 1600 px breit · nach <code>bilder/</code> legen</small>
+        <small>Ruhiges Motiv — die Schrift liegt links darauf.</small>
       </div>
     </div>
+
+    <div class="container hero-inhalt reveal">
+
+      <h1 class="wortmarke">[DEIN NAME]</h1>
+
+      <h2 class="hero-titel">Ihre Praxis verdient eine Website, die Patienten wirklich erreicht.</h2>
+
+      <p class="lead">
+        Ich baue Websites für Arztpraxen und lokale Betriebe in
+        <span class="platzhalter">Pforzheim und Umgebung</span> —
+        von Hand gebaut, schnell geladen, bei Google auffindbar.
+        Kein Baukasten, keine Vorlage von der Stange.
+      </p>
+
+      <div class="btn-row">
+        <a class="btn btn--primary" href="#kontakt" data-mail="link">Kostenloses Erstgespräch</a>
+        <a class="btn btn--ghost" href="#referenz">Meine Arbeit ansehen</a>
+      </div>
+
+    </div>
   </section>
+
+
+  <!-- ══════════ ZWISCHENSTÜCK ══════════
+       Liegt halb im Hintergrundbild, halb im nächsten Abschnitt.
+       Vier Punkte, getrennt durch senkrechte Striche. Kommen mehr
+       dazu, bricht die Leiste von selbst in eine zweite Reihe um. -->
+  <div class="container zwischenstueck reveal">
+    <ul class="leistungsleiste">
+
+      <li class="leistung">
+        <span class="leistung-symbol" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+        </span>
+        <h3 class="platzhalter">Einfach</h3>
+        <p class="platzhalter">
+          Kurzer Satz, der erklärt, was daran einfach ist.
+        </p>
+      </li>
+
+      <li class="leistung">
+        <span class="leistung-symbol" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="3.4" />
+            <path d="M4.5 20c0-3.6 3.4-5.6 7.5-5.6s7.5 2 7.5 5.6" />
+          </svg>
+        </span>
+        <h3 class="platzhalter">Etwas Gutes über mich</h3>
+        <p class="platzhalter">
+          Ein Punkt, der für dich spricht — kurz und ohne Werbesprache.
+        </p>
+      </li>
+
+      <li class="leistung">
+        <span class="leistung-symbol" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="10.5" cy="10.5" r="6" />
+            <path d="M15 15l4.5 4.5" />
+          </svg>
+        </span>
+        <h3 class="platzhalter">Was finden wir noch heraus</h3>
+        <p class="platzhalter">
+          Der dritte Punkt aus deiner Skizze — Text kommt von dir.
+        </p>
+      </li>
+
+      <li class="leistung">
+        <span class="leistung-symbol" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5l2.6 5.4 5.9.85-4.25 4.15 1 5.9L12 17.05 6.75 19.8l1-5.9L3.5 9.75l5.9-.85z" />
+          </svg>
+        </span>
+        <h3 class="platzhalter">Platz für Nummer vier</h3>
+        <p class="platzhalter">
+          Noch frei. Kommen mehr als vier, rutscht es automatisch
+          in eine zweite Reihe.
+        </p>
+      </li>
+
+    </ul>
+  </div>
 
 
   <!-- ══════════ 2. WER BIN ICH ══════════ -->
@@ -134,10 +184,12 @@
         </div>
 
         <div class="reveal">
-          <div class="image-slot ratio-wide">
+          <div class="image-slot ratio-portrait">
+            <!-- Wenn dein Foto da ist: <img src="bilder/kevin.jpg" alt="Porträt von [DEIN NAME]" /> -->
             <div class="image-slot-note">
-              <strong>Foto vom Arbeitsplatz</strong>
-              <small>Querformat · zeigt dich beim Arbeiten</small>
+              <strong>Dein Porträtfoto</strong>
+              <small>Hochformat, ca. 4:5 · nach <code>bilder/</code> legen</small>
+              <small>Ein echtes Gesicht schlägt jedes Stockfoto.</small>
             </div>
           </div>
         </div>
