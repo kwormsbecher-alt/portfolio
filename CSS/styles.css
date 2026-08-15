@@ -251,14 +251,14 @@ body.platzhalter-zeigen .platzhalter {
 .nav > .container { display: flex; align-items: center; gap: var(--space-3); }
 .nav-logo, .nav-links, .nav-toggle { pointer-events: auto; }
 
-/* Gemeinsames Aussehen der schwebenden Inseln */
+/* Gemeinsames Aussehen der schwebenden Inseln — ohne Umrandung,
+   die milchige Fläche allein trägt sie. */
 .nav-logo,
 .nav-links,
 .nav-toggle {
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-sm);
 }
@@ -340,7 +340,12 @@ body.platzhalter-zeigen .platzhalter {
               transform var(--duration) var(--ease);
 }
 .nav-toggle-striche span:nth-child(1) { top:  0;   width: 24px; }
-.nav-toggle-striche span:nth-child(2) { top:  7px; width: 13px; background: var(--ton); }
+/* Der kurze mittlere Strich sitzt rechtsbündig */
+.nav-toggle-striche span:nth-child(2) {
+  top: 7px; width: 13px;
+  left: auto; right: 0;
+  background: var(--ton);
+}
 .nav-toggle-striche span:nth-child(3) { top: 14px; width: 24px; }
 
 .nav-toggle:hover .nav-toggle-striche span:nth-child(2) { width: 24px; }
@@ -453,11 +458,19 @@ body.platzhalter-zeigen .platzhalter {
   margin-bottom: var(--space-4);
 }
 
+/* Mehr Zeilenabstand und weniger enge Buchstaben als bei den übrigen
+   Überschriften — bei dieser Größe wirkt die Standard-Enge gequetscht. */
 .hero-titel {
   font-size: var(--size-hero);
-  margin-bottom: var(--space-3);
+  line-height: 1.24;
+  letter-spacing: -0.008em;
+  margin-bottom: var(--space-4);
 }
-.hero .lead { max-width: 52ch; }
+.hero .lead {
+  max-width: 46ch;
+  line-height: 1.7;
+}
+.hero .btn-row { margin-top: var(--space-5); }
 
 
 /* ── 7b. ZWISCHENSTÜCK ─────────────────────────────────── */
@@ -1196,22 +1209,6 @@ body.platzhalter-zeigen .platzhalter {
   font-size: var(--size-small);
   color: var(--accent-dark);
 }
-
-
-/* ── 14b. SCHWUNG BEIM HOCHSCROLLEN ────────────────────── */
-/* Klick aufs Logo fährt nach oben und lässt den Inhalt kurz
-   nachfedern. Weiter als bis zum Seitenanfang kann man nicht
-   scrollen, deshalb macht die Bewegung der Inhalt selbst. */
-
-@keyframes schwung {
-  0%   { transform: translateY(0); }
-  22%  { transform: translateY(26px); }
-  46%  { transform: translateY(-9px); }
-  68%  { transform: translateY(4px); }
-  86%  { transform: translateY(-1.5px); }
-  100% { transform: translateY(0); }
-}
-.schwingt { animation: schwung 0.95s cubic-bezier(0.33, 0, 0.15, 1); }
 
 
 /* ── 15. EINBLENDEN BEIM SCROLLEN ──────────────────────── */

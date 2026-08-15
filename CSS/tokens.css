@@ -60,7 +60,9 @@
 
   /* Schriftgrößen — passen sich automatisch an die Bildschirmbreite an.
      clamp(kleinster Wert, wächst mit, größter Wert) */
-  --size-hero:  clamp(2.4rem, 6vw,   4.2rem);
+  /* Bewusst nicht größer: die Landing-Überschrift soll atmen, nicht
+     die halbe Seite füllen. Auf dem Handy 32 px, am Rechner 60 px. */
+  --size-hero:  clamp(2rem, 4.6vw + 0.6rem, 3.75rem);
   --size-h2:    clamp(1.7rem, 3.6vw, 2.6rem);
   --size-h3:    clamp(1.15rem, 2vw,  1.4rem);
   --size-lead:  clamp(1.05rem, 1.6vw, 1.25rem);

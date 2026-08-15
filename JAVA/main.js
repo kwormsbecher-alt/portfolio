@@ -109,69 +109,6 @@ function navAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
-   2b. NACH OBEN MIT SCHWUNG
-
-   Klick aufs Logo fährt weich nach oben und lässt den Inhalt dort
-   kurz nachfedern. Weiter als bis zum Seitenanfang kann man nicht
-   scrollen — die Bewegung macht deshalb der Inhalt selbst.
-   ─────────────────────────────────────────────────────────── */
-
-function nachObenAufsetzen() {
-  const ausloeser = document.querySelectorAll('[data-nach-oben]');
-  if (!ausloeser.length) return;
-
-  const ruhig  = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const inhalt = document.getElementById('inhalt');
-
-  if (inhalt) {
-    inhalt.addEventListener('animationend', function () {
-      inhalt.classList.remove('schwingt');
-    });
-  }
-
-  function schwingen() {
-    if (!inhalt || ruhig.matches) return;
-    inhalt.classList.remove('schwingt');
-    void inhalt.offsetWidth;              /* erzwingt den Neustart */
-    inhalt.classList.add('schwingt');
-  }
-
-  ausloeser.forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      const start = window.scrollY;
-
-      if (ruhig.matches || start < 4) {
-        window.scrollTo(0, 0);
-        schwingen();
-        return;
-      }
-
-      /* Ruhig und gleichmäßig hoch — nicht hetzen. Sanft anfahren,
-         die lange Mitte fast gleichbleibend schnell, sanft ankommen.
-         Der Abprall passiert danach in schwingen(). */
-      const dauer = Math.min(2200, 900 + start * 0.30);
-      const t0 = performance.now();
-
-      function ruhigeFahrt(x) {
-        /* weiches Anfahren und Ankommen, dazwischen gleichmäßig */
-        return x < 0.5
-          ? 2 * x * x
-          : 1 - Math.pow(-2 * x + 2, 2) / 2;
-      }
-
-      (function schritt(jetzt) {
-        const anteil = Math.min(1, (jetzt - t0) / dauer);
-        window.scrollTo(0, Math.round(start * (1 - ruhigeFahrt(anteil))));
-        if (anteil < 1) window.requestAnimationFrame(schritt);
-        else schwingen();
-      })(performance.now());
-    });
-  });
-}
-
-
-/* ───────────────────────────────────────────────────────────
    3. AKTIVER MENÜPUNKT — hebt hervor, wo man gerade ist
    ─────────────────────────────────────────────────────────── */
 
@@ -363,7 +300,7 @@ function spielfeldAufsetzen() {
   /* Wie lange man auf dem Handy draufbleiben muss, damit aus dem
      Berühren ein Ziehen wird. Darunter bleibt es ein Wischen und die
      Seite scrollt ganz normal weiter. */
-  const HALTEDAUER = 420;
+  const HALTEDAUER = 320;
   const WACKELWEG  = 12;
 
   /* Die Plätze aus dem ursprünglichen Raster und wer gerade wo liegt */
@@ -644,7 +581,6 @@ function jahrEintragen() {
 document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
-  nachObenAufsetzen();
   aktivenMenuepunktVerfolgen();
   auswahlAufsetzen();
   spielfeldAufsetzen();
