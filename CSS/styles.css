@@ -318,7 +318,10 @@ body.platzhalter-aus .platzhalter {
 .nav.is-open .nav-toggle span::before { top: 0; transform: rotate(45deg); }
 .nav.is-open .nav-toggle span::after  { top: 0; transform: rotate(-45deg); }
 
-@media (max-width: 900px) {
+/* Umschaltpunkt aufs Hamburger-Menü. Mit sieben Punkten plus Knopf
+   wird die Leiste darunter zu eng und Logo und Menü stoßen zusammen.
+   Kommt ein Menüpunkt dazu, muss dieser Wert mit hoch. */
+@media (max-width: 1040px) {
   .nav-toggle { display: flex; }
 
   .nav-links {
@@ -513,6 +516,179 @@ body.platzhalter-aus .platzhalter {
   font-weight: var(--weight-bold);
   color: var(--accent);
   margin-bottom: var(--space-2);
+}
+
+
+/* ── 8b. AUSWAHLGALERIE ────────────────────────────────── */
+/* Links die Auswahl, rechts das große Detailfenster.
+   Der gewählte Punkt klappt seine Kurzbeschreibung auf, die anderen
+   bleiben schmal — das ist das "wird größer, die anderen kleiner". */
+
+.auswahl {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  align-items: start;
+}
+@media (min-width: 940px) {
+  .auswahl {
+    grid-template-columns: minmax(260px, 33%) 1fr;
+    gap: var(--space-4);
+  }
+  /* Detailfenster läuft beim Scrollen mit */
+  .auswahl-detail { position: sticky; top: calc(var(--nav-height) + var(--space-3)); }
+}
+
+.auswahl-liste {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: var(--space-2);
+}
+
+.auswahl-knopf {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3);
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease),
+              transform var(--duration) var(--ease);
+}
+.auswahl-knopf:hover { border-color: var(--accent-line); transform: translateX(3px); }
+
+.auswahl-knopf[aria-selected="true"] {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+  transform: none;
+}
+
+.auswahl-symbol {
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+.auswahl-symbol svg { width: 18px; height: 18px; }
+.auswahl-knopf[aria-selected="true"] .auswahl-symbol {
+  background: var(--accent);
+  color: var(--surface);
+}
+
+.auswahl-titel {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  line-height: 1.35;
+}
+
+/* Kurztext nur beim gewählten Punkt */
+.auswahl-kurz {
+  display: none;
+  margin-top: 0.3rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+}
+.auswahl-knopf[aria-selected="true"] .auswahl-kurz { display: block; }
+
+/* Das große Fenster rechts */
+.auswahl-panel { display: none; }
+.auswahl-panel.is-aktiv { display: block; }
+.auswahl-panel:focus-visible { outline-offset: 6px; }
+
+.panel-karte {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: panelEin var(--duration-lg) var(--ease);
+}
+@keyframes panelEin {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.panel-inhalt { padding: clamp(var(--space-3), 4vw, var(--space-5)); }
+.panel-inhalt h3 { font-size: var(--size-h3); margin-bottom: var(--space-2); }
+.panel-inhalt > p { color: var(--text-mid); }
+
+.haken-liste {
+  list-style: none;
+  margin-top: var(--space-3);
+  display: grid; gap: 0.55rem;
+}
+@media (min-width: 620px) {
+  .haken-liste { grid-template-columns: 1fr 1fr; gap: 0.55rem var(--space-3); }
+}
+.haken-liste li {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+}
+.haken-liste li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  margin-top: 0.28rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  /* kleiner Haken, gezeichnet statt als Bild geladen */
+  background-image: linear-gradient(var(--accent), var(--accent)),
+                    linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-size: 5px 1.5px, 8px 1.5px;
+  background-position: 4px 9px, 6.5px 7.5px;
+}
+
+
+/* ── 8c. BAUSTEINE ─────────────────────────────────────── */
+/* Kacheln unterschiedlicher Größe, wie in der Skizze. */
+
+.bausteine {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  list-style: none;
+}
+
+.baustein {
+  display: flex; flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+.baustein:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--accent-line);
+}
+.baustein h3 { font-size: 0.98rem; }
+.baustein p  { font-size: var(--size-small); color: var(--text-mid); margin-top: 0.2rem; }
+
+.baustein-symbol {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.baustein-symbol svg { width: 19px; height: 19px; }
+
+/* Zwei Kacheln dürfen doppelt so breit sein — nur wenn wirklich
+   mehrere Spalten da sind, sonst würde die Reihe überlaufen. */
+@media (min-width: 720px) {
+  .baustein--breit { grid-column: span 2; }
 }
 
 

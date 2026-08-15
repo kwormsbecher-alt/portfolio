@@ -100,8 +100,9 @@ function navAufsetzen() {
     }
   });
 
-  /* Beim Wechsel auf Desktop-Breite aufräumen */
-  window.matchMedia('(min-width: 901px)').addEventListener('change', function (e) {
+  /* Beim Wechsel auf Desktop-Breite aufräumen.
+     Muss zum Umschaltpunkt in styles.css passen (dort max-width: 1040px). */
+  window.matchMedia('(min-width: 1041px)').addEventListener('change', function (e) {
     if (e.matches) menuSchliessen();
   });
 }
@@ -169,6 +170,76 @@ function einblendenAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   4b. AUSWAHLGALERIE — links wählen, rechts das Detailfenster
+
+   Aufgebaut als echte Reiter. Maus, Tastatur und Screenreader
+   funktionieren damit gleichermaßen: Pfeiltasten blättern durch,
+   Pos1 und Ende springen an den Anfang bzw. ans Ende.
+   ─────────────────────────────────────────────────────────── */
+
+function auswahlAufsetzen() {
+  document.querySelectorAll('[role="tablist"]').forEach(function (liste) {
+
+    const knoepfe = Array.prototype.slice.call(
+      liste.querySelectorAll('[role="tab"]')
+    );
+    if (!knoepfe.length) return;
+
+    function waehlen(knopf, fokussieren, hinscrollen) {
+      let aktivesFeld = null;
+
+      knoepfe.forEach(function (k) {
+        const gewaehlt = (k === knopf);
+        k.setAttribute('aria-selected', String(gewaehlt));
+        /* Nur der gewählte Reiter ist mit Tab erreichbar — innerhalb
+           der Gruppe blättert man mit den Pfeiltasten. */
+        k.tabIndex = gewaehlt ? 0 : -1;
+
+        const feld = document.getElementById(k.getAttribute('aria-controls'));
+        if (!feld) return;
+        feld.classList.toggle('is-aktiv', gewaehlt);
+        feld.hidden = !gewaehlt;
+        if (gewaehlt) aktivesFeld = feld;
+      });
+
+      if (fokussieren) knopf.focus();
+
+      /* Auf schmalen Schirmen steht das Detailfenster unter allen vier
+         Reitern und damit außerhalb des Bildes. Ohne diesen Sprung tippt
+         man auf einen Reiter und sieht scheinbar nichts passieren. */
+      if (hinscrollen && aktivesFeld && window.matchMedia('(max-width: 939px)').matches) {
+        const kopfhoehe = document.querySelector('.nav');
+        const abstand = (kopfhoehe ? kopfhoehe.getBoundingClientRect().height : 0) + 16;
+        const ziel = aktivesFeld.getBoundingClientRect().top + window.scrollY - abstand;
+        const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: ziel, behavior: ruhig ? 'auto' : 'smooth' });
+      }
+    }
+
+    knoepfe.forEach(function (knopf) {
+      knopf.addEventListener('click', function () { waehlen(knopf, false, true); });
+    });
+
+    liste.addEventListener('keydown', function (e) {
+      const jetzt = knoepfe.indexOf(document.activeElement);
+      if (jetzt === -1) return;
+
+      let ziel = null;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') ziel = (jetzt + 1) % knoepfe.length;
+      else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') ziel = (jetzt - 1 + knoepfe.length) % knoepfe.length;
+      else if (e.key === 'Home') ziel = 0;
+      else if (e.key === 'End')  ziel = knoepfe.length - 1;
+      else return;
+
+      e.preventDefault();
+      waehlen(knoepfe[ziel], true);
+    });
+
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────
    5. BILDFLÄCHEN — Hinweis ausblenden, sobald ein Bild drin ist
    ─────────────────────────────────────────────────────────── */
 
@@ -207,6 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
   aktivenMenuepunktVerfolgen();
+  auswahlAufsetzen();
   einblendenAufsetzen();
   bildflaechenPruefen();
   jahrEintragen();

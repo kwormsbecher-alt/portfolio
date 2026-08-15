@@ -46,6 +46,7 @@
     <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
       <a href="#ueber">Über mich</a>
       <a href="#leistungen">Leistungen</a>
+      <a href="#bausteine">Galerie</a>
       <a href="#bildung">Werdegang</a>
       <a href="#referenz">Referenz</a>
       <a href="#faq">Fragen</a>
@@ -205,51 +206,362 @@
 
       <div class="section-head reveal">
         <span class="label">Was ich mache</span>
-        <h2>Drei Dinge, damit Ihre Praxis online gefunden wird.</h2>
+        <h2>Vier Bausteine, damit Ihre Praxis online funktioniert.</h2>
         <p class="lead">
-          Alles aus einer Hand — Sie müssen sich nicht um Technik, Anbieter
-          oder Zuständigkeiten kümmern.
+          Links auswählen, rechts steht alles im Detail. Alles aus einer Hand —
+          Sie müssen sich nicht um Technik, Anbieter oder Zuständigkeiten kümmern.
         </p>
       </div>
 
-      <div class="card-grid">
+      <!-- ══ AUSWAHLGALERIE ══
+           Links die Auswahl, rechts das Detailfenster. Aufgebaut als
+           echte Reiter (role="tab"), damit es auch mit der Tastatur und
+           mit Screenreadern funktioniert. Pfeiltasten blättern durch. -->
+      <div class="auswahl reveal">
 
-        <article class="card reveal">
-          <span class="card-num">01</span>
-          <h3>Website erstellen</h3>
-          <p>
-            Individuell gebaut, nicht aus dem Baukasten. Auf dem Handy genauso gut
-            wie am Rechner, mit kurzen Ladezeiten und einer Struktur, die Patienten
-            sofort verstehen.
-          </p>
-        </article>
+        <ul class="auswahl-liste" role="tablist" aria-label="Leistungen" aria-orientation="vertical">
 
-        <article class="card reveal">
-          <span class="card-num">02</span>
-          <h3>Bei Google gefunden werden</h3>
-          <p>
-            Google-Unternehmensprofil einrichten, lokale Suchbegriffe sauber
-            hinterlegen, technische Grundlagen erledigen. Damit Sie erscheinen,
-            wenn jemand in Ihrer Stadt sucht.
-          </p>
-        </article>
+          <li>
+            <button class="auswahl-knopf" type="button" role="tab"
+                    id="tab-website" aria-controls="panel-website" aria-selected="true">
+              <span class="auswahl-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2.5" y="4" width="19" height="13.5" rx="2" />
+                  <path d="M2.5 8.5h19M8 21h8" />
+                </svg>
+              </span>
+              <span>
+                <span class="auswahl-titel">Die Praxis-Website</span>
+                <span class="auswahl-kurz">Individuell gebaut statt Baukasten — auf dem Handy genauso gut wie am Rechner.</span>
+              </span>
+            </button>
+          </li>
 
-        <article class="card reveal">
-          <span class="card-num">03</span>
-          <h3>Bewertungen einsammeln</h3>
-          <p>
-            Ein einfacher Weg, wie zufriedene Patienten Ihnen eine Rezension
-            hinterlassen — ohne dass Sie jemanden aktiv darum bitten müssen.
-          </p>
-        </article>
+          <li>
+            <button class="auswahl-knopf" type="button" role="tab"
+                    id="tab-google" aria-controls="panel-google" aria-selected="false" tabindex="-1">
+              <span class="auswahl-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="10.5" cy="10.5" r="6" />
+                  <path d="M15 15l4.5 4.5" />
+                </svg>
+              </span>
+              <span>
+                <span class="auswahl-titel">Bei Google gefunden werden</span>
+                <span class="auswahl-kurz">Damit Sie erscheinen, wenn jemand in Ihrer Stadt nach einer Praxis sucht.</span>
+              </span>
+            </button>
+          </li>
 
+          <li>
+            <button class="auswahl-knopf" type="button" role="tab"
+                    id="tab-bewertungen" aria-controls="panel-bewertungen" aria-selected="false" tabindex="-1">
+              <span class="auswahl-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3.5l2.6 5.4 5.9.85-4.25 4.15 1 5.9L12 17.05 6.75 19.8l1-5.9L3.5 9.75l5.9-.85z" />
+                </svg>
+              </span>
+              <span>
+                <span class="auswahl-titel">Bewertungen einsammeln</span>
+                <span class="auswahl-kurz">Zufriedene Patienten hinterlassen eine Rezension, ohne dass Sie danach fragen müssen.</span>
+              </span>
+            </button>
+          </li>
+
+          <li>
+            <button class="auswahl-knopf" type="button" role="tab"
+                    id="tab-betreuung" aria-controls="panel-betreuung" aria-selected="false" tabindex="-1">
+              <span class="auswahl-symbol" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3.2l7.5 3v5.4c0 4.4-3.1 7.6-7.5 9.2-4.4-1.6-7.5-4.8-7.5-9.2V6.2z" />
+                  <path d="M9 12l2.2 2.2L15.4 10" />
+                </svg>
+              </span>
+              <span>
+                <span class="auswahl-titel">Betreuung nach dem Launch</span>
+                <span class="auswahl-kurz">Hosting, Sicherheitszertifikat und Änderungen — Sie kümmern sich um nichts.</span>
+              </span>
+            </button>
+          </li>
+
+        </ul>
+
+        <div class="auswahl-detail">
+
+          <!-- ── Detail 1 ── -->
+          <div class="auswahl-panel is-aktiv" id="panel-website"
+               role="tabpanel" aria-labelledby="tab-website" tabindex="0">
+            <article class="panel-karte">
+              <div class="image-slot ratio-wide">
+                <div class="image-slot-note">
+                  <strong>Screenshot einer fertigen Praxis-Website</strong>
+                  <small>Querformat · aus deinem Zahnarzt-Projekt</small>
+                </div>
+              </div>
+              <div class="panel-inhalt">
+                <h3>Eine Website, die Patienten in 5 Sekunden verstehen</h3>
+                <p>
+                  Die meisten Menschen kommen mit genau drei Fragen auf Ihre Seite:
+                  Wo sind Sie, wann haben Sie offen, und wie bekomme ich einen Termin?
+                  Alles andere ist zweitrangig. Ich baue die Seite so, dass diese drei
+                  Antworten sofort da sind — und der Rest ordentlich dahinter.
+                </p>
+                <ul class="haken-liste">
+                  <li>Von Hand gebaut, keine Baukasten-Vorlage</li>
+                  <li>Auf dem Handy zuerst gedacht</li>
+                  <li>Lädt in unter einer Sekunde</li>
+                  <li>Sprechzeiten immer aktuell</li>
+                  <li>Barrierearm und gut lesbar</li>
+                  <li>Sie bekommen alle Dateien</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <!-- ── Detail 2 ── -->
+          <div class="auswahl-panel" id="panel-google"
+               role="tabpanel" aria-labelledby="tab-google" tabindex="0" hidden>
+            <article class="panel-karte">
+              <div class="image-slot ratio-wide">
+                <div class="image-slot-note">
+                  <strong>Google-Suchergebnis der Praxis</strong>
+                  <small>Screenshot · zeigt Eintrag mit Karte und Sprechzeiten</small>
+                </div>
+              </div>
+              <div class="panel-inhalt">
+                <h3>Sichtbar sein, wenn jemand in Ihrer Stadt sucht</h3>
+                <p>
+                  Eine schöne Website nützt wenig, wenn niemand sie findet. Der größte
+                  Hebel für eine Praxis ist nicht die Website selbst, sondern der
+                  Google-Eintrag daneben: Karte, Sprechzeiten, Telefonnummer, Fotos.
+                  Den richte ich vollständig ein und verbinde ihn sauber mit Ihrer Seite.
+                </p>
+                <ul class="haken-liste">
+                  <li>Google-Unternehmensprofil eingerichtet</li>
+                  <li>Sprechzeiten und Feiertage gepflegt</li>
+                  <li>Lokale Suchbegriffe hinterlegt</li>
+                  <li>Karte und Anfahrt verknüpft</li>
+                  <li>Technische Grundlagen erledigt</li>
+                  <li>Verständlicher Bericht statt Fachchinesisch</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <!-- ── Detail 3 ── -->
+          <div class="auswahl-panel" id="panel-bewertungen"
+               role="tabpanel" aria-labelledby="tab-bewertungen" tabindex="0" hidden>
+            <article class="panel-karte">
+              <div class="image-slot ratio-wide">
+                <div class="image-slot-note">
+                  <strong>Bewertungskarte für den Empfang</strong>
+                  <small>Foto oder Entwurf der Karte mit QR-Code</small>
+                </div>
+              </div>
+              <div class="panel-inhalt">
+                <h3>Gute Bewertungen kommen nicht von allein</h3>
+                <p>
+                  Zufriedene Patienten schreiben selten von sich aus etwas. Unzufriedene
+                  fast immer. Genau deshalb steht bei vielen guten Praxen eine mittelmäßige
+                  Bewertung. Die Lösung ist kein Trick, sondern ein einfacher Weg: eine
+                  Karte am Empfang, ein Scan, zwei Klicks — fertig.
+                </p>
+                <ul class="haken-liste">
+                  <li>Karte mit QR-Code fürs Wartezimmer</li>
+                  <li>Direkt zur Bewertungsseite</li>
+                  <li>Kurzanleitung fürs Team</li>
+                  <li>Bewertungen auf der Website anzeigen</li>
+                  <li>Vorlagen zum Antworten</li>
+                  <li>Alles im Rahmen der Google-Regeln</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <!-- ── Detail 4 ── -->
+          <div class="auswahl-panel" id="panel-betreuung"
+               role="tabpanel" aria-labelledby="tab-betreuung" tabindex="0" hidden>
+            <article class="panel-karte">
+              <div class="image-slot ratio-wide">
+                <div class="image-slot-note">
+                  <strong>Bild zur Betreuung</strong>
+                  <small>z. B. du am Rechner, oder ein ruhiges Symbolbild</small>
+                </div>
+              </div>
+              <div class="panel-inhalt">
+                <h3>Nach dem Launch fängt es erst an</h3>
+                <p>
+                  Die meisten Praxis-Websites sehen im ersten Jahr gut aus und im dritten
+                  veraltet. Nicht weil sie schlecht gebaut waren, sondern weil sich niemand
+                  mehr gekümmert hat. Neue Sprechzeiten, Urlaub, eine neue Kollegin — das
+                  sind fünf Minuten Arbeit, für die man aber jemanden erreichen muss.
+                </p>
+                <ul class="haken-liste">
+                  <li>Hosting und Sicherheitszertifikat</li>
+                  <li>Änderungen ohne Extra-Angebot</li>
+                  <li>Regelmäßige Aktualisierungen</li>
+                  <li>Sicherungskopien</li>
+                  <li>Ein fester Ansprechpartner</li>
+                  <li>Jederzeit kündbar</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
 
 
+  <!-- ══════════ GALERIE: BAUSTEINE ══════════
+       Kacheln unterschiedlicher Größe, wie in der Skizze. Statt leerer
+       Bilderrahmen zeigt die Galerie hier, woraus eine Praxis-Website
+       zusammengesetzt wird — Inhalt, den es schon gibt. Sobald echte
+       Projekte da sind, kann jede Kachel einen Screenshot bekommen. -->
+  <section class="section section--soft" id="bausteine">
+    <div class="container">
+
+      <div class="section-head reveal">
+        <span class="label">Galerie</span>
+        <h2>Woraus Ihre Website zusammengesetzt wird.</h2>
+        <p class="lead">
+          Jede Praxis braucht etwas anderes. Das hier sind die Bausteine —
+          Sie suchen aus, was zu Ihnen passt, den Rest lassen wir weg.
+        </p>
+      </div>
+
+      <ul class="bausteine reveal">
+
+        <li class="baustein baustein--breit">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="8.5" /><path d="M12 7.2V12l3.2 2" />
+            </svg>
+          </span>
+          <div>
+            <h3>Sprechzeiten auf einen Blick</h3>
+            <p>
+              Die meistgesuchte Information überhaupt. Immer sichtbar, ohne Klick,
+              mit Hinweis auf Urlaub oder abweichende Zeiten an Feiertagen.
+            </p>
+          </div>
+        </li>
+
+        <li class="baustein">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="8.5" r="3.2" />
+              <path d="M3 19c0-3.2 2.7-5 6-5s6 1.8 6 5" />
+              <path d="M16 6.2a3 3 0 010 5.6M17.5 14.5c2 .7 3.5 2.2 3.5 4.5" />
+            </svg>
+          </span>
+          <div>
+            <h3>Team &amp; Ärzte</h3>
+            <p>Gesichter statt Textwüste — das schafft Vertrauen vor dem ersten Besuch.</p>
+          </div>
+        </li>
+
+        <li class="baustein">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.5 6.5h12M8.5 12h12M8.5 17.5h12M3.5 6.5h.01M3.5 12h.01M3.5 17.5h.01" />
+            </svg>
+          </span>
+          <div>
+            <h3>Leistungen erklärt</h3>
+            <p>In verständlicher Sprache, nicht in Fachbegriffen aus dem Lehrbuch.</p>
+          </div>
+        </li>
+
+        <li class="baustein baustein--breit">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+              <path d="M3.5 9.5h17M8 3v4M16 3v4M9.5 14.5l1.8 1.8 3.4-3.6" />
+            </svg>
+          </span>
+          <div>
+            <h3>Terminanfrage, die auch nachts funktioniert</h3>
+            <p>
+              Viele Patienten schauen abends auf dem Sofa nach einer Praxis. Ein
+              Formular nimmt die Anfrage entgegen, wenn niemand ans Telefon geht —
+              und entlastet gleichzeitig Ihren Empfang.
+            </p>
+          </div>
+        </li>
+
+        <li class="baustein">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21s7-6.1 7-11a7 7 0 10-14 0c0 4.9 7 11 7 11z" />
+              <circle cx="12" cy="10" r="2.6" />
+            </svg>
+          </span>
+          <div>
+            <h3>Anfahrt &amp; Parken</h3>
+            <p>Karte, Bus und Bahn, und die Frage, wo man das Auto abstellt.</p>
+          </div>
+        </li>
+
+        <li class="baustein">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3.6l9 15.4H3z" /><path d="M12 9.8v4M12 16.6h.01" />
+            </svg>
+          </span>
+          <div>
+            <h3>Notfall-Hinweis</h3>
+            <p>Auffällig platziert: Was tun außerhalb der Sprechzeiten?</p>
+          </div>
+        </li>
+
+        <li class="baustein">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="7.5" width="18" height="12.5" rx="2" />
+              <path d="M8.8 7.5V5.8a2 2 0 012-2h2.4a2 2 0 012 2v1.7M3 12.5h18" />
+            </svg>
+          </span>
+          <div>
+            <h3>Stellenanzeigen</h3>
+            <p>Personal finden ist schwer genug — die Seite hilft dabei mit.</p>
+          </div>
+        </li>
+
+        <li class="baustein">
+          <span class="baustein-symbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4.5" width="18" height="15" rx="2" />
+              <circle cx="8.6" cy="9.6" r="1.6" />
+              <path d="M3 16l4.8-4.4 4 3.4 3.2-2.6L21 17" />
+            </svg>
+          </span>
+          <div>
+            <h3>Rundgang durch die Praxis</h3>
+            <p>Wer die Räume vorher sieht, kommt entspannter zum Termin.</p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </section>
+
+
   <!-- ══════════ 4. WARUM ICH DAS MACHE ══════════ -->
-  <section class="section section--soft" id="warum">
+  <section class="section" id="warum">
     <div class="container">
 
       <div class="section-head reveal">
@@ -280,7 +592,7 @@
 
 
   <!-- ══════════ 5. BILDUNGSWEG ══════════ -->
-  <section class="section" id="bildung">
+  <section class="section section--soft" id="bildung">
     <div class="container">
       <div class="split">
 
@@ -327,7 +639,7 @@
 
 
   <!-- ══════════ 6. ERFAHRUNG ══════════ -->
-  <section class="section section--soft" id="erfahrung">
+  <section class="section" id="erfahrung">
     <div class="container">
       <div class="split split--media-left">
 
@@ -377,7 +689,7 @@
 
 
   <!-- ══════════ 7. REFERENZ ══════════ -->
-  <section class="section" id="referenz">
+  <section class="section section--soft" id="referenz">
     <div class="container">
 
       <div class="section-head reveal">
@@ -433,7 +745,7 @@
 
 
   <!-- ══════════ 8. HÄUFIGE FRAGEN ══════════ -->
-  <section class="section section--soft" id="faq">
+  <section class="section" id="faq">
     <div class="container">
 
       <div class="section-head reveal">
