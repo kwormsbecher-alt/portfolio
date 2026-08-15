@@ -33,7 +33,7 @@
 <header class="nav">
   <div class="container">
 
-    <a class="nav-logo" href="#willkommen">
+    <a class="nav-logo" href="#willkommen" data-nach-oben>
       [DEIN NAME]
       <small>Websites für Praxen</small>
     </a>
@@ -289,6 +289,10 @@
 
         </ul>
 
+        <!-- Unter 940px zeigt main.js das hier als Pop-up-Fenster,
+             darüber steht es ganz normal rechts daneben. -->
+        <dialog class="auswahl-fenster" aria-label="Leistung im Detail">
+        <button class="auswahl-fenster-zu" type="button" data-fenster-zu aria-label="Fenster schließen">&times;</button>
         <div class="auswahl-detail">
 
           <!-- ── Detail 1 ── -->
@@ -412,6 +416,7 @@
           </div>
 
         </div>
+        </dialog>
       </div>
     </div>
   </section>
@@ -583,7 +588,8 @@
       </div>
 
       <div class="spielfeld-fuss">
-        <span>Die Kacheln lassen sich im Rahmen frei verschieben.</span>
+        <span class="nur-ziehen">Kacheln festhalten und verschieben — sie rasten von selbst wieder ein.</span>
+        <span class="nur-wischen">Zum Blättern seitwärts wischen →</span>
         <button type="button" data-spielfeld-reset>Wieder aufräumen</button>
       </div>
 
@@ -907,7 +913,7 @@
     <nav aria-label="Rechtliches">
       <a href="HTML/impressum.html">Impressum</a>
       <a href="HTML/datenschutz.html">Datenschutz</a>
-      <a href="#willkommen">Nach oben</a>
+      <a href="#willkommen" data-nach-oben>Nach oben</a>
     </nav>
   </div>
 </footer>

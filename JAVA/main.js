@@ -109,6 +109,60 @@ function navAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   2b. NACH OBEN MIT SCHWUNG
+
+   Klick aufs Logo fährt weich nach oben und lässt den Inhalt dort
+   kurz nachfedern. Weiter als bis zum Seitenanfang kann man nicht
+   scrollen — die Bewegung macht deshalb der Inhalt selbst.
+   ─────────────────────────────────────────────────────────── */
+
+function nachObenAufsetzen() {
+  const ausloeser = document.querySelectorAll('[data-nach-oben]');
+  if (!ausloeser.length) return;
+
+  const ruhig  = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const inhalt = document.getElementById('inhalt');
+
+  if (inhalt) {
+    inhalt.addEventListener('animationend', function () {
+      inhalt.classList.remove('schwingt');
+    });
+  }
+
+  function schwingen() {
+    if (!inhalt || ruhig.matches) return;
+    inhalt.classList.remove('schwingt');
+    void inhalt.offsetWidth;              /* erzwingt den Neustart */
+    inhalt.classList.add('schwingt');
+  }
+
+  ausloeser.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      const start = window.scrollY;
+
+      if (ruhig.matches || start < 4) {
+        window.scrollTo(0, 0);
+        schwingen();
+        return;
+      }
+
+      const dauer = Math.min(900, 320 + start * 0.22);
+      const t0 = performance.now();
+
+      (function schritt(jetzt) {
+        const anteil = Math.min(1, (jetzt - t0) / dauer);
+        const weich = 1 - Math.pow(1 - anteil, 3);
+        window.scrollTo(0, Math.round(start * (1 - weich)));
+        if (anteil < 1) window.requestAnimationFrame(schritt);
+        else schwingen();
+      })(performance.now());
+    });
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────
    3. AKTIVER MENÜPUNKT — hebt hervor, wo man gerade ist
    ─────────────────────────────────────────────────────────── */
 
@@ -185,6 +239,29 @@ function auswahlAufsetzen() {
     );
     if (!knoepfe.length) return;
 
+    /* Unter 940px erscheint das Detail als Pop-up-Fenster über der
+       Seite — kein neuer Tab. <dialog> bringt Escape-Taste und
+       Tastaturfalle schon mit. Kann der Browser das nicht, fällt es
+       auf das alte Hinscrollen zurück. */
+    const fenster = document.querySelector('.auswahl-fenster');
+    const alsFenster = window.matchMedia('(max-width: 939px)');
+    const kannFenster = !!(fenster && typeof fenster.showModal === 'function');
+
+    if (fenster) {
+      const zuKnopf = fenster.querySelector('[data-fenster-zu]');
+      if (zuKnopf) zuKnopf.addEventListener('click', function () { fenster.close(); });
+
+      /* Klick auf den abgedunkelten Rand schließt ebenfalls */
+      fenster.addEventListener('click', function (e) {
+        if (e.target === fenster) fenster.close();
+      });
+
+      /* Wird das Fenster zur Desktop-Breite hin überflüssig, zu damit */
+      alsFenster.addEventListener('change', function (e) {
+        if (!e.matches && fenster.open) fenster.close();
+      });
+    }
+
     function waehlen(knopf, fokussieren, hinscrollen) {
       let aktivesFeld = null;
 
@@ -204,16 +281,24 @@ function auswahlAufsetzen() {
 
       if (fokussieren) knopf.focus();
 
-      /* Auf schmalen Schirmen steht das Detailfenster unter allen vier
-         Reitern und damit außerhalb des Bildes. Ohne diesen Sprung tippt
-         man auf einen Reiter und sieht scheinbar nichts passieren. */
-      if (hinscrollen && aktivesFeld && window.matchMedia('(max-width: 939px)').matches) {
-        const kopfhoehe = document.querySelector('.nav');
-        const abstand = (kopfhoehe ? kopfhoehe.getBoundingClientRect().height : 0) + 16;
-        const ziel = aktivesFeld.getBoundingClientRect().top + window.scrollY - abstand;
-        const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: ziel, behavior: ruhig ? 'auto' : 'smooth' });
+      /* Auf schmalen Schirmen aufklappen: als Fenster, wenn der Browser
+         <dialog> kann — sonst zum Detail hinscrollen. Ohne beides tippt
+         man auf einen Reiter und sieht scheinbar nichts passieren, weil
+         das Detail unter allen vier Reitern außerhalb des Bildes liegt. */
+      if (!hinscrollen || !aktivesFeld || !alsFenster.matches) return;
+
+      if (kannFenster) {
+        if (!fenster.open) {
+          try { fenster.showModal(); } catch (mist) { /* dann eben nicht */ }
+        }
+        return;
       }
+
+      const kopf = document.querySelector('.nav');
+      const abstand = (kopf ? kopf.getBoundingClientRect().height : 0) + 16;
+      const ziel = aktivesFeld.getBoundingClientRect().top + window.scrollY - abstand;
+      const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: ziel, behavior: ruhig ? 'auto' : 'smooth' });
     }
 
     knoepfe.forEach(function (knopf) {
@@ -263,34 +348,94 @@ function spielfeldAufsetzen() {
   const grossGenug = window.matchMedia('(min-width: 720px)');
   let obenauf = 10;
 
+  /* Die Plätze aus dem ursprünglichen Raster und wer gerade wo liegt */
+  let plaetze = [];
+  const platzVon = new Map();
+
   function zurueckInsRaster() {
     feld.classList.remove('ist-spielbar');
     liste.style.height = '';
     karten.forEach(function (k) {
-      k.style.left = ''; k.style.top = ''; k.style.width = ''; k.style.zIndex = '';
+      k.style.left = ''; k.style.top = '';
+      k.style.width = ''; k.style.height = ''; k.style.zIndex = '';
     });
+  }
+
+  function setzen(karte, platzIndex, mitGleiten) {
+    const p = plaetze[platzIndex];
+    if (!p) return;
+    if (mitGleiten) {
+      karte.classList.add('rastet-ein');
+      window.setTimeout(function () { karte.classList.remove('rastet-ein'); }, 420);
+    }
+    karte.style.width  = p.breite + 'px';
+    karte.style.height = p.hoehe  + 'px';
+    karte.style.left   = p.x + 'px';
+    karte.style.top    = p.y + 'px';
   }
 
   function anordnen() {
     zurueckInsRaster();
+    plaetze = [];
+    platzVon.clear();
     if (!grossGenug.matches) return;
 
-    /* Maße aus dem normalen Raster ablesen */
+    /* Maße aus dem normalen Raster ablesen. Die Höhe kommt mit, weil
+       Rasterzellen sich auf Zeilenhöhe strecken — ohne sie würden die
+       Kacheln beim Festnageln zusammenschnurren. */
     const rahmen = liste.getBoundingClientRect();
-    const masse = karten.map(function (k) {
+    plaetze = karten.map(function (k) {
       const r = k.getBoundingClientRect();
-      return { x: r.left - rahmen.left, y: r.top - rahmen.top, breite: r.width };
+      return { x: r.left - rahmen.left, y: r.top - rahmen.top, breite: r.width, hoehe: r.height };
     });
     const gesamthoehe = liste.offsetHeight;
 
-    /* und die Kacheln genau dort festnageln */
     liste.style.height = gesamthoehe + 'px';
     feld.classList.add('ist-spielbar');
     karten.forEach(function (k, i) {
-      k.style.width = masse[i].breite + 'px';
-      k.style.left  = masse[i].x + 'px';
-      k.style.top   = masse[i].y + 'px';
+      platzVon.set(k, i);
+      setzen(k, i, false);
     });
+  }
+
+  /* Nächstgelegener Platz — aber nur gleich breite kommen infrage,
+     sonst würde eine doppelt breite Kachel in eine schmale Lücke
+     rutschen und alles überlappen. */
+  function naechsterPlatz(karte) {
+    const eigener = plaetze[platzVon.get(karte)];
+    if (!eigener) return null;
+
+    const mx = (parseFloat(karte.style.left) || 0) + eigener.breite / 2;
+    const my = (parseFloat(karte.style.top)  || 0) + eigener.hoehe  / 2;
+
+    let besterIndex = platzVon.get(karte);
+    let kuerzeste = Infinity;
+    plaetze.forEach(function (p, i) {
+      if (Math.abs(p.breite - eigener.breite) > 2) return;
+      const dx = (p.x + p.breite / 2) - mx;
+      const dy = (p.y + p.hoehe  / 2) - my;
+      const abstand = dx * dx + dy * dy;
+      if (abstand < kuerzeste) { kuerzeste = abstand; besterIndex = i; }
+    });
+    return besterIndex;
+  }
+
+  function einrasten(karte) {
+    const von = platzVon.get(karte);
+    const nach = naechsterPlatz(karte);
+    if (nach === null || nach === von) { setzen(karte, von, true); return; }
+
+    /* Wer dort liegt, rückt auf den frei gewordenen Platz */
+    let andere = null;
+    platzVon.forEach(function (index, k) { if (index === nach) andere = k; });
+
+    platzVon.set(karte, nach);
+    setzen(karte, nach, true);
+
+    if (andere) {
+      platzVon.set(andere, von);
+      setzen(andere, von, true);
+    }
   }
 
   function ziehenAufsetzen(karte) {
@@ -336,6 +481,7 @@ function spielfeldAufsetzen() {
       try {
         if (karte.hasPointerCapture(e.pointerId)) karte.releasePointerCapture(e.pointerId);
       } catch (fehler) { /* egal */ }
+      einrasten(karte);
     }
     karte.addEventListener('pointerup', loslassen);
     karte.addEventListener('pointercancel', loslassen);
@@ -397,6 +543,7 @@ function jahrEintragen() {
 document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
+  nachObenAufsetzen();
   aktivenMenuepunktVerfolgen();
   auswahlAufsetzen();
   spielfeldAufsetzen();

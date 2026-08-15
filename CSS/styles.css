@@ -622,6 +622,73 @@ body.platzhalter-zeigen .platzhalter {
 .auswahl-panel.is-aktiv { display: block; }
 .auswahl-panel:focus-visible { outline-offset: 6px; }
 
+/* ── Detailfenster als Pop-up auf schmalen Schirmen ──
+   Unter 940 px steht rechts kein Platz mehr. Statt weit nach unten zu
+   scrollen, klappt das Detail als echtes Fenster über die Seite —
+   kein neuer Tab, sondern ein <dialog>. Der bringt Escape-Taste,
+   Tastaturfalle und Hintergrund-Abdunklung von Haus aus mit. */
+
+.auswahl-fenster {
+  width: min(94vw, 560px);
+  max-height: 86vh;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+  overflow: auto;
+  box-shadow: var(--shadow-lg);
+}
+.auswahl-fenster::backdrop {
+  background: rgba(23, 24, 26, 0.55);
+  backdrop-filter: blur(2px);
+}
+.auswahl-fenster[open] { animation: fensterDreht 0.42s var(--ease); }
+@keyframes fensterDreht {
+  from { opacity: 0; transform: perspective(1400px) rotateY(-16deg) scale(0.93); }
+  to   { opacity: 1; transform: none; }
+}
+.auswahl-fenster .panel-karte {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  animation: none;
+}
+
+.auswahl-fenster-zu {
+  position: sticky; top: 0; z-index: 3;
+  margin-left: auto;
+  display: block;
+  width: 40px; height: 40px;
+  font-size: 1.4rem; line-height: 1;
+  color: var(--text);
+  background: var(--surface);
+  border-radius: 50%;
+}
+.auswahl-fenster-zu:hover { color: var(--accent); }
+
+/* Ab Desktop ist es kein Fenster mehr, sondern steht ganz normal
+   rechts neben der Auswahl. */
+@media (min-width: 940px) {
+  .auswahl-fenster {
+    display: block;
+    position: static;
+    width: auto; max-width: none; max-height: none;
+    padding: 0; margin: 0;
+    background: none;
+    overflow: visible;
+    box-shadow: none;
+    animation: none;
+  }
+  .auswahl-fenster-zu { display: none; }
+  .auswahl-fenster .panel-karte {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    animation: panelEin var(--duration-lg) var(--ease);
+  }
+}
+
 .panel-karte {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -740,6 +807,39 @@ body.platzhalter-zeigen .platzhalter {
   border-radius: var(--radius-lg);
 }
 
+/* Rechts bleibt ein freier Streifen. Dort liegt nie eine Kachel, also
+   greift dort auch kein Ziehen — man kann mit dem Finger ganz normal
+   weiterscrollen, ohne aus dem Abschnitt herauszielen zu müssen. */
+@media (min-width: 720px) {
+  .spielfeld { padding-right: calc(var(--space-3) + var(--spiel-rand)); }
+}
+
+
+/* ── Karussell auf dem Handy ────────────────────────────── */
+/* Kein selbstgebautes Wischen, sondern das eingebaute Scroll-Rasten
+   des Browsers: links und rechts läuft es flüssig mit Schwung, am Ende
+   federt iOS von selbst zurück, und Wischen nach oben scrollt weiter
+   die Seite. Genau das Gummiband-Gefühl, das du beschrieben hast. */
+@media (max-width: 719px) {
+  .spielfeld { padding: var(--space-2); }
+
+  .bausteine {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;        /* die nächste Kachel lugt hervor */
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .bausteine::-webkit-scrollbar { display: none; }
+
+  .baustein { scroll-snap-align: center; }
+  .baustein--breit { grid-column: auto; }
+}
+
 .spielfeld.ist-spielbar .bausteine {
   display: block;
   position: relative;
@@ -765,11 +865,24 @@ body.platzhalter-zeigen .platzhalter {
   transform: scale(1.03) rotate(-0.7deg);
 }
 
+/* Beim Loslassen gleitet die Kachel in ihren Platz — und die Kachel,
+   die dort lag, gleitet gleichzeitig auf den frei gewordenen. */
+.spielfeld.ist-spielbar .baustein.rastet-ein {
+  transition: left  0.36s var(--ease),
+              top   0.36s var(--ease),
+              width 0.36s var(--ease),
+              height 0.36s var(--ease),
+              box-shadow var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease);
+}
+
 .spielfeld-fuss {
   display: flex; flex-wrap: wrap;
   align-items: center; justify-content: space-between;
   gap: var(--space-2);
   margin-top: var(--space-3);
+  margin-bottom: var(--space-4);   /* Luft zum nächsten Abschnitt */
   font-size: var(--size-small);
   color: var(--text-soft);
 }
@@ -785,9 +898,13 @@ body.platzhalter-zeigen .platzhalter {
 }
 .spielfeld-fuss button:hover { color: var(--accent); border-color: var(--accent); }
 
-/* Der Hinweis ergibt nur Sinn, wenn man wirklich ziehen kann */
-.spielfeld-fuss { display: none; }
-.spielfeld.ist-spielbar + .spielfeld-fuss { display: flex; }
+/* Der Hinweis richtet sich danach, was gerade möglich ist:
+   ziehen auf dem Desktop, wischen auf dem Handy. */
+.spielfeld-fuss .nur-ziehen,
+.spielfeld-fuss button { display: none; }
+.spielfeld.ist-spielbar + .spielfeld-fuss .nur-ziehen { display: inline; }
+.spielfeld.ist-spielbar + .spielfeld-fuss button { display: inline-block; }
+.spielfeld.ist-spielbar + .spielfeld-fuss .nur-wischen { display: none; }
 
 
 /* ── 9. ZEITLEISTE (Bildungsweg & Erfahrung) ───────────── */
@@ -1018,6 +1135,21 @@ body.platzhalter-zeigen .platzhalter {
   font-size: var(--size-small);
   color: var(--accent-dark);
 }
+
+
+/* ── 14b. SCHWUNG BEIM HOCHSCROLLEN ────────────────────── */
+/* Klick aufs Logo fährt nach oben und lässt den Inhalt kurz
+   nachfedern. Weiter als bis zum Seitenanfang kann man nicht
+   scrollen, deshalb macht die Bewegung der Inhalt selbst. */
+
+@keyframes schwung {
+  0%   { transform: translateY(0); }
+  32%  { transform: translateY(12px); }
+  62%  { transform: translateY(-4px); }
+  84%  { transform: translateY(1px); }
+  100% { transform: translateY(0); }
+}
+.schwingt { animation: schwung 0.6s var(--ease); }
 
 
 /* ── 15. EINBLENDEN BEIM SCROLLEN ──────────────────────── */

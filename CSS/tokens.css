@@ -94,6 +94,10 @@
   /* Wie weit das Zwischenstück ins Hintergrundbild hineinragt */
   --zwischen-hub:   90px;
 
+  /* Freier Streifen rechts im Spielfeld. Dort liegt keine Kachel,
+     also kann man dort mit dem Finger ganz normal weiterscrollen. */
+  --spiel-rand:     64px;
+
   /* ── RUNDUNGEN & SCHATTEN ──────────────────────────────── */
   --radius-sm:  6px;
   --radius:     12px;
