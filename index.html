@@ -106,7 +106,24 @@
       <a href="#ueber">Über mich</a>
       <a href="#leistungen">Leistungen</a>
       <a href="#bausteine">Bausteine</a>
-      <a href="#bildung">Werdegang</a>
+
+      <!-- Werdegang steckt in drei Blöcken — das Untermenü springt
+           direkt zum richtigen. Keine eigenen Seiten. -->
+      <div class="nav-gruppe">
+        <button class="nav-aufklapp" type="button"
+                aria-expanded="false" aria-controls="untermenue-werdegang">
+          Werdegang
+          <svg class="nav-pfeil" viewBox="0 0 12 8" aria-hidden="true">
+            <path d="M1 1.6L6 6.4L11 1.6" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-untermenue" id="untermenue-werdegang" hidden>
+          <a href="#schulisch">Schulisch</a>
+          <a href="#beruflich">Beruflich</a>
+          <a href="#eigene-erfahrung">Eigene Erfahrung</a>
+        </div>
+      </div>
 
       <!-- Aufklapper: der Auslöser ist bewusst ein Knopf, kein Link.
            Der Weg zum Abschnitt selbst steht als erster Eintrag drin. -->
@@ -760,16 +777,18 @@
   </section>
 
 
-  <!-- ══════════ 5. BILDUNGSWEG ══════════ -->
-  <section class="section" id="bildung">
+  <!-- ══════════ 5. WERDEGANG — SCHULISCH ══════════
+       Der Werdegang steht in drei eigenen Blöcken, damit man aus dem
+       Untermenü gezielt dorthin springen kann. -->
+  <section class="section" id="schulisch">
     <div class="container">
       <div class="split">
 
         <div class="reveal">
-          <span class="label">Schulung &amp; Bildungsweg</span>
+          <span class="label">Werdegang · Schulisch</span>
           <h2>Wo ich gelernt habe, was ich kann.</h2>
           <p class="lead" style="margin-top: var(--space-3);">
-            Die Stationen meiner Ausbildung — fachlich und praktisch.
+            Schule, Ausbildung, Kurse — die Stationen mit Zeugnis.
           </p>
         </div>
 
@@ -777,26 +796,25 @@
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">Jahr – Jahr</span>
-            <h3 class="platzhalter">Abschluss oder Ausbildung</h3>
+            <h3 class="platzhalter">Schulabschluss</h3>
             <p class="platzhalter">
-              Wo, was, und was du dort konkret gelernt hast, das dir heute nützt.
+              Welche Schule, welcher Abschluss. Ein Satz reicht.
             </p>
           </div>
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">Jahr – Jahr</span>
-            <h3 class="platzhalter">Weiterbildung oder Kurs</h3>
+            <h3 class="platzhalter">Ausbildung oder Studium</h3>
             <p class="platzhalter">
-              Auch Selbstgelerntes gehört hierhin — wichtig ist, dass man sieht,
-              dass du dranbleibst.
+              Wo, in welchem Fach, und was du dort gelernt hast, das dir heute nützt.
             </p>
           </div>
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">Jahr</span>
-            <h3 class="platzhalter">Zertifikat oder Nachweis</h3>
+            <h3 class="platzhalter">Kurs oder Zertifikat</h3>
             <p class="platzhalter">
-              Wenn du etwas Offizielles hast, kommt es hier hin.
+              Alles mit Nachweis kommt hierhin — auch kurze Weiterbildungen zählen.
             </p>
           </div>
 
@@ -807,8 +825,8 @@
   </section>
 
 
-  <!-- ══════════ 6. ERFAHRUNG ══════════ -->
-  <section class="section section--soft" id="erfahrung">
+  <!-- ══════════ 6. WERDEGANG — BERUFLICH ══════════ -->
+  <section class="section section--soft" id="beruflich">
     <div class="container">
       <div class="split split--media-left">
 
@@ -816,7 +834,7 @@
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">seit Jahr</span>
-            <h3 class="platzhalter">Selbstständig — Websites für lokale Betriebe</h3>
+            <h3 class="platzhalter">Selbstständig — Websites für Praxen</h3>
             <p class="platzhalter">
               Was du machst, für wen, und womit du dich am besten auskennst.
             </p>
@@ -824,10 +842,9 @@
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">Jahr – Jahr</span>
-            <h3 class="platzhalter">Frühere Station</h3>
+            <h3 class="platzhalter">Frühere Anstellung</h3>
             <p class="platzhalter">
-              Auch Erfahrung außerhalb der Webentwicklung zählt — sie erklärt oft,
-              warum du Kunden gut verstehst.
+              Auch Arbeit außerhalb der Webentwicklung zählt — sie erklärt oft, warum du Kunden gut verstehst.
             </p>
           </div>
 
@@ -842,13 +859,10 @@
         </div>
 
         <div class="reveal">
-          <span class="label">Erfahrung</span>
-          <h2>Was ich bisher gemacht habe.</h2>
+          <span class="label">Werdegang · Beruflich</span>
+          <h2>Wo ich gearbeitet habe.</h2>
           <p class="lead" style="margin-top: var(--space-3);">
-            <span class="platzhalter">
-              Ein oder zwei Sätze, die den roten Faden erklären — wie eins zum
-              anderen geführt hat.
-            </span>
+            <span class="platzhalter">Ein oder zwei Sätze zum roten Faden — wie eins zum anderen geführt hat.</span>
           </p>
         </div>
 
@@ -857,8 +871,54 @@
   </section>
 
 
+  <!-- ══════════ 7. WERDEGANG — EIGENE ERFAHRUNG ══════════ -->
+  <section class="section" id="eigene-erfahrung">
+    <div class="container">
+      <div class="split">
+
+        <div class="reveal">
+          <span class="label">Werdegang · Eigene Erfahrung</span>
+          <h2>Was ich mir selbst beigebracht habe.</h2>
+          <p class="lead" style="margin-top: var(--space-3);">
+            Das, wofür es kein Zeugnis gibt — und was in diesem Beruf oft am meisten zählt.
+          </p>
+        </div>
+
+        <div class="timeline reveal">
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">seit Jahr</span>
+            <h3 class="platzhalter">Selbst gebaute Projekte</h3>
+            <p class="platzhalter">
+              Woran du in deiner Zeit gebaut hast und was du dabei gelernt hast. Auch Gescheitertes ist erzählenswert.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">fortlaufend</span>
+            <h3 class="platzhalter">Womit ich arbeite</h3>
+            <p class="platzhalter">
+              Welche Werkzeuge und Sprachen dir vertraut sind — ohne Aufzählung um der Aufzählung willen.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <span class="timeline-time platzhalter">fortlaufend</span>
+            <h3 class="platzhalter">Wie ich dranbleibe</h3>
+            <p class="platzhalter">
+              Wie du dich auf dem Laufenden hältst. Das beruhigt Kunden mehr als jedes Zertifikat.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
   <!-- ══════════ 7. REFERENZ ══════════ -->
-  <section class="section" id="referenz">
+  <section class="section section--soft" id="referenz">
     <div class="container">
 
       <div class="section-head reveal">
@@ -937,7 +997,7 @@
 
 
   <!-- ══════════ 8. HÄUFIGE FRAGEN ══════════ -->
-  <section class="section section--soft" id="faq">
+  <section class="section" id="faq">
     <div class="container">
 
       <div class="section-head reveal">
