@@ -162,6 +162,17 @@ function aufklapperAufsetzen() {
   /* Muss zum Umschaltpunkt in styles.css passen (dort 1140px). */
   const alsPopup = window.matchMedia('(min-width: 1140px)');
 
+  /* Wie lange ein Menü nach dem Verlassen noch offen bleibt. Genug,
+     um die Lücke zum Untermenü zu überqueren — mehr nicht, sonst hängt
+     es sichtbar hinterher. Die unsichtbaren Brücken über die Lücken
+     tun das meiste, deshalb reicht hier wenig. */
+  const NACHLAUF = 120;
+
+  /* Damit eine Gruppe die anderen zumachen kann: alle Schließer
+     sammeln und beim Öffnen die übrigen aufrufen. Ohne das stehen
+     beim Wandern über die Leiste zwei Menüs gleichzeitig offen. */
+  const schliesser = [];
+
   gruppen.forEach(function (gruppe) {
     const knopf = gruppe.querySelector('.nav-aufklapp');
     const feld  = gruppe.querySelector('.nav-untermenue');
@@ -191,6 +202,17 @@ function aufklapperAufsetzen() {
 
     function oeffnen() {
       window.clearTimeout(schliessUhr);
+
+      /* Erst die Nachbarn zu, dann selbst auf — sonst überlappen sich
+         zwei Menüs für die Dauer des Nachlaufs. Verschachtelte Gruppen
+         sind ausgenommen: die eigene Elterngruppe muss offen bleiben. */
+      schliesser.forEach(function (s) {
+        if (s.gruppe !== gruppe &&
+            !s.gruppe.contains(gruppe) && !gruppe.contains(s.gruppe)) {
+          s.sofort();
+        }
+      });
+
       feld.hidden = false;
       knopf.setAttribute('aria-expanded', 'true');
       seiteWaehlen();
@@ -212,6 +234,9 @@ function aufklapperAufsetzen() {
       });
     }
 
+    /* Damit andere Gruppen dieses Menü sofort zumachen können */
+    schliesser.push({ gruppe: gruppe, sofort: schliessen });
+
     knopf.addEventListener('click', function () {
       if (feld.hidden) oeffnen(); else schliessen();
     });
@@ -232,7 +257,7 @@ function aufklapperAufsetzen() {
     });
     gruppe.addEventListener('pointerleave', function (e) {
       if (e.pointerType === 'touch' || !alsPopup.matches) return;
-      schliessUhr = window.setTimeout(schliessen, 220);
+      schliessUhr = window.setTimeout(schliessen, NACHLAUF);
     });
 
     gruppe.addEventListener('keydown', function (e) {
