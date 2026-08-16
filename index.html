@@ -812,26 +812,31 @@
 
         <!-- Verwandelt sich alle paar Sekunden von selbst: Desktop →
              Tablet → Handy. Rein zum Ansehen, nichts zum Anklicken.
-             Sobald echte Screenshots da sind, kommen sie in
-             .geraet-inhalt — dann bitte aria-hidden entfernen und
-             ordentliche alt-Texte setzen. -->
-        <div class="geraete-galerie reveal" aria-hidden="true">
+             Für jede Form liegt ein eigener Zuschnitt bereit — die
+             Safari-Oberfläche der Aufnahmen ist abgeschnitten, sonst
+             steckte ein Browser im Browser im Gerät. -->
+        <div class="geraete-galerie reveal">
           <div class="geraet-buehne">
             <div class="geraet" data-geraet="desktop">
-              <span class="geraet-schlitz"></span>
+              <span class="geraet-schlitz" aria-hidden="true"></span>
               <div class="geraet-schirm">
-                <div class="geraet-leiste">
+                <div class="geraet-leiste" aria-hidden="true">
                   <span class="browser-punkte"><span></span><span></span><span></span></span>
                   <span class="browser-adresse platzhalter">zahnarztpraxis-pforzheim.de</span>
                 </div>
                 <div class="geraet-inhalt">
-                  <!-- Screenshot: <img src="bilder/referenz.png" alt="" /> -->
-                  Startseite der Praxis
+                  <img class="geraet-bild" data-fuer="desktop" loading="lazy" decoding="async"
+                       src="bilder/referenz-desktop.jpg"
+                       alt="Startseite der Zahnarztpraxis am Rechner" />
+                  <img class="geraet-bild" data-fuer="tablet" loading="lazy" decoding="async"
+                       src="bilder/referenz-tablet.jpg" alt="" />
+                  <img class="geraet-bild" data-fuer="handy" loading="lazy" decoding="async"
+                       src="bilder/referenz-handy.jpg" alt="" />
                 </div>
               </div>
             </div>
           </div>
-          <p class="geraet-name">Ansicht: <span data-geraet-name>Desktop</span></p>
+          <p class="geraet-name" aria-hidden="true">Ansicht: <span data-geraet-name>Desktop</span></p>
         </div>
 
         <div class="reveal">

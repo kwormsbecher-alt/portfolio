@@ -1,3 +1,8 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# Original-Aufnahmen mit Safari-Oberflaeche: enthalten Kevins
+# offene Tabs und muessen nicht oeffentlich im Repo liegen.
+# Die zugeschnittenen Fassungen in bilder/ werden veroeffentlicht.
+bilder/_quellen/

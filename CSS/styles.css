@@ -1478,15 +1478,25 @@ body.platzhalter-zeigen .platzhalter {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
+/* Für jede Geräteform liegt ein eigener Zuschnitt bereit. Sie liegen
+   übereinander und werden übergeblendet, statt die Quelle zu tauschen —
+   so gibt es beim Wechsel kein kurzes Weiß. */
 .geraet-inhalt {
+  position: relative;
   flex: 1; min-height: 0;
-  display: grid; place-items: center;
-  padding: var(--space-2);
-  text-align: center;
-  font-size: var(--size-small);
-  color: var(--text-soft);
+  background: var(--surface);
 }
-.geraet-inhalt img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+.geraet-bild {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 0;        /* immer am Seitenanfang bleiben */
+  opacity: 0;
+  transition: opacity 0.55s var(--ease);
+}
+.geraet[data-geraet="desktop"] .geraet-bild[data-fuer="desktop"],
+.geraet[data-geraet="tablet"]  .geraet-bild[data-fuer="tablet"],
+.geraet[data-geraet="handy"]   .geraet-bild[data-fuer="handy"] { opacity: 1; }
 
 .geraet-name {
   margin-top: var(--space-3);
