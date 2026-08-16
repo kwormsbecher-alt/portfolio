@@ -649,6 +649,20 @@ body.platzhalter-zeigen .platzhalter {
   object-fit: cover;
   object-position: 50% 58%;      /* die Baumspitzen bleiben im Bild */
 }
+
+/* Der Film liegt über dem Standbild und blendet sich ein, sobald er
+   wirklich läuft. Läuft er nicht, bleibt einfach das Bild stehen —
+   kein leerer schwarzer Kasten. */
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 58%;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+  pointer-events: none;          /* nichts zum Anklicken */
+}
+.hero-bild.hat-video .hero-video { opacity: 1; }
 .hero-bild::after {
   content: '';
   position: absolute; inset: 0;

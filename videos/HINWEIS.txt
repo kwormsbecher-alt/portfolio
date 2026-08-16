@@ -1,0 +1,30 @@
+Hintergrundvideo der Startseite
+==============================
+
+wallpaper_video_version1.mp4  —  0,9 MB, 13 Sekunden
+
+Wird als Hintergrund im Willkommens-Bereich abgespielt:
+Endlosschleife, ohne Ton, ohne Bedienelemente.
+
+Austauschen
+-----------
+Neue Datei mit demselben Namen hier ablegen. Bitte klein halten —
+alles über etwa 3 MB wird auf dem Handy unangenehm.
+
+Wieder auf das Standbild umstellen
+----------------------------------
+In index.html beim Willkommens-Abschnitt:
+
+    <section class="hero" id="willkommen" data-hintergrund="video">
+
+Den Wert "video" durch irgendetwas anderes ersetzen, zum Beispiel
+"bild". Dann bleibt das Foto stehen und das Video wird gar nicht
+erst geladen.
+
+Wann das Video von selbst ausbleibt
+-----------------------------------
+- wenn im System "Bewegung reduzieren" eingeschaltet ist
+- im Datensparmodus des Browsers
+- wenn der Browser das Abspielen verweigert
+
+In allen Fällen bleibt einfach das Standbild stehen.

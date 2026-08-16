@@ -324,6 +324,64 @@ function kopfleisteVerwandelnAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   3a. HINTERGRUND-FILM
+
+   Kein Player: keine Bedienelemente, kein Ton, Endlosschleife. Der
+   Film startet nur, wenn er auch darf — bei reduzierter Bewegung oder
+   im Datensparmodus bleibt das Standbild stehen. Er pausiert, sobald
+   er aus dem Bild ist oder der Tab in den Hintergrund geht.
+
+   Umschalten über data-hintergrund am Abschnitt: "video" oder etwas
+   anderes.
+   ─────────────────────────────────────────────────────────── */
+
+function hintergrundFilmAufsetzen() {
+  const hero    = document.querySelector('.hero');
+  const flaeche = document.querySelector('.hero-bild');
+  const film    = flaeche && flaeche.querySelector('.hero-video');
+  if (!hero || !film) return;
+
+  if (hero.dataset.hintergrund !== 'video') return;
+
+  /* Wer Bewegung reduziert hat oder Daten sparen will, bekommt Bild. */
+  const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const verbindung = navigator.connection;
+  if (ruhig.matches || (verbindung && verbindung.saveData)) return;
+
+  film.muted = true;              /* ohne das startet iOS nicht */
+  film.playsInline = true;
+
+  let imBild = true;
+
+  function anwerfen() {
+    if (!imBild || document.hidden || ruhig.matches) return;
+    const versuch = film.play();
+    if (versuch && typeof versuch.catch === 'function') {
+      versuch.catch(function () { /* dann bleibt das Standbild */ });
+    }
+  }
+
+  film.addEventListener('playing', function () {
+    flaeche.classList.add('hat-video');
+  });
+
+  /* Nicht weiterlaufen lassen, wenn niemand hinschaut */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) film.pause(); else anwerfen();
+  });
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (eintraege) {
+      imBild = eintraege[0].isIntersecting;
+      if (imBild) anwerfen(); else film.pause();
+    }, { threshold: 0.05 }).observe(hero);
+  }
+
+  anwerfen();
+}
+
+
+/* ───────────────────────────────────────────────────────────
    3b. GERÄTE-GALERIE
 
    Der Rahmen bei der Referenz verwandelt sich von selbst weiter:
@@ -1109,6 +1167,7 @@ document.addEventListener('DOMContentLoaded', function () {
   scrollSperreAufsetzen();
   bausteinZeigen = bausteinFensterAufsetzen();   /* muss vor dem Spielfeld stehen */
   spielfeldAufsetzen();
+  hintergrundFilmAufsetzen();
   geraeteGalerieAufsetzen();
   einblendenAufsetzen();
   bildflaechenPruefen();

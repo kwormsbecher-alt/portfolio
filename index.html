@@ -153,11 +153,15 @@
 <main id="inhalt">
 
   <!-- ══════════ 1. WILLKOMMEN ══════════ -->
-  <section class="hero" id="willkommen">
+  <!-- data-hintergrund schaltet zwischen Video und Standbild um:
+       "video" = Film läuft, alles andere = nur das Bild. Eine Zeile,
+       falls du dich dagegen entscheidest. -->
+  <section class="hero" id="willkommen" data-hintergrund="video">
     <!-- ══ BILDFLÄCHE ══
-         Drei Größen derselben Datei: das Handy lädt 19 KB, der Rechner
-         72 KB. Das Original mit 3000 px bleibt als Reserve liegen.
-         Zum Austauschen einfach neue Dateien gleichen Namens ablegen. -->
+         Das Standbild liegt immer darunter: es ist sofort da, dient
+         als Rückfall und bleibt stehen, wenn der Film nicht starten
+         darf — bei reduzierter Bewegung oder im Datensparmodus.
+         Drei Größen: das Handy lädt 19 KB, der Rechner 72 KB. -->
     <div class="hero-bild" aria-hidden="true">
       <img src="bilder/wallpaper_version1_1600.jpg"
            srcset="bilder/wallpaper_version1_800.jpg   800w,
@@ -165,6 +169,13 @@
                    bilder/wallpaper_version1.jpg      3000w"
            sizes="(min-width: 940px) 46vw, 100vw"
            alt="" fetchpriority="high" decoding="async" />
+
+      <!-- Kein Player: ohne Bedienelemente, ohne Ton, in Endlosschleife.
+           muted und playsinline sind Pflicht, sonst startet iOS nicht. -->
+      <video class="hero-video" loop muted playsinline preload="auto"
+             poster="bilder/wallpaper_version1_800.jpg" tabindex="-1">
+        <source src="videos/wallpaper_video_version1.mp4" type="video/mp4" />
+      </video>
     </div>
 
     <div class="container hero-inhalt reveal">
