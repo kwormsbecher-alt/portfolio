@@ -8,6 +8,11 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Versteckt heißt versteckt. Ohne das hebelt jedes spätere
+   display: flex / grid das hidden-Attribut wieder aus — und genau das
+   steuert hier alles, was JavaScript ein- und ausblendet. */
+[hidden] { display: none !important; }
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--anker-abstand);
@@ -2006,10 +2011,6 @@ body.platzhalter-zeigen .platzhalter {
   margin-bottom: var(--space-7);
   scroll-margin-top: calc(var(--nav-height-sm) + var(--space-3));
 }
-/* Ausgefiltert. Explizit, weil ein späteres display: … das
-   hidden-Attribut sonst aushebeln würde. */
-.fach-block[hidden] { display: none; }
-
 @media (min-width: 760px) {
   .fach-chips,
   .fach-block { scroll-margin-top: calc(var(--nav-height) + var(--space-3)); }
@@ -2148,6 +2149,115 @@ body.platzhalter-zeigen .platzhalter {
   font-size: var(--size-small);
   max-width: 60ch;
 }
+
+
+/* Der Weg zur ausführlichen Fragen-Seite, unter den Aufklappern */
+.faq-mehr {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+  max-width: var(--container-text);
+  margin-top: var(--space-5);
+}
+.faq-mehr-hinweis { font-size: var(--size-label); color: var(--text-soft); }
+
+
+/* ── 11b. DIE FRAGEN-SEITE ─────────────────────────────────
+   Dieselben Aufklapper wie auf der Startseite, dazu Gruppen und
+   ein Suchfeld. Die Suche läuft im Browser — siehe main.js. */
+
+.fragen-suche { max-width: var(--container-text); margin-bottom: var(--space-6); }
+
+.fragen-feld-rahmen {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: 0.2rem 0.9rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+.fragen-feld-rahmen:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+.fragen-lupe { flex-shrink: 0; width: 19px; height: 19px; color: var(--text-soft); }
+
+.fragen-feld {
+  flex: 1; min-width: 0;
+  padding: 0.75rem 0;
+  font: inherit;
+  font-size: var(--size-small);
+  color: var(--text);
+  background: none;
+  border: 0;
+}
+.fragen-feld:focus { outline: none; }   /* der Rahmen zeigt es schon */
+.fragen-feld::placeholder { color: var(--text-soft); }
+/* Unter 16px zoomt Safari beim Antippen von selbst ins Feld hinein,
+   und man muss danach von Hand wieder herauswischen. Also am Handy
+   volle 16px, am Rechner bleibt es beim kleineren Maß. */
+@media (max-width: 759px) {
+  .fragen-feld { font-size: 1rem; }
+  .fragen-feld::placeholder { font-size: 0.9rem; }
+}
+/* Das eigene X des Browsers weg — wir haben einen eigenen Knopf */
+.fragen-feld::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+.fragen-leeren {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  color: var(--text-soft);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color var(--duration) var(--ease),
+              background var(--duration) var(--ease);
+}
+.fragen-leeren:hover { color: var(--text); background: var(--accent-soft); }
+.fragen-leeren svg { width: 15px; height: 15px; }
+
+.fragen-treffer {
+  min-height: 1.4em;                    /* springt sonst beim Tippen */
+  margin-top: var(--space-2);
+  padding-left: 0.9rem;
+  font-size: var(--size-label);
+  color: var(--text-soft);
+}
+
+.fragen-liste { max-width: var(--container-text); }
+.fragen-gruppe + .fragen-gruppe { margin-top: var(--space-6); }
+.fragen-gruppe > h2 {
+  font-size: var(--size-h3);
+  margin-bottom: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+/* Wenn die Suche nichts findet. Freundlich statt als Fehler:
+   der Besucher hat nichts falsch gemacht. */
+.fragen-leer {
+  max-width: var(--container-text);
+  padding: clamp(var(--space-4), 6vw, var(--space-6));
+  text-align: center;
+  background: var(--accent-soft);
+  border-radius: var(--radius-lg);
+}
+.fragen-leer-zeichen {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--ton);
+}
+.fragen-leer h2 {
+  font-size: var(--size-h3);
+  margin-top: var(--space-3);
+}
+.fragen-leer p {
+  max-width: 46ch;
+  margin: var(--space-2) auto 0;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+}
+.fragen-leer .btn-row { justify-content: center; margin-top: var(--space-4); }
 
 
 /* ── 12. KONTAKT ───────────────────────────────────────── */

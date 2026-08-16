@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Häufige Fragen — [DEIN NAME]</title>
+  <meta name="description" content="Antworten auf die Fragen, die vor einem Website-Projekt am häufigsten kommen: Kosten, Ablauf, Inhalte, Google." />
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#1F2023" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../CSS/tokens.css" />
+  <link rel="stylesheet" href="../CSS/styles.css" />
+</head>
+
+<body>
+
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+<div class="logo-band">
+  <div class="container">
+    <a class="nav-logo" href="../index.html">
+      [DEIN NAME]
+      <small>Websites für Praxen</small>
+    </a>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="container">
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="hauptmenue">
+      <span class="nav-toggle-striche" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="sr-only">Menü öffnen</span>
+    </button>
+
+    <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
+
+      <!-- Eine Ebene zurück. Kein Haus: das gehört zur Startseite,
+           hier geht es nach oben in der Gliederung. -->
+      <a class="nav-zurueck" href="../index.html"
+         aria-label="Zurück zur Startseite" title="Zurück zur Startseite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 12H4M10 6l-6 6 6 6" />
+        </svg>
+        <span class="nav-zurueck-wort">Zurück</span>
+      </a>
+
+      <span class="nav-ebene-strich" aria-hidden="true"></span>
+
+      <!-- Dieselbe Ebene wie Impressum und Datenschutz: von hier aus
+           kommt man ohne Umweg zu den beiden anderen. -->
+      <a href="fragen.html" class="is-active" aria-current="page">Häufige Fragen</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+
+      <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
+    </nav>
+  </div>
+</header>
+
+
+<main id="inhalt">
+
+  <section class="page-head">
+    <div class="container">
+      <span class="label">Fragen</span>
+      <h1 style="font-size: var(--size-h2); max-width: 20ch;">Häufige Fragen</h1>
+      <p class="lead" style="margin-top: var(--space-3); max-width: 54ch;">
+        Alles, was mich vor einem Projekt am häufigsten gefragt wird — sortiert
+        nach Thema. Wenn Ihre Frage nicht dabei ist, schreiben Sie mir einfach.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+
+      <p class="hinweis" style="max-width: var(--container-text);">
+        <strong>Antworten noch nicht scharf.</strong> Die Fragen stimmen, die
+        Antworten sind Vorschläge — überall wo grau markiert ist, gehört deine
+        eigene Formulierung hin. Was du nicht anbietest, löschst du einfach raus.
+      </p>
+
+      <!-- ══ SUCHE ══
+           Läuft im Browser, kein Server, keine Datenbank: bei knapp
+           zwanzig Fragen ist das sofort da und es verlässt keine
+           Eingabe das Gerät. Ohne JavaScript bleibt das Feld
+           ausgeblendet und die Liste ist vollständig da. -->
+      <form class="fragen-suche" role="search" data-fragen-suche hidden
+            onsubmit="return false;">
+        <label class="sr-only" for="fragen-feld">Fragen durchsuchen</label>
+        <div class="fragen-feld-rahmen">
+          <svg class="fragen-lupe" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.6-3.6" />
+          </svg>
+          <!-- Kurz halten: auf dem Handy ist das Feld rund 225 px
+               breit, alles Längere wird abgeschnitten. Die Beispiele
+               stehen deshalb in der Zeile darunter. -->
+          <input class="fragen-feld" id="fragen-feld" type="search"
+                 placeholder="Frage suchen …" autocomplete="off" />
+          <button class="fragen-leeren" type="button" data-fragen-leeren hidden
+                  aria-label="Suche zurücksetzen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
+        <p class="fragen-treffer" data-fragen-treffer aria-live="polite"></p>
+      </form>
+
+
+      <!-- ══ DIE FRAGEN ══
+           data-stichworte fängt ab, wonach jemand sucht, ohne dass
+           das Wort in der Frage steht: "teuer" für Kosten, "SEO" für
+           Google. Kommt eine neue Frage dazu, hier ein paar Wörter
+           mitgeben — das ist die ganze "Datenbank". -->
+      <div class="fragen-liste" data-fragen-liste>
+
+        <section class="fragen-gruppe">
+          <h2>Ablauf</h2>
+
+          <details class="faq-item" data-stichworte="ablauf start beginn schritte vorgehen erstgespraech kennenlernen wie laeuft">
+            <summary>Wie läuft die Zusammenarbeit ab?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Erst ein kurzes Gespräch, in dem ich verstehe, was Ihre Praxis
+                braucht. Danach bekommen Sie ein festes Angebot. Wenn es passt,
+                baue ich einen ersten Entwurf, den wir gemeinsam durchgehen, bis
+                er sitzt. Zum Schluss geht die Seite online.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="dauer zeit wochen wann fertig schnell termin lange">
+            <summary>Wie lange dauert es, bis die Seite online ist?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                In der Regel wenige Wochen. Der größte Faktor sind meist die Texte
+                und Bilder, die von Ihnen kommen — dabei helfe ich aber.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="brauchen benoetigt unterlagen vorbereitung was muss ich liefern anfang">
+            <summary>Was brauchen Sie von mir, damit es losgehen kann?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Für das erste Gespräch nichts außer einer halben Stunde Zeit.
+                Später brauche ich Ihre Sprechzeiten, Leistungen und Kontaktdaten
+                sowie Zugang zu einer bestehenden Seite, falls es eine gibt.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="region entfernung umgebung pforzheim vor ort persoenlich anfahrt deutschlandweit">
+            <summary>Arbeiten Sie auch außerhalb Ihrer Region?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Ja. Das Erstgespräch führe ich gerne persönlich, alles Weitere geht
+                genauso gut per Telefon und Video.
+              </span>
+            </div>
+          </details>
+        </section>
+
+
+        <section class="fragen-gruppe">
+          <h2>Kosten</h2>
+
+          <details class="faq-item" data-stichworte="kosten preis teuer guenstig euro budget angebot bezahlen was kostet">
+            <summary>Was kostet eine Website bei Ihnen?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Das hängt vom Umfang ab. Nach einem kurzen Gespräch bekommen Sie ein
+                festes Angebot — keine Stundenabrechnung, keine Überraschungen.
+                Hier später deine tatsächliche Antwort einsetzen.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="laufende kosten monatlich abo hosting domain gebuehr jaehrlich folgekosten">
+            <summary>Gibt es laufende Kosten?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Für Domain und Hosting fallen kleine Beträge an, die unabhängig von
+                mir anfallen. Ob Sie das selbst übernehmen oder ich es für Sie
+                mitmache, entscheiden Sie.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="abrechnung rechnung zahlung raten anzahlung stunden pauschale wann zahlen">
+            <summary>Wie wird abgerechnet?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Zu einem festen Preis, der vorher feststeht. Wie er aufgeteilt wird —
+                etwa eine Anzahlung zu Beginn und der Rest zum Launch — halten wir
+                im Angebot fest.
+              </span>
+            </div>
+          </details>
+        </section>
+
+
+        <section class="fragen-gruppe">
+          <h2>Inhalte</h2>
+
+          <details class="faq-item" data-stichworte="texte fotos bilder schreiben fotograf material inhalte liefern">
+            <summary>Muss ich Texte und Fotos selbst liefern?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Fotos von Praxis und Team sind wertvoll und sollten echt sein.
+                Bei den Texten mache ich Vorschläge, die Sie nur noch korrigieren.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="logo marke branding farben schriftart gestaltung corporate design">
+            <summary>Ich habe kein Logo. Ist das ein Problem?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Nein. Eine Praxis-Website funktioniert auch ohne Logo, wenn Schrift
+                und Farben stimmen. Wenn Sie eines möchten, klären wir im Gespräch,
+                was dafür nötig ist.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="alte seite bestehende inhalte uebernehmen umzug migration vorhandene website">
+            <summary>Können Inhalte meiner alten Seite übernommen werden?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Meistens ja. Texte lassen sich übernehmen und überarbeiten, Bilder
+                nur, wenn sie scharf genug sind. Was nicht mehr passt, lassen wir
+                bewusst weg.
+              </span>
+            </div>
+          </details>
+        </section>
+
+
+        <section class="fragen-gruppe">
+          <h2>Nach dem Launch</h2>
+
+          <details class="faq-item" data-stichworte="launch danach betreuung wartung support pflege weiter erreichbar">
+            <summary>Was passiert nach dem Launch?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Ich bleibe erreichbar. Auf Wunsch kümmere ich mich weiter um Hosting,
+                Sicherheitszertifikat und Aktualisierungen, damit Sie sich um nichts
+                kümmern müssen.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="selbst aendern bearbeiten pflegen sprechzeiten urlaub aktualisieren cms zugang">
+            <summary>Kann ich die Seite später selbst ändern?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Kleine Änderungen wie Sprechzeiten oder Urlaubshinweise übernehme ich
+                für Sie. Auf Wunsch richte ich Ihnen einen Bereich ein, in dem Sie das
+                selbst erledigen können.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="ausfall stoerung offline fehler nicht erreichbar panne notfall">
+            <summary>Was ist, wenn die Seite ausfällt?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Dann melden Sie sich, und ich kümmere mich darum. Wie schnell ich
+                reagiere, halten wir vorher fest, damit Sie sich darauf verlassen
+                können.
+              </span>
+            </div>
+          </details>
+        </section>
+
+
+        <section class="fragen-gruppe">
+          <h2>Sichtbarkeit und Technik</h2>
+
+          <details class="faq-item" data-stichworte="google suche gefunden werden seo sichtbarkeit ranking maps eintrag">
+            <summary>Wird meine Praxis dann bei Google gefunden?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Die Seite wird technisch so gebaut, dass Google sie versteht, und ich
+                richte den Google-Eintrag Ihrer Praxis ein oder bringe ihn in Ordnung.
+                Einen bestimmten Platz kann seriös niemand versprechen.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="rezensionen bewertungen sterne google bewertung feedback patienten meinungen">
+            <summary>Können Sie auch bei Bewertungen helfen?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Ja. Ich zeige Ihnen, wie Sie zufriedene Patienten auf einfachem Weg um
+                eine Bewertung bitten — ohne Druck und ohne gekaufte Sterne.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="handy mobil smartphone tablet responsive bildschirm klein iphone">
+            <summary>Funktioniert die Seite auf dem Handy?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Ja, und zwar zuerst. Die meisten Patienten suchen unterwegs — deshalb
+                baue ich jede Seite von Anfang an für kleine Bildschirme und passe sie
+                nach oben an.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="datenschutz dsgvo cookies rechtssicher impressum abmahnung recht daten">
+            <summary>Wie ist das mit Datenschutz und DSGVO?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Ich baue die Seite so, dass so wenig Daten wie möglich anfallen —
+                das erspart Cookie-Banner und Ärger. Impressum und
+                Datenschutzerklärung bereite ich vor; rechtlich prüfen lassen müssen
+                Sie sie selbst.
+              </span>
+            </div>
+          </details>
+
+          <details class="faq-item" data-stichworte="barrierefrei zugaenglich sehbehindert vorlesen kontrast schriftgroesse aelter">
+            <summary>Ist die Seite auch für ältere Patienten gut bedienbar?</summary>
+            <div class="faq-answer">
+              <span class="platzhalter">
+                Darauf achte ich besonders: ausreichend große Schrift, klare
+                Kontraste, keine versteckten Bedienelemente. Was zählt, ist die
+                Telefonnummer — und die muss man sofort finden.
+              </span>
+            </div>
+          </details>
+        </section>
+
+      </div>
+
+
+      <!-- Kommt nur, wenn die Suche nichts findet. Der Suchbegriff
+           landet mit in der Mail, damit die Frage nicht verlorengeht. -->
+      <div class="fragen-leer" data-fragen-leer hidden>
+        <span class="fragen-leer-zeichen" aria-hidden="true">?</span>
+        <h2>Oh nein — Ihre Frage ist ganz schön speziell.</h2>
+        <p>
+          Dazu steht hier nichts. Schreiben Sie mir einfach kurz Ihren Fall,
+          dann antworte ich Ihnen persönlich. Ihr Suchbegriff steht in der Mail
+          schon drin.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#" data-mail="frage">Frage per Mail stellen</a>
+        </div>
+      </div>
+
+
+      <div class="kontakt-box reveal" style="margin-top: var(--space-7);">
+        <span class="label" style="justify-content: center;">Noch offen?</span>
+        <h2>Fragen Sie einfach.</h2>
+        <p class="lead" style="margin-top: var(--space-2);">
+          Ein unverbindliches Gespräch klärt in zwanzig Minuten mehr als jede
+          Liste. Ohne Verkaufsdruck, ohne Kosten.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#" data-mail="link">Termin per Mail anfragen</a>
+        </div>
+        <p class="mail-hint">
+          Kein Mailprogramm eingerichtet? Dann schreiben Sie an
+          <strong data-mail="text">platzhalter@beispiel.de</strong>
+        </p>
+      </div>
+
+      <p style="margin-top: var(--space-6);">
+        <a href="../index.html">← Zurück zur Startseite</a>
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="footer">
+  <div class="container">
+    <p>© <span data-jahr>2026</span> [DEIN NAME]</p>
+    <nav aria-label="Rechtliches">
+      <a href="fragen.html">Häufige Fragen</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="../index.html">Startseite</a>
+    </nav>
+
+    <!-- Noch ohne Ziel. Sobald die Profile stehen: href="…" ergänzen,
+         dann sind die Knöpfe sofort klickbar. -->
+    <div class="sozial">
+      <a class="sozial-knopf" aria-label="Instagram" title="Instagram — Link folgt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <path d="M16.9 7.1h.01" />
+        </svg>
+      </a>
+      <a class="sozial-knopf" aria-label="LinkedIn" title="LinkedIn — Link folgt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="3" />
+          <path d="M7.6 10.6v6M7.6 7.6h.01" />
+          <path d="M11.6 16.6v-6M11.6 13.2c0-1.4 1-2.4 2.4-2.4s2.4 1 2.4 2.4v3.4" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="../JAVA/main.js"></script>
+
+</body>
+</html>

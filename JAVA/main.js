@@ -34,24 +34,47 @@ const KONTAKT = {
     'So erreichst du mich am besten:',
     '',
     'Viele Grüße'
+  ].join('\n'),
+
+  /* Zweite Fassung für die Fragen-Seite: Wer dort landet, will keinen
+     Termin, sondern eine Antwort. */
+  FRAGE_BETREFF: 'Frage zur Website',
+
+  FRAGE_TEXT: [
+    'Hallo,',
+    '',
+    'ich habe eine Frage, die auf der Seite nicht beantwortet wird:',
+    '',
+    '',
+    '',
+    'Mein Betrieb:',
+    'So erreichst du mich am besten:',
+    '',
+    'Viele Grüße'
   ].join('\n')
 
 };
 
-/** Baut den fertigen mailto-Link zusammen. */
-function mailtoLink() {
+/**
+ * Baut den fertigen mailto-Link zusammen.
+ * Ohne Angabe die Termin-Fassung, sonst die übergebene.
+ */
+function mailtoLink(betreff, text) {
   return 'mailto:' + KONTAKT.EMAIL
-    + '?subject=' + encodeURIComponent(KONTAKT.BETREFF)
-    + '&body='    + encodeURIComponent(KONTAKT.TEXT);
+    + '?subject=' + encodeURIComponent(betreff || KONTAKT.BETREFF)
+    + '&body='    + encodeURIComponent(text || KONTAKT.TEXT);
 }
 
 /**
  * Trägt Adresse und Link überall dort ein, wo im HTML
- * data-mail="link" bzw. data-mail="text" steht.
+ * data-mail="link", data-mail="frage" bzw. data-mail="text" steht.
  */
 function kontaktEintragen() {
   document.querySelectorAll('[data-mail="link"]').forEach(function (el) {
     el.setAttribute('href', mailtoLink());
+  });
+  document.querySelectorAll('[data-mail="frage"]').forEach(function (el) {
+    el.setAttribute('href', mailtoLink(KONTAKT.FRAGE_BETREFF, KONTAKT.FRAGE_TEXT));
   });
   document.querySelectorAll('[data-mail="text"]').forEach(function (el) {
     el.textContent = KONTAKT.EMAIL;
@@ -398,6 +421,152 @@ function fachFilterAufsetzen() {
       leiste.scrollIntoView({ behavior: 'auto', block: 'start' });
     });
   }
+}
+
+
+/* ───────────────────────────────────────────────────────────
+   2a-4. FRAGEN DURCHSUCHEN (Fragen-Seite)
+
+   Die Suche läuft komplett im Browser. Kein Server, keine Datenbank:
+   bei knapp zwanzig Fragen ist der ganze Bestand ohnehin schon
+   geladen, und eine Runde zum Server wäre nur langsamer. Nebenbei
+   verlässt keine Eingabe das Gerät — was auf einer Seite für
+   Arztpraxen das bessere Argument ist als jede Technik.
+
+   Die "Datenbank" steht im HTML: data-stichworte an jeder Frage fängt
+   ab, wonach jemand sucht, ohne dass das Wort in der Frage vorkommt.
+   Kommt eine Frage dazu, reicht dort eine Zeile.
+
+   Ohne JavaScript ist das Suchfeld ausgeblendet und die Liste
+   vollständig da — es fehlt dann nichts, es geht nur langsamer.
+   ─────────────────────────────────────────────────────────── */
+
+function fragenSucheAufsetzen() {
+  const formular = document.querySelector('[data-fragen-suche]');
+  const liste    = document.querySelector('[data-fragen-liste]');
+  if (!formular || !liste) return;
+
+  const feld       = formular.querySelector('input[type="search"]');
+  const leerKnopf  = formular.querySelector('[data-fragen-leeren]');
+  const trefferTxt = formular.querySelector('[data-fragen-treffer]');
+  const leerKasten = document.querySelector('[data-fragen-leer]');
+  const fragen     = Array.prototype.slice.call(liste.querySelectorAll('.faq-item'));
+  const gruppen    = Array.prototype.slice.call(liste.querySelectorAll('.fragen-gruppe'));
+  if (!feld || !fragen.length) return;
+
+  /* Eine gemeinsame Form für alles. Umlaut, Umschreibung und
+     "Punkte vergessen" fallen darin zusammen: "Gebühr", "Gebuehr" und
+     "Gebuhr" werden alle zu "gebuhr" und finden sich gegenseitig.
+     Dass dabei auch "neue" zu "neu" wird, ist egal — beide Seiten
+     laufen durch dieselbe Mühle, es entstehen also nur zusätzliche
+     Treffer, nie fehlende. */
+  function schluessel(text) {
+    return text.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   /* ä wird a */
+      .replace(/ae|oe|ue/g, function (paar) { return paar.charAt(0); })
+      .replace(/\u00df|ss/g, 's')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+  }
+
+  /* Einmal vorbereiten statt bei jedem Tastendruck neu */
+  fragen.forEach(function (frage) {
+    frage.dataset.suchtext =
+      schluessel(frage.textContent + ' ' + (frage.dataset.stichworte || ''));
+  });
+
+  function passt(frage, begriffe) {
+    const text = frage.dataset.suchtext;
+    return begriffe.every(function (b) { return text.indexOf(b) >= 0; });
+  }
+  /* Der Suchbegriff wandert in die Mail, damit die Frage beim
+     Wechsel ins Mailprogramm nicht verlorengeht. */
+  function mailAnpassen(begriff) {
+    if (!leerKasten) return;
+    const knopf = leerKasten.querySelector('[data-mail="frage"]');
+    if (!knopf) return;
+    const text = begriff
+      ? KONTAKT.FRAGE_TEXT.replace(
+          'ich habe eine Frage, die auf der Seite nicht beantwortet wird:',
+          'ich habe auf der Seite nach "' + begriff + '" gesucht und dazu nichts gefunden.\n\nMeine Frage:')
+      : KONTAKT.FRAGE_TEXT;
+    knopf.setAttribute('href', mailtoLink(KONTAKT.FRAGE_BETREFF, text));
+  }
+
+  function suchen() {
+    const eingabe   = feld.value.trim();
+    const begriffe  = schluessel(eingabe).split(' ').filter(Boolean);
+
+    if (leerKnopf) leerKnopf.hidden = !eingabe;
+
+    /* Leeres Feld: alles zurück auf Anfang. Statt einer Trefferzahl
+       stehen dort dann Beispiele — im Feld selbst wäre dafür auf dem
+       Handy kein Platz. */
+    if (!begriffe.length) {
+      fragen.forEach(function (f) { f.hidden = false; f.open = false; });
+      gruppen.forEach(function (g) { g.hidden = false; });
+      liste.hidden = false;
+      if (leerKasten) leerKasten.hidden = true;
+      if (trefferTxt) {
+        trefferTxt.textContent = fragen.length +
+          ' Fragen — z. B. nach Kosten, Google oder Dauer suchen.';
+      }
+      mailAnpassen('');
+      return;
+    }
+
+    let treffer = 0;
+    fragen.forEach(function (frage) {
+      const dabei = passt(frage, begriffe);
+      frage.hidden = !dabei;
+      if (dabei) treffer++;
+    });
+
+    /* Eine Überschrift ohne Fragen darunter ist nur im Weg */
+    gruppen.forEach(function (gruppe) {
+      const offen = gruppe.querySelectorAll('.faq-item:not([hidden])').length;
+      gruppe.hidden = offen === 0;
+    });
+
+    /* Bei wenigen Treffern gleich aufklappen — dann steht die
+       Antwort da, statt dass man noch einmal klicken muss. */
+    fragen.forEach(function (f) { f.open = !f.hidden && treffer <= 3; });
+
+    liste.hidden = treffer === 0;
+    if (leerKasten) leerKasten.hidden = treffer !== 0;
+    mailAnpassen(eingabe);
+
+    if (trefferTxt) {
+      trefferTxt.textContent = treffer === 0
+        ? 'Keine Frage gefunden.'
+        : (treffer === 1 ? '1 Frage gefunden.' : treffer + ' Fragen gefunden.');
+    }
+  }
+
+  feld.addEventListener('input', suchen);
+
+  /* Enter soll nichts abschicken — es gibt nichts abzuschicken. */
+  formular.addEventListener('submit', function (e) { e.preventDefault(); });
+
+  feld.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && feld.value) {
+      e.preventDefault();
+      feld.value = '';
+      suchen();
+    }
+  });
+
+  if (leerKnopf) {
+    leerKnopf.addEventListener('click', function () {
+      feld.value = '';
+      suchen();
+      feld.focus();
+    });
+  }
+
+  /* Erst jetzt zeigen: ohne JavaScript wäre das Feld wirkungslos. */
+  formular.hidden = false;
+  suchen();
 }
 
 
@@ -1463,6 +1632,7 @@ document.addEventListener('DOMContentLoaded', function () {
   aufklapperAufsetzen();
   flyoutLichtAufsetzen();
   fachFilterAufsetzen();
+  fragenSucheAufsetzen();
   kopfleisteVerwandelnAufsetzen();
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
