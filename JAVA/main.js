@@ -137,8 +137,18 @@ function kopfleisteVerwandelnAufsetzen() {
   let letzterLauf = 0;
   let nachzuegler = null;
 
+  /* Genau die Höhe, auf der ein angeklickter Abschnitt andockt —
+     abgelesen aus scroll-padding-top, damit Klick und Markierung
+     nicht auseinanderlaufen können. Vorher stand hier die Höhe der
+     Kopfleiste, und weil der Anker tiefer lag als diese Grenze, wurde
+     der geklickte Punkt erst verspätet schwarz. */
+  function ankerHoehe() {
+    const wert = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop);
+    return isNaN(wert) ? 8 : wert;
+  }
+
   function pruefen() {
-    const grenze = nav.getBoundingClientRect().height + 8;
+    const grenze = ankerHoehe() + 6;
 
     /* Landing-Bereich durch? */
     const heroDurch = hero

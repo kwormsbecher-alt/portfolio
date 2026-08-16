@@ -100,6 +100,13 @@
   /* Wie weit das Zwischenstück ins Hintergrundbild hineinragt */
   --zwischen-hub:   90px;
 
+  /* Wo ein angeklickter Abschnitt andockt. Bewusst fast null: dann ist
+     vom vorherigen Block wirklich nichts mehr zu sehen. Die Luft nach
+     oben liefert der Abschnitt über sein eigenes Innenmaß.
+     ACHTUNG: main.js liest genau diesen Wert aus, um zu entscheiden,
+     auf welchem Punkt die Kopfleiste gerade steht. */
+  --anker-abstand:  8px;
+
   /* Freier Streifen rechts im Spielfeld. Dort liegt keine Kachel,
      also kann man dort mit dem Finger ganz normal weiterscrollen. */
   --spiel-rand:     64px;

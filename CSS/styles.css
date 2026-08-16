@@ -10,7 +10,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--nav-height) + var(--space-3));
+  scroll-padding-top: var(--anker-abstand);
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
