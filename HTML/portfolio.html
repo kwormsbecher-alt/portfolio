@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio &amp; Arbeiten — [DEIN NAME]</title>
+  <meta name="description" content="Projekte, an denen ich gearbeitet habe — mit dem, was dahintersteckt." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1F2023" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../CSS/tokens.css" />
+  <link rel="stylesheet" href="../CSS/styles.css" />
+</head>
+
+<body>
+
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+<div class="logo-band">
+  <div class="container">
+    <a class="nav-logo" href="../index.html">
+      [DEIN NAME]
+      <small>Websites für Praxen</small>
+    </a>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="container">
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="hauptmenue">
+      <span class="nav-toggle-striche" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="sr-only">Menü öffnen</span>
+    </button>
+
+    <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
+      <a href="../index.html#ueber">Über mich</a>
+      <a href="../index.html#leistungen">Leistungen</a>
+      <a href="../index.html#referenz">Referenz</a>
+      <a href="portfolio.html" class="is-active">Portfolio</a>
+      <a href="../index.html#faq">Fragen</a>
+      <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
+    </nav>
+  </div>
+</header>
+
+
+<main id="inhalt">
+
+  <section class="page-head">
+    <div class="container">
+      <span class="label">Arbeiten</span>
+      <h1 style="font-size: var(--size-h2); max-width: 18ch;">Portfolio &amp; Arbeiten</h1>
+      <p class="lead" style="margin-top: var(--space-3); max-width: 54ch;">
+        Jedes Projekt hat eine Geschichte — wo es angefangen hat, was
+        wir entschieden haben und was am Ende dabei herauskam.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+
+      <ul class="arbeiten">
+
+        <!-- ══ Echtes Projekt ══ -->
+        <li class="arbeit reveal">
+          <div class="arbeit-bild">
+            <div class="image-slot ratio-wide">
+              <!-- <img src="../bilder/referenz-desktop.png" alt="Startseite der Zahnarztpraxis" /> -->
+              <div class="image-slot-note">
+                <strong>Startseite</strong>
+                <small>Screenshot folgt nach dem Launch</small>
+              </div>
+            </div>
+          </div>
+          <div class="arbeit-text">
+            <span class="badge">Launch in Kürze</span>
+            <h2>Zahnarztpraxis in Pforzheim</h2>
+            <p>
+              Eine komplett neu gebaute Praxis-Website: ruhiges Design,
+              klare Struktur für Leistungen und Team, Sprechzeiten und
+              Anfahrt sofort auffindbar — und Terminanfragen, die auch
+              auf dem Handy funktionieren.
+            </p>
+            <dl class="referenz-meta">
+              <div><dt>Branche</dt><dd>Zahnmedizin</dd></div>
+              <div><dt>Leistung</dt><dd>Design &amp; Umsetzung</dd></div>
+              <div><dt>Jahr</dt><dd class="platzhalter">2026</dd></div>
+            </dl>
+            <div class="btn-row">
+              <a class="btn btn--ghost" href="referenz-zahnarzt.html">Fallstudie lesen</a>
+            </div>
+          </div>
+        </li>
+
+        <!-- ══ Freie Plätze ══
+             Ehrlich als frei gekennzeichnet statt mit erfundenen
+             Projekten gefüllt. Sobald etwas dazukommt, wird aus so
+             einem Platz ein Eintrag wie oben. -->
+        <li class="arbeit arbeit--frei reveal">
+          <div class="arbeit-bild">
+            <div class="arbeit-frei-flaeche">
+              <span aria-hidden="true">+</span>
+            </div>
+          </div>
+          <div class="arbeit-text">
+            <span class="badge">Frei</span>
+            <h2>Ihr Projekt könnte hier stehen</h2>
+            <p>
+              Ich nehme bewusst wenige Projekte gleichzeitig an, damit
+              jedes die Aufmerksamkeit bekommt, die es braucht. Aktuell
+              ist Platz.
+            </p>
+            <div class="btn-row">
+              <a class="btn btn--primary" href="#" data-mail="link">Platz anfragen</a>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <p style="margin-top: var(--space-6);">
+        <a href="../index.html">← Zurück zur Startseite</a>
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="footer">
+  <div class="container">
+    <p>© <span data-jahr>2026</span> [DEIN NAME]</p>
+    <nav aria-label="Rechtliches">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="../index.html">Startseite</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../JAVA/main.js"></script>
+
+</body>
+</html>

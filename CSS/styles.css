@@ -336,7 +336,7 @@ body.platzhalter-zeigen .platzhalter {
    gekommen ist. Fährt die Maus darüber, hellen sich die Punkte in
    ihrer Nähe wieder auf — wie ein Scanner, der darüberwandert.
    Die Nähe zum Zeiger rechnet main.js in --naehe (0 bis 1). */
-@media (min-width: 1041px) {
+@media (min-width: 1140px) {
   .nav-links a {
     position: relative;
     transition: opacity 0.16s linear,
@@ -446,8 +446,9 @@ body.platzhalter-zeigen .platzhalter {
 
 /* Umschaltpunkt aufs Hamburger-Menü. Mit sieben Punkten plus Knopf
    wird die Leiste darunter zu eng und Logo und Menü stoßen zusammen.
-   Kommt ein Menüpunkt dazu, muss dieser Wert mit hoch. */
-@media (max-width: 1040px) {
+   Kommt ein Menüpunkt dazu, muss dieser Wert mit hoch —
+   und zwar auch in main.js, dort steht er zweimal. */
+@media (max-width: 1139px) {
   .nav-toggle { display: flex; }
 
   /* Das offene Menü ist eine schwebende Karte, kein Balken über die
@@ -1091,7 +1092,7 @@ body.platzhalter-zeigen .platzhalter {
 /* Memory gibt es nur in der Web-Ansicht. Derselbe Umschaltpunkt wie
    beim Menü — ab hier sieht die Seite nach Desktop aus. */
 .nur-web { display: none; }
-@media (min-width: 1041px) {
+@media (min-width: 1140px) {
   span.nur-web   { display: inline; }
   button.nur-web { display: inline-block; }
 }
@@ -1300,68 +1301,147 @@ body.platzhalter-zeigen .platzhalter {
   margin-bottom: var(--space-2);
 }
 
-/* Geräte-Rahmen: ein Browserfenster mit Adressleiste, davor ein Handy.
-   Rein aus CSS gezeichnet — dadurch wirkt die Fläche auch dann
-   gestaltet, wenn noch gar kein Screenshot drin liegt. */
+/* ── GERÄTE-GALERIE ────────────────────────────────────────
+   Ein einziger Rahmen, der sich alle paar Sekunden von selbst in ein
+   anderes Gerät verwandelt: Desktop, Tablet, Handy. Rein aus CSS
+   gezeichnet, damit die Fläche auch ohne Screenshot gestaltet wirkt.
+   Läuft automatisch, nichts zum Anklicken. Umgeschaltet wird über
+   das Attribut data-geraet, das main.js weiterdreht. */
 
-.mockup { position: relative; padding-bottom: var(--space-5); }
+.geraet-buehne {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+}
 
-.browser-rahmen {
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  overflow: hidden;
+.geraet {
+  position: relative;
+  display: flex;
+  background: var(--text);
   box-shadow: var(--shadow-lg);
+  /* Breite und Höhe statt aspect-ratio — die lassen sich überall
+     zuverlässig weich überblenden. */
+  transition: width 0.9s var(--ease),
+              height 0.9s var(--ease),
+              border-radius 0.9s var(--ease),
+              padding 0.9s var(--ease);
 }
-.browser-leiste {
-  display: flex; align-items: center; gap: var(--space-2);
-  padding: 0.55rem 0.8rem;
+.geraet[data-geraet="desktop"] { width: 100%; height: 74%;  border-radius: 12px; padding: 8px;  }
+.geraet[data-geraet="tablet"]  { width: 58%;  height: 100%; border-radius: 22px; padding: 13px; }
+.geraet[data-geraet="handy"]   { width: 34%;  height: 96%;  border-radius: 30px; padding: 9px;  }
+
+/* Lautsprecher-Schlitz — nur bei Tablet und Handy */
+.geraet-schlitz {
+  position: absolute; top: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 30px; height: 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.32);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+  z-index: 2;
+}
+.geraet[data-geraet="tablet"] .geraet-schlitz,
+.geraet[data-geraet="handy"]  .geraet-schlitz { opacity: 1; }
+
+.geraet-schirm {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
   background: var(--bg-soft);
-  border-bottom: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-radius 0.9s var(--ease);
 }
+.geraet[data-geraet="tablet"] .geraet-schirm { border-radius: 12px; }
+.geraet[data-geraet="handy"]  .geraet-schirm { border-radius: 22px; }
+
+/* Die Browserleiste gehört nur zur Desktop-Ansicht */
+.geraet-leiste {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding-inline: 0.7rem;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  background: var(--bg);
+  transition: height 0.7s var(--ease), opacity 0.4s var(--ease);
+}
+.geraet[data-geraet="desktop"] .geraet-leiste { height: 30px; opacity: 1; }
+
 .browser-punkte { display: flex; gap: 6px; flex-shrink: 0; }
 .browser-punkte span {
-  width: 9px; height: 9px;
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--border-strong);
 }
 .browser-adresse {
   flex: 1; min-width: 0;
-  padding: 0.22rem 0.75rem;
+  padding: 0.18rem 0.7rem;
   font-size: var(--size-label);
   color: var(--text-soft);
   background: var(--surface);
   border-radius: var(--radius-pill);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.browser-rahmen .image-slot { border-radius: 0; }
 
-.handy-rahmen {
-  position: absolute;
-  left: 6%; bottom: 0;
-  width: 23%; max-width: 126px;
-  padding: 7px;
-  background: var(--text);
-  border-radius: 20px;
-  box-shadow: var(--shadow-lg);
+.geraet-inhalt {
+  flex: 1; min-height: 0;
+  display: grid; place-items: center;
+  padding: var(--space-2);
+  text-align: center;
+  font-size: var(--size-small);
+  color: var(--text-soft);
 }
-.handy-rahmen .image-slot { border-radius: 13px; }
-.handy-rahmen::before {          /* der Lautsprecher-Schlitz oben */
-  content: '';
-  position: absolute; top: 13px; left: 50%;
-  transform: translateX(-50%);
-  width: 26%; height: 4px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.35);
-  z-index: 2;
-}
-.ratio-phone { aspect-ratio: 9 / 19; }
+.geraet-inhalt img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
 
-/* Auf schmalen Schirmen wird das Handy zu klein zum Erkennen */
-@media (max-width: 620px) {
-  .handy-rahmen { display: none; }
-  .mockup { padding-bottom: 0; }
+.geraet-name {
+  margin-top: var(--space-3);
+  text-align: center;
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
 }
+.geraet-name span { color: var(--text-mid); }
+
+/* ── ARBEITEN-LISTE (Portfolio-Seite) ──────────────────── */
+
+.arbeiten {
+  list-style: none;
+  display: grid;
+  gap: var(--space-6);
+}
+
+.arbeit {
+  display: grid;
+  gap: var(--space-4);
+  align-items: center;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 860px) {
+  .arbeit { grid-template-columns: 1.05fr 1fr; gap: var(--space-5); }
+  /* Jedes zweite Projekt seitenverkehrt — das nimmt der Liste die
+     Monotonie, ohne dass man extra Klassen setzen muss. */
+  .arbeit:nth-child(even) .arbeit-bild { order: 2; }
+}
+
+.arbeit-bild .image-slot { box-shadow: var(--shadow); }
+.arbeit-text h2 { font-size: var(--size-h3); margin-bottom: var(--space-2); }
+.arbeit-text p  { color: var(--text-mid); }
+
+.arbeit-frei-flaeche {
+  display: grid; place-items: center;
+  aspect-ratio: 16 / 10;
+  border: 1.5px dashed var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  font-size: 2.5rem;
+  font-weight: var(--weight-normal);
+  line-height: 1;
+}
+.arbeit--frei .arbeit-text h2 { color: var(--text-mid); }
 
 .referenz-meta {
   display: grid;

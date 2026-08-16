@@ -95,6 +95,7 @@
       <a href="#bausteine">Galerie</a>
       <a href="#bildung">Werdegang</a>
       <a href="#referenz">Referenz</a>
+      <a href="HTML/portfolio.html">Portfolio</a>
       <a href="#faq">Fragen</a>
       <a class="btn btn--primary" href="#kontakt" data-mail="link">Termin anfragen</a>
     </nav>
@@ -793,31 +794,28 @@
 
       <div class="split">
 
-        <div class="mockup reveal">
-
-          <div class="browser-rahmen">
-            <div class="browser-leiste" aria-hidden="true">
-              <span class="browser-punkte"><span></span><span></span><span></span></span>
-              <span class="browser-adresse platzhalter">zahnarztpraxis-pforzheim.de</span>
-            </div>
-            <div class="image-slot ratio-wide">
-              <!-- Screenshot Startseite: <img src="bilder/referenz-desktop.png" alt="Startseite der Praxis-Website" /> -->
-              <div class="image-slot-note">
-                <strong>Startseite</strong>
-                <small>Desktop-Ansicht</small>
+        <!-- Verwandelt sich alle paar Sekunden von selbst: Desktop →
+             Tablet → Handy. Rein zum Ansehen, nichts zum Anklicken.
+             Sobald echte Screenshots da sind, kommen sie in
+             .geraet-inhalt — dann bitte aria-hidden entfernen und
+             ordentliche alt-Texte setzen. -->
+        <div class="geraete-galerie reveal" aria-hidden="true">
+          <div class="geraet-buehne">
+            <div class="geraet" data-geraet="desktop">
+              <span class="geraet-schlitz"></span>
+              <div class="geraet-schirm">
+                <div class="geraet-leiste">
+                  <span class="browser-punkte"><span></span><span></span><span></span></span>
+                  <span class="browser-adresse platzhalter">zahnarztpraxis-pforzheim.de</span>
+                </div>
+                <div class="geraet-inhalt">
+                  <!-- Screenshot: <img src="bilder/referenz.png" alt="" /> -->
+                  Startseite der Praxis
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="handy-rahmen" aria-hidden="true">
-            <div class="image-slot ratio-phone">
-              <!-- Screenshot Handy: <img src="bilder/referenz-handy.png" alt="" /> -->
-              <div class="image-slot-note">
-                <small>Handy</small>
-              </div>
-            </div>
-          </div>
-
+          <p class="geraet-name">Ansicht: <span data-geraet-name>Desktop</span></p>
         </div>
 
         <div class="reveal">
@@ -848,6 +846,10 @@
               <dd>Startseite + Unterseiten</dd>
             </div>
           </dl>
+
+          <div class="btn-row">
+            <a class="btn btn--ghost" href="HTML/portfolio.html">Mehr lesen</a>
+          </div>
         </div>
 
       </div>

@@ -101,8 +101,8 @@ function navAufsetzen() {
   });
 
   /* Beim Wechsel auf Desktop-Breite aufräumen.
-     Muss zum Umschaltpunkt in styles.css passen (dort max-width: 1040px). */
-  window.matchMedia('(min-width: 1041px)').addEventListener('change', function (e) {
+     Muss zum Umschaltpunkt in styles.css passen (dort max-width: 1139px). */
+  window.matchMedia('(min-width: 1140px)').addEventListener('change', function (e) {
     if (e.matches) menuSchliessen();
   });
 }
@@ -206,6 +206,47 @@ function kopfleisteVerwandelnAufsetzen() {
   }, { passive: true });
 
   pruefen();
+}
+
+
+/* ───────────────────────────────────────────────────────────
+   3b. GERÄTE-GALERIE
+
+   Der Rahmen bei der Referenz verwandelt sich von selbst weiter:
+   Desktop → Tablet → Handy. Läuft nur, solange man ihn auch sieht,
+   und gar nicht, wenn im System Bewegung reduziert eingestellt ist.
+   ─────────────────────────────────────────────────────────── */
+
+function geraeteGalerieAufsetzen() {
+  const geraet = document.querySelector('.geraet');
+  if (!geraet) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const anzeige = document.querySelector('[data-geraet-name]');
+  const formen  = ['desktop', 'tablet', 'handy'];
+  const namen   = { desktop: 'Desktop', tablet: 'Tablet', handy: 'Handy' };
+
+  let stelle = 0;
+  let uhr = null;
+
+  function weiterdrehen() {
+    stelle = (stelle + 1) % formen.length;
+    geraet.dataset.geraet = formen[stelle];
+    if (anzeige) anzeige.textContent = namen[formen[stelle]];
+  }
+
+  function starten()  { if (!uhr) uhr = window.setInterval(weiterdrehen, 3400); }
+  function anhalten() { if (uhr) { window.clearInterval(uhr); uhr = null; } }
+
+  /* Nicht im Hintergrund vor sich hin rechnen lassen */
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (eintraege) {
+      if (eintraege[0].isIntersecting) starten(); else anhalten();
+    }, { threshold: 0.25 }).observe(geraet);
+  } else {
+    starten();
+  }
 }
 
 
@@ -465,7 +506,7 @@ function memoryAufsetzen() {
   /* Nur in der Web-Ansicht. Auf dem Handy wäre das Brett winzig und
      das Schütteln würde sich mit dem Scrollen in die Quere kommen.
      Der Wert muss zu ".nur-web" in styles.css passen. */
-  const nurWeb = window.matchMedia('(min-width: 1041px)');
+  const nurWeb = window.matchMedia('(min-width: 1140px)');
 
   return function starten() {
     if (!nurWeb.matches) return;
@@ -846,6 +887,7 @@ document.addEventListener('DOMContentLoaded', function () {
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
   spielfeldAufsetzen();
+  geraeteGalerieAufsetzen();
   einblendenAufsetzen();
   bildflaechenPruefen();
   jahrEintragen();
