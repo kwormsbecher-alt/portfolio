@@ -376,6 +376,18 @@ function fachFilterAufsetzen() {
       else k.removeAttribute('aria-current');
     });
 
+    /* Das Klappmenü oben zeigt dasselbe an wie die Knopfleiste —
+       sonst sagen zwei Stellen auf derselben Seite Verschiedenes.
+       "Alle Arbeiten ansehen" ist dabei der Eintrag für "alle". */
+    document.querySelectorAll('.nav-flyout a').forEach(function (a) {
+      const ziel = (a.getAttribute('href') || '').split('#')[1];
+      const gemeint = a.classList.contains('nav-alle') ? 'alle' : ziel;
+      const aktiv = gemeint === fach;
+      a.classList.toggle('is-active', aktiv);
+      if (aktiv) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+
     if (lage) {
       lage.textContent = fach === 'alle'
         ? 'Alle Fachrichtungen werden angezeigt.'
@@ -626,10 +638,11 @@ function kopfleisteVerwandelnAufsetzen() {
   function pruefen() {
     const grenze = ankerHoehe() + 6;
 
-    /* Landing-Bereich durch? */
-    const heroDurch = hero
-      ? hero.getBoundingClientRect().bottom <= 80
-      : window.scrollY > 400;
+    /* Landing-Bereich durch? Nur die Startseite hat einen — auf
+       Unterseiten bleibt es beim ruhigen Dauerzustand aus dem CSS
+       (.ist-unterseite). Sonst lägen zwei Dimm-Stufen übereinander
+       und die Leiste würde beim Scrollen plötzlich blasser. */
+    const heroDurch = hero ? hero.getBoundingClientRect().bottom <= 80 : false;
 
     nav.classList.toggle('ist-gedimmt', heroDurch);
     if (heim) heim.classList.toggle('ist-sichtbar', heroDurch);

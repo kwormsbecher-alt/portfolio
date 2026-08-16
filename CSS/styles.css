@@ -386,47 +386,42 @@ body.platzhalter-zeigen .platzhalter {
   opacity: 1;
 }
 
-/* Auf dem Handy übernimmt das der Knopf unten rechts */
+/* Am Rechner reicht das Symbol allein */
+.nav-heim-wort { display: none; }
+
 @media (max-width: 1139px) {
+  /* Auf der Startseite übernimmt der Knopf unten rechts */
   .nav-links > a.nav-heim { display: none; }
-}
 
-/* Auf Unterseiten führt ein Pfeil eine Ebene zurück — kein Haus, das
-   gehört zur Startseite. Daneben stehen die Seiten derselben Ebene,
-   damit man zwischen ihnen wechseln kann, ohne den Umweg über die
-   Startseite. */
-.nav-links > a.nav-zurueck {
-  padding-inline: 0.6rem;
-  color: var(--text-mid);
-}
-.nav-zurueck svg { width: 16px; height: 16px; flex-shrink: 0; }
-.nav-zurueck-wort { display: none; }
-
-@media (max-width: 1139px) {
-  .nav-links > a.nav-zurueck {
+  /* Auf Unterseiten gibt es diesen Knopf nicht — dort ist das Haus
+     im aufgeklappten Menü der einzige Weg zurück und braucht ein
+     Wort dazu. Ein Symbol allein ist in einer Textliste zu wenig.
+     max-width, opacity und overflow müssen mit zurückgesetzt werden:
+     die Grundregel klappt das Haus seitlich zusammen, bis das Logo
+     weggescrollt ist. Im aufgeklappten Menü gibt es dieses Ausfahren
+     nicht — dort steht es einfach da. */
+  .nav.ist-unterseite .nav-links > a.nav-heim {
+    display: flex;
     justify-content: flex-start;
     gap: var(--space-2);
+    max-width: none;
     padding: 0.9rem 0.5rem;
     font-size: 1rem;
+    opacity: 1;
+    overflow: visible;
+    transition: color var(--duration) var(--ease),
+                background var(--duration) var(--ease);
   }
-  /* Im aufgeklappten Menü ist ein Symbol allein zu wenig */
-  .nav-zurueck-wort { display: inline; }
+  .nav.ist-unterseite .nav-heim svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .nav-heim-wort { display: inline; }
 }
 
-/* Trennt den Pfeil optisch von den Punkten derselben Ebene */
-.nav-ebene-strich {
-  width: 1px;
-  height: 20px;
-  flex-shrink: 0;
-  margin-inline: 0.15rem;
-  background: var(--border-strong);
-}
-@media (max-width: 1139px) {
-  .nav-ebene-strich {
-    width: auto; height: 1px;
-    margin: var(--space-1) 0.5rem;
-  }
-}
+/* Früher stand hier eine eigene, verkürzte Leiste für Unterseiten mit
+   Zurück-Pfeil und Trennstrich. Sie ist raus: die Leiste ist überall
+   dieselbe, und das Haus oben links führt zur Startseite. Wer von einer
+   Unterseite zu "Leistungen" will, braucht jetzt einen Klick statt zwei.
+   Wie die fremden Punkte dabei zurücktreten, steht weiter unten bei
+   ".ist-unterseite". */
 
 
 /* ── Untermenü ─────────────────────────────────────────────
@@ -685,9 +680,31 @@ body.platzhalter-zeigen .platzhalter {
     opacity: calc(0.46 + 0.54 * var(--naehe, 0));
   }
 
-  /* Mit der Tastatur gibt es keinen Zeiger — dann alles zeigen. */
-  .nav.ist-gedimmt .nav-links:focus-within > a,
-  .nav.ist-gedimmt .nav-links:focus-within .nav-aufklapp { opacity: 1; }
+  /* Auf einer Unterseite dasselbe Prinzip, aber deutlich milder:
+     beim Scrollen ist das Zurücktreten ein Moment, hier ein Dauer-
+     zustand. Bei 24 % sähe die Leiste kaputt aus statt ruhig.
+     Hell bleibt der Zweig, in dem man gerade steckt. */
+  .nav.ist-unterseite .nav-links > a:not(.btn):not(.is-active),
+  .nav.ist-unterseite .nav-aufklapp:not(.is-active) {
+    opacity: calc(0.45 + 0.55 * var(--naehe, 0));
+  }
+
+  /* Mit der Tastatur gibt es keinen Zeiger — dann alles zeigen.
+     Das :not(.btn) sieht überflüssig aus, ist es aber nicht: die
+     Dimm-Regeln oben tragen durch ihre zwei :not() mehr Gewicht und
+     würden sonst gewinnen. Hier muss dasselbe Gewicht stehen. */
+  .nav.ist-gedimmt .nav-links:focus-within > a:not(.btn),
+  .nav.ist-gedimmt .nav-links:focus-within .nav-aufklapp:not(.btn),
+  .nav.ist-unterseite .nav-links:focus-within > a:not(.btn),
+  .nav.ist-unterseite .nav-links:focus-within .nav-aufklapp:not(.btn) {
+    opacity: 1;
+  }
+}
+
+/* Wer mehr Kontrast eingestellt hat, bekommt kein Zurücktreten. */
+@media (prefers-contrast: more) {
+  .nav .nav-links > a,
+  .nav .nav-aufklapp { opacity: 1; }
 }
 
 
