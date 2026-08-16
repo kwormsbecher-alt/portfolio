@@ -13,7 +13,22 @@ html {
   scroll-padding-top: var(--anker-abstand);
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
+  /* Platz für den Rollbalken dauerhaft freihalten. Sonst springt die
+     Seite seitlich, sobald ein Fenster das Scrollen sperrt. */
+  scrollbar-gutter: stable;
 }
+
+/* Solange ein Fenster offen ist, steht die Seite dahinter still.
+   touch-action ist dabei das Entscheidende — auf dem iPhone reicht
+   overflow: hidden allein nicht aus. Das offene Fenster nehmen wir
+   ausdrücklich wieder aus, damit es innen scrollen darf. */
+html.fenster-offen,
+html.fenster-offen body {
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+dialog[open] { touch-action: auto; }
 
 body {
   font-family: var(--font-body);

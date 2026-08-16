@@ -489,6 +489,33 @@ function auswahlAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   4ba. SCROLL-SPERRE BEI OFFENEN FENSTERN
+
+   Sobald irgendein Fenster offen ist, steht die Seite dahinter still.
+   showModal() feuert kein eigenes Ereignis, deshalb beobachten wir
+   das open-Attribut — so greift es für alle Fenster gleichermaßen,
+   auch für später hinzukommende.
+   ─────────────────────────────────────────────────────────── */
+
+function scrollSperreAufsetzen() {
+  const fenster = document.querySelectorAll('dialog');
+  if (!fenster.length || typeof MutationObserver !== 'function') return;
+
+  function pruefen() {
+    const offen = !!document.querySelector('dialog[open]');
+    document.documentElement.classList.toggle('fenster-offen', offen);
+  }
+
+  const beobachter = new MutationObserver(pruefen);
+  fenster.forEach(function (f) {
+    beobachter.observe(f, { attributes: true, attributeFilter: ['open'] });
+  });
+
+  pruefen();
+}
+
+
+/* ───────────────────────────────────────────────────────────
    4bb. MEMORY
 
    Fünf Paare, zehn Karten — genauso viele Felder wie das Spielfeld
@@ -1068,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', function () {
   kopfleisteVerwandelnAufsetzen();
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
+  scrollSperreAufsetzen();
   bausteinZeigen = bausteinFensterAufsetzen();   /* muss vor dem Spielfeld stehen */
   spielfeldAufsetzen();
   geraeteGalerieAufsetzen();
