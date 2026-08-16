@@ -382,6 +382,31 @@ body.platzhalter-zeigen .platzhalter {
   .nav-links > a.nav-heim { display: none; }
 }
 
+/* Auf den Unterseiten steht das Häuschen fest in der Leiste — dort
+   gibt es keinen Landing-Bereich, aus dem es herausfahren könnte.
+   Muss nach der Regel oben stehen: gleiche Spezifität, es gewinnt
+   die spätere. */
+.nav-links > a.nav-heim--fest {
+  max-width: 3rem;
+  padding-inline: 0.6rem;
+  opacity: 1;
+  overflow: visible;
+}
+.nav-heim-wort { display: none; }
+
+@media (max-width: 1139px) {
+  .nav-links > a.nav-heim--fest {
+    display: inline-flex;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    max-width: none;
+    padding: 0.9rem 0.5rem;
+    font-size: 1rem;
+  }
+  /* Im aufgeklappten Menü ist ein Symbol allein zu wenig */
+  .nav-heim-wort { display: inline; }
+}
+
 
 /* ── Untermenü ─────────────────────────────────────────────
    Gebaut nach dem üblichen Muster für Navigations-Aufklapper: der

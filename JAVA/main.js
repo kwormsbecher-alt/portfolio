@@ -446,6 +446,7 @@ function referenzBlaetternAufsetzen() {
   const geraet    = document.querySelector('.geraet');
   const bilder    = geraet ? Array.prototype.slice.call(geraet.querySelectorAll('.geraet-bild')) : [];
   const fuelltext = document.querySelector('[data-geraet-fuelltext]');
+  const adresse   = document.querySelector('.browser-adresse');
 
   let jetzt = 0;
 
@@ -470,6 +471,10 @@ function referenzBlaetternAufsetzen() {
 
     geraet.classList.toggle('hat-bilder', hatBilder);
     if (fuelltext) fuelltext.textContent = folie.dataset.vorschauText || 'Vorschau folgt';
+
+    /* Die Adressleiste gehört zum Projekt, nicht zum Rahmen — sonst
+       stünde bei jedem Projekt dieselbe fremde Adresse. */
+    if (adresse && folie.dataset.adresse) adresse.textContent = folie.dataset.adresse;
   }
 
   function zeigen(index) {
