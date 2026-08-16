@@ -132,16 +132,24 @@ function aufklapperAufsetzen() {
 
     let schliessUhr = null;
 
-    /* Das seitliche Klappmenü geht normalerweise nach links auf, weil
-       die Leiste am rechten Bildrand klebt. Bei sehr breiten Fenstern
-       oder schmalen Seiten kann links aber der Platz fehlen — dann
-       drehen wir es nach rechts. Gemessen wird erst nach dem Einblenden,
-       weil ein verstecktes Element keine Maße hat. */
+    /* Das seitliche Klappmenü geht nach rechts auf. Nach links wäre
+       zwar mehr Platz, dort steht aber die Überschrift — die wollen
+       wir nicht zudecken. Passt es rechts nicht mehr ins Bild, legen
+       wir es unter den Auslöser statt es umzudrehen.
+       Nur für Klappmenüs, die in einem Untermenü hängen: steht eins
+       direkt in der Leiste, klappt es ohnehin nach unten auf.
+       Gemessen wird erst nach dem Einblenden — ein verstecktes
+       Element hat keine Maße. */
+    const haengtImUntermenue = feld.classList.contains('nav-flyout') &&
+      !!(feld.parentElement && feld.parentElement.closest('.nav-untermenue'));
+
     function seiteWaehlen() {
-      if (!feld.classList.contains('nav-flyout') || !alsPopup.matches) return;
-      feld.classList.remove('oeffnet-rechts');
+      if (!haengtImUntermenue || !alsPopup.matches) return;
+      feld.classList.remove('faellt-nach-unten');
       const kasten = feld.getBoundingClientRect();
-      if (kasten.left < 8) feld.classList.add('oeffnet-rechts');
+      if (kasten.right > window.innerWidth - 8) {
+        feld.classList.add('faellt-nach-unten');
+      }
     }
 
     function oeffnen() {
@@ -154,10 +162,29 @@ function aufklapperAufsetzen() {
       window.clearTimeout(schliessUhr);
       feld.hidden = true;
       knopf.setAttribute('aria-expanded', 'false');
+
+      /* Tiefere Menüs mit zuklappen. Sonst stehen sie beim nächsten
+         Öffnen schon aufgeklappt da, obwohl niemand danach gefragt hat. */
+      feld.querySelectorAll('.nav-aufklapp[aria-expanded="true"]').forEach(function (tief) {
+        tief.setAttribute('aria-expanded', 'false');
+        const tiefesFeld = document.getElementById(tief.getAttribute('aria-controls'));
+        if (tiefesFeld) {
+          tiefesFeld.hidden = true;
+          tiefesFeld.classList.remove('faellt-nach-unten');
+        }
+      });
     }
 
     knopf.addEventListener('click', function () {
       if (feld.hidden) oeffnen(); else schliessen();
+    });
+
+    /* Klick auf einen Eintrag klappt zu. Führt der Link auf eine andere
+       Seite, spielt das keine Rolle — bleibt man aber auf dieser
+       (z. B. #zahnmedizin auf der Portfolio-Seite), stünde das Menü
+       sonst offen über dem Ergebnis. */
+    feld.addEventListener('click', function (e) {
+      if (e.target.closest('a')) schliessen();
     });
 
     /* Maus: aufklappen beim Darüberfahren. Beim Verlassen mit kurzer
@@ -208,6 +235,155 @@ function aufklapperAufsetzen() {
     /* Beim Wechsel zwischen Handy- und Rechner-Ansicht aufräumen */
     alsPopup.addEventListener('change', schliessen);
   });
+}
+
+
+/* ───────────────────────────────────────────────────────────
+   2a-2. DER ZEIGER ALS LICHT IM KLAPPMENÜ
+
+   Im Klappmenü liegen die Einträge blass da. Wo der Zeiger gerade
+   steht, werden sie hell — dasselbe Prinzip wie bei der Leiste, nur
+   senkrecht statt waagerecht. Das CSS rechnet aus --naehe (0 bis 1)
+   die Deckkraft; hier wird nur der Abstand gemessen.
+
+   Ohne Maus passiert hier nichts: Finger und Tastatur bekommen über
+   CSS ohnehin die volle Deckkraft.
+   ─────────────────────────────────────────────────────────── */
+
+function flyoutLichtAufsetzen() {
+  const menues = document.querySelectorAll('.nav-flyout');
+  if (!menues.length) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  const REICHWEITE = 86;          /* Pixel, ab da ist ein Eintrag dunkel */
+
+  menues.forEach(function (menue) {
+    const zeilen = menue.querySelectorAll('a, .nav-leer, .nav-spalte-titel');
+    if (!zeilen.length) return;
+
+    function setzen(wert) {
+      zeilen.forEach(function (z) { z.style.setProperty('--naehe', wert); });
+    }
+
+    menue.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      zeilen.forEach(function (z) {
+        const kasten = z.getBoundingClientRect();
+        const abstand = Math.abs(e.clientY - (kasten.top + kasten.height / 2));
+        const naehe = Math.max(0, 1 - abstand / REICHWEITE);
+        z.style.setProperty('--naehe', naehe.toFixed(3));
+      });
+    });
+
+    /* Zeiger weg — alles wieder zurücktreten lassen */
+    menue.addEventListener('pointerleave', function () { setzen('0'); });
+
+    /* Und beim Zuklappen zurücksetzen, damit der nächste Besuch
+       nicht mit einem hellen Streifen von letztem Mal anfängt. */
+    const knopf = menue.parentElement &&
+                  menue.parentElement.querySelector('.nav-aufklapp');
+    if (knopf) {
+      new MutationObserver(function () {
+        if (knopf.getAttribute('aria-expanded') !== 'true') setzen('0');
+      }).observe(knopf, { attributes: true, attributeFilter: ['aria-expanded'] });
+    }
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────
+   2a-3. FACHRICHTUNG FILTERN (Portfolio-Seite)
+
+   Ein Fach anklicken heißt: nur dieses Fach zeigen, sonst nichts.
+   "Alle Bereiche" holt alles zurück.
+
+   Gesteuert wird über die Adresse (#zahnmedizin), damit dasselbe aus
+   drei Richtungen funktioniert: die Knöpfe hier, das Klappmenü oben
+   auf dieser Seite, und ein Link von der Startseite. Außerdem lässt
+   sich ein Fach so verschicken und der Zurück-Knopf tut das Richtige.
+
+   Ohne JavaScript passiert nichts — dann bleiben es Sprunglinks und
+   es ist weiterhin alles zu sehen. Das ist der ehrlichere Rückfall.
+   ─────────────────────────────────────────────────────────── */
+
+function fachFilterAufsetzen() {
+  const leiste  = document.querySelector('.fach-chips');
+  const bloecke = document.querySelectorAll('.fach-block');
+  if (!leiste || !bloecke.length) return;
+
+  const knoepfe = leiste.querySelectorAll('a[data-fach]');
+  const lage    = document.querySelector('[data-fach-lage]');
+
+  function gibtEs(fach) {
+    return Array.prototype.some.call(bloecke, function (b) { return b.id === fach; });
+  }
+
+  function anwenden(fach) {
+    /* Alles, was wir nicht kennen, zeigt lieber alles als nichts. */
+    if (fach !== 'alle' && !gibtEs(fach)) fach = 'alle';
+
+    let name = '';
+    bloecke.forEach(function (block) {
+      const zeigen = (fach === 'alle') || (block.id === fach);
+      block.hidden = !zeigen;
+      if (block.id === fach) {
+        const ueberschrift = block.querySelector('h2');
+        name = ueberschrift ? ueberschrift.childNodes[0].textContent.trim() : fach;
+      }
+    });
+
+    knoepfe.forEach(function (k) {
+      const aktiv = k.dataset.fach === fach;
+      k.classList.toggle('is-active', aktiv);
+      if (aktiv) k.setAttribute('aria-current', 'true');
+      else k.removeAttribute('aria-current');
+    });
+
+    if (lage) {
+      lage.textContent = fach === 'alle'
+        ? 'Alle Fachrichtungen werden angezeigt.'
+        : 'Gefiltert: nur ' + name + '.';
+    }
+    return fach;
+  }
+
+  function ausAdresse() {
+    const roh = decodeURIComponent(window.location.hash.replace('#', '')).trim();
+    return roh || 'alle';
+  }
+
+  /* Nach dem Filtern zurück zur Knopfleiste: sonst steht man
+     mitten im Nichts, wenn der vorherige Block länger war als der
+     neue — und man sieht nicht, dass gefiltert ist. */
+  function zurLeiste() {
+    const ruhig = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    leiste.scrollIntoView({ behavior: ruhig ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  leiste.addEventListener('click', function (e) {
+    const knopf = e.target.closest('a[data-fach]');
+    if (!knopf) return;
+    e.preventDefault();
+
+    const fach = knopf.dataset.fach;
+    /* Gleicher Wert löst kein hashchange aus — also selbst anwenden. */
+    if (ausAdresse() === fach) { anwenden(fach); zurLeiste(); return; }
+    window.location.hash = fach;      /* hashchange erledigt den Rest */
+  });
+
+  window.addEventListener('hashchange', function () {
+    anwenden(ausAdresse());
+    zurLeiste();
+  });
+
+  /* Beim Laden: filtern, aber nicht ungefragt scrollen. Kommt jemand
+     mit einem Fach in der Adresse an, soll er es allerdings sehen. */
+  const start = anwenden(ausAdresse());
+  if (start !== 'alle') {
+    window.requestAnimationFrame(function () {
+      leiste.scrollIntoView({ behavior: 'auto', block: 'start' });
+    });
+  }
 }
 
 
@@ -1271,6 +1447,8 @@ document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
   aufklapperAufsetzen();
+  flyoutLichtAufsetzen();
+  fachFilterAufsetzen();
   kopfleisteVerwandelnAufsetzen();
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */

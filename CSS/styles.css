@@ -488,9 +488,18 @@ body.platzhalter-zeigen .platzhalter {
 
 
 /* ── Zweite Ebene: das Klappmenü ───────────────────────────
-   Hängt an einem Punkt im Untermenü und fährt am Rechner seitlich
-   heraus. Links die Fachrichtungen, rechts die zuletzt bearbeiteten
-   Arbeiten — beides auf einen Blick, ohne Klickstrecke. */
+   Es gibt zwei Fälle, und die sehen bewusst verschieden aus:
+
+   1. Das Menü hängt IN einem Untermenü (Startseite, unter "Referenz").
+      Dann fährt es am Rechner seitlich nach rechts heraus. Nach links
+      ginge es auch, aber dort steht die Überschrift — die wollen wir
+      nicht zudecken.
+   2. Das Menü hängt direkt in der Leiste (Portfolio-Seite).
+      Dann klappt es einfach nach unten auf wie jedes andere Menü.
+      Nichts schwebt seitlich neben der Leiste.
+
+   Beide Fälle sind einspaltig und schmal: rechts neben dem Untermenü
+   ist nur wenig Platz, und zwei Spalten hätten dort nicht gepasst. */
 
 .nav-gruppe.ist-tief { position: relative; }
 
@@ -540,40 +549,78 @@ body.platzhalter-zeigen .platzhalter {
   font-weight: var(--weight-medium);
 }
 
+/* Zwei Gruppen untereinander — eine feine Linie trennt sie */
+.nav-flyout > div + div {
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--border);
+}
+
 @media (min-width: 1140px) {
-  /* Öffnet nach LINKS: die Leiste sitzt am rechten Bildrand, dort ist
-     kein Platz. Reicht es links auch nicht, dreht main.js es um. */
-  .nav-flyout {
+  .nav-flyout { min-width: 250px; }
+
+  /* Fall 1: im Untermenü — seitlich nach rechts */
+  .nav-untermenue .nav-flyout {
     top: -0.45rem;
-    right: calc(100% + 8px);
-    left: auto;
+    left: calc(100% + 8px);
+    right: auto;
     transform: none;
-    min-width: 400px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 var(--space-2);
     animation: flyoutAuf 0.2s var(--ease);
   }
-  .nav-flyout.oeffnet-rechts {
-    right: auto;
-    left: calc(100% + 8px);
+  /* Reicht der Platz rechts nicht, legt main.js es darunter —
+     nach links darf es nicht, dort steht die Überschrift. */
+  .nav-untermenue .nav-flyout.faellt-nach-unten {
+    top: calc(100% + 6px);
+    left: 0;
   }
-  .nav-flyout .nav-alle { grid-column: 1 / -1; }
 
   /* Brücke über die Lücke: sonst klappt es zu, während die Maus vom
      Auslöser hinüberwandert. Alle vier Seiten müssen hier stehen —
      .nav-untermenue::before setzt oben schon top/left/right/height für
      die Brücke nach oben, und die gilt sonst weiter. */
-  .nav-flyout::before {
+  .nav-untermenue .nav-flyout::before {
     content: '';
     position: absolute;
     top: 0; bottom: 0;
-    left: auto; right: -10px;
+    left: -10px; right: auto;
     width: 10px; height: auto;
   }
-  .nav-flyout.oeffnet-rechts::before { left: -10px; right: auto; }
+  .nav-untermenue .nav-flyout.faellt-nach-unten::before {
+    top: -8px; bottom: auto;
+    left: 0; right: 0;
+    width: auto; height: 8px;
+  }
 }
-/* Bewusst ohne seitliche Bewegung — die Richtung wechselt ja. */
+
+/* ── Der Zeiger als Licht ──────────────────────────────────
+   Die Einträge liegen erst blass da und werden hell, wo die Maus
+   gerade ist. main.js setzt --naehe je Eintrag aus dem senkrechten
+   Abstand zum Zeiger.
+   Nur wo es auch wirklich eine Maus gibt: auf dem Handy gäbe es
+   nichts, was die Schrift je wieder sichtbar machen würde. */
+@media (min-width: 1140px) and (hover: hover) and (pointer: fine) {
+  .nav-flyout a,
+  .nav-flyout .nav-leer,
+  .nav-flyout .nav-spalte-titel {
+    opacity: calc(0.34 + 0.66 * var(--naehe, 0));
+    transition: opacity 0.16s var(--ease);
+  }
+  .nav-flyout .nav-spalte-titel {
+    opacity: calc(0.42 + 0.58 * var(--naehe, 0));
+  }
+  /* Mit der Tastatur gibt es keinen Zeiger — dann alles zeigen. */
+  .nav-flyout:focus-within a,
+  .nav-flyout:focus-within .nav-leer,
+  .nav-flyout:focus-within .nav-spalte-titel { opacity: 1; }
+}
+/* Wer mehr Kontrast eingestellt hat, bekommt keinen Blendeffekt. */
+@media (prefers-contrast: more) {
+  .nav-flyout a,
+  .nav-flyout .nav-leer,
+  .nav-flyout .nav-spalte-titel { opacity: 1; }
+}
+
+/* Bewusst ohne seitliche Bewegung — die Richtung kann wechseln. */
 @keyframes flyoutAuf {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1922,6 +1969,19 @@ body.platzhalter-zeigen .platzhalter {
 }
 .fach-chips a:hover span { color: rgba(255, 255, 255, 0.7); }
 
+/* Das gerade gewählte Fach. Muss deutlich sein: sonst wirkt eine
+   gefilterte Seite kaputt statt gefiltert. */
+.fach-chips a.is-active {
+  color: var(--surface);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+.fach-chips a.is-active span { color: rgba(255, 255, 255, 0.7); }
+
+/* Die Knopfleiste ist auch das Ziel nach dem Filtern */
+.fach-chips { scroll-margin-top: calc(var(--nav-height-sm) + var(--space-3)); }
+
 /* Sprungziel aus dem Menü. Die Abschnitte der Startseite bringen ihre
    Luft nach oben über ihr eigenes Innenmaß mit — diese hier fangen
    direkt mit der Überschrift an. Ohne scroll-margin landet sie also
@@ -1930,7 +1990,12 @@ body.platzhalter-zeigen .platzhalter {
   margin-bottom: var(--space-7);
   scroll-margin-top: calc(var(--nav-height-sm) + var(--space-3));
 }
+/* Ausgefiltert. Explizit, weil ein späteres display: … das
+   hidden-Attribut sonst aushebeln würde. */
+.fach-block[hidden] { display: none; }
+
 @media (min-width: 760px) {
+  .fach-chips,
   .fach-block { scroll-margin-top: calc(var(--nav-height) + var(--space-3)); }
 }
 .fach-block:last-of-type { margin-bottom: var(--space-5); }
