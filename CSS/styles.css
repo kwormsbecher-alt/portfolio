@@ -18,17 +18,21 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Solange ein Fenster offen ist, steht die Seite dahinter still.
-   touch-action ist dabei das Entscheidende — auf dem iPhone reicht
-   overflow: hidden allein nicht aus. Das offene Fenster nehmen wir
-   ausdrücklich wieder aus, damit es innen scrollen darf. */
+/* Solange ein Fenster oder das Handy-Menü offen ist, steht die Seite
+   dahinter still. touch-action ist dabei das Entscheidende — auf dem
+   iPhone reicht overflow: hidden allein nicht aus. Was offen ist,
+   nehmen wir ausdrücklich wieder aus, damit es innen scrollen darf. */
 html.fenster-offen,
-html.fenster-offen body {
+html.fenster-offen body,
+html.menue-offen,
+html.menue-offen body {
   overflow: hidden;
   overscroll-behavior: none;
   touch-action: none;
 }
 dialog[open] { touch-action: auto; }
+/* pan-y statt auto: im Menü soll nur hoch und runter gewischt werden. */
+html.menue-offen .nav-links { touch-action: pan-y; }
 
 body {
   font-family: var(--font-body);
@@ -777,6 +781,18 @@ body.platzhalter-zeigen .platzhalter {
     padding: var(--space-2);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
+
+    /* Nie höher als das Bild. Ohne das wächst die Karte mit jedem
+       aufgeklappten Untermenü unten aus dem Bildschirm heraus — und
+       der Wisch landet dann auf der Seite dahinter statt im Menü.
+       dvh statt vh wegen der Adressleiste auf dem iPhone: die fährt
+       beim Scrollen ein und aus, vh rechnet mit der großen Variante
+       und läge damit zu tief. Die vh-Zeile davor ist der Rückfall für
+       Browser, die dvh nicht kennen. */
+    max-height: calc(100vh  - var(--nav-height) - var(--page-gutter));
+    max-height: calc(100dvh - var(--nav-height) - var(--page-gutter));
+    overflow-y: auto;
+    overscroll-behavior: contain;   /* am Ende nicht die Seite mitziehen */
 
     opacity: 0;
     visibility: hidden;

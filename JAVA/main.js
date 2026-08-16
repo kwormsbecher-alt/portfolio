@@ -77,14 +77,28 @@ function navAufsetzen() {
 
   if (!toggle) return;
 
+  /* Solange das Menü offen ist, steht die Seite dahinter still —
+     sonst schiebt ein Wisch neben der Karte den Hintergrund weg,
+     während die Karte selbst stehen bleibt. Das CSS zur Klasse
+     nimmt .nav-links wieder aus, damit dort gescrollt werden darf. */
+  function sperreSetzen(offen) {
+    document.documentElement.classList.toggle('menue-offen', offen);
+  }
+
   function menuSchliessen() {
     nav.classList.remove('is-open');
     toggle.setAttribute('aria-expanded', 'false');
+    sperreSetzen(false);
+    /* Wieder von oben anfangen. Sonst öffnet sich das Menü beim
+       nächsten Mal mittendrin, wo man es zuletzt verlassen hat. */
+    const karte = nav.querySelector('.nav-links');
+    if (karte) karte.scrollTop = 0;
   }
 
   toggle.addEventListener('click', function () {
     const offen = nav.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(offen));
+    sperreSetzen(offen);
   });
 
   /* Nach einem Klick auf einen Menüpunkt zuklappen */
