@@ -935,22 +935,21 @@
   </section>
 
 
-  <!-- ══════════ 7. REFERENZ ══════════ -->
+  <!-- ══════════ 7. REFERENZ ══════════
+       Links die Geräte-Vorschau, rechts blättert der Text. Nur über
+       die Pfeile — es läuft nichts von selbst. Neue Projekte kommen
+       als weitere .referenz-folie dazu, der Zähler stellt sich selbst
+       ein. Die Bilder stehen als data-Angaben an der Folie. -->
   <section class="section section--soft" id="referenz">
     <div class="container">
 
       <div class="section-head reveal">
-        <span class="label">Referenz</span>
-        <h2>Zahnarztpraxis in Pforzheim</h2>
+        <span class="label">Referenzen</span>
+        <h2>Projekte, an denen ich gearbeitet habe.</h2>
       </div>
 
-      <div class="split">
+      <div class="split" style="align-items: start;">
 
-        <!-- Verwandelt sich alle paar Sekunden von selbst: Desktop →
-             Tablet → Handy. Rein zum Ansehen, nichts zum Anklicken.
-             Für jede Form liegt ein eigener Zuschnitt bereit — die
-             Safari-Oberfläche der Aufnahmen ist abgeschnitten, sonst
-             steckte ein Browser im Browser im Gerät. -->
         <div class="geraete-galerie reveal">
           <div class="geraet-buehne">
             <div class="geraet hat-bilder" data-geraet="desktop">
@@ -961,13 +960,13 @@
                   <span class="browser-adresse platzhalter">zahnarztpraxis-pforzheim.de</span>
                 </div>
                 <div class="geraet-inhalt">
-                  <img class="geraet-bild" data-fuer="desktop" loading="lazy" decoding="async"
-                       src="bilder/referenz-desktop.jpg"
-                       alt="Startseite der Zahnarztpraxis am Rechner" />
-                  <img class="geraet-bild" data-fuer="tablet" loading="lazy" decoding="async"
-                       src="bilder/referenz-tablet.jpg" alt="" />
-                  <img class="geraet-bild" data-fuer="handy" loading="lazy" decoding="async"
-                       src="bilder/referenz-handy.jpg" alt="" />
+                  <img class="geraet-bild" data-fuer="desktop" alt="" decoding="async" />
+                  <img class="geraet-bild" data-fuer="tablet"  alt="" decoding="async" />
+                  <img class="geraet-bild" data-fuer="handy"   alt="" decoding="async" />
+                  <div class="geraet-fuellung">
+                    <span class="geraet-plus" aria-hidden="true">+</span>
+                    <span data-geraet-fuelltext>Vorschau folgt</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -975,37 +974,94 @@
           <p class="geraet-name" aria-hidden="true">Ansicht: <span data-geraet-name>Desktop</span></p>
         </div>
 
-        <div class="reveal">
-          <span class="badge">Launch in Kürze</span>
-          <h3>Eine Praxis-Website, die Vertrauen aufbaut.</h3>
-          <p style="margin-top: var(--space-2); color: var(--text-mid);">
-            Eine komplett neu gebaute Website für eine Zahnarztpraxis: ruhiges,
-            warmes Design, klare Struktur für Leistungen und Team, alle Angaben
-            zu Sprechzeiten und Anfahrt sofort auffindbar — und ein Ablauf für
-            Terminanfragen, der auch auf dem Handy funktioniert.
-          </p>
-          <p style="margin-top: var(--space-2); color: var(--text-mid);">
-            Die Seite geht in Kürze online. Sobald sie freigegeben ist, findest
-            du hier die ausführliche Fallstudie mit Vorher-Nachher.
-          </p>
+        <div class="referenz-blaettern reveal">
 
-          <dl class="referenz-meta">
-            <div>
-              <dt>Branche</dt>
-              <dd>Zahnmedizin</dd>
-            </div>
-            <div>
-              <dt>Leistung</dt>
-              <dd>Design &amp; Umsetzung</dd>
-            </div>
-            <div>
-              <dt>Umfang</dt>
-              <dd>Startseite + Unterseiten</dd>
-            </div>
-          </dl>
+          <div class="blaetter-kopf">
+            <button class="blaetter-knopf" type="button"
+                    data-blaettern="zurueck" aria-label="Vorheriges Projekt">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 2.5L4.5 8l5.5 5.5" />
+              </svg>
+            </button>
+            <button class="blaetter-knopf" type="button"
+                    data-blaettern="vor" aria-label="Nächstes Projekt">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 2.5L11.5 8 6 13.5" />
+              </svg>
+            </button>
+            <span class="blaetter-stand">
+              <strong data-blaetter-stand>1</strong> von <span data-blaetter-gesamt>3</span>
+            </span>
+          </div>
 
-          <div class="btn-row">
-            <a class="btn btn--ghost" href="HTML/portfolio.html">Mehr lesen</a>
+          <div class="blaetter-buehne" aria-live="polite">
+
+            <!-- ── 1 · echtes Projekt ── -->
+            <article class="referenz-folie is-aktiv"
+                     data-bild-desktop="bilder/referenz-desktop.jpg"
+                     data-bild-tablet="bilder/referenz-tablet.jpg"
+                     data-bild-handy="bilder/referenz-handy.jpg"
+                     data-bild-text="Startseite der Zahnarztpraxis">
+              <span class="badge">Launch in Kürze</span>
+              <h3>Zahnarztpraxis in Pforzheim</h3>
+              <p>
+                Eine komplett neu gebaute Praxis-Website: ruhiges, warmes Design,
+                klare Struktur für Leistungen und Team, alle Angaben zu Sprechzeiten
+                und Anfahrt sofort auffindbar — und ein Ablauf für Terminanfragen,
+                der auch auf dem Handy funktioniert.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd>Zahnmedizin</dd></div>
+                <div><dt>Leistung</dt><dd>Design &amp; Umsetzung</dd></div>
+                <div><dt>Umfang</dt><dd>Startseite + Unterseiten</dd></div>
+              </dl>
+              <div class="btn-row">
+                <a class="btn btn--ghost" href="HTML/portfolio.html">Mehr lesen</a>
+              </div>
+            </article>
+
+            <!-- ── 2 · Konzeptarbeit ──
+                 Bewusst als Beispiel gekennzeichnet: es ist kein
+                 Auftrag gewesen, und das darf man nicht verwischen. -->
+            <article class="referenz-folie" data-vorschau-text="Konzept — Bild folgt">
+              <span class="badge">Beispielprojekt</span>
+              <h3>Physiotherapie am Park</h3>
+              <p>
+                Eine Konzeptarbeit, kein Auftrag: So würde ich eine Praxis
+                aufbauen, bei der die Terminlage das größte Thema ist. Im
+                Mittelpunkt stehen freie Zeiten, Behandlungsschwerpunkte und
+                eine ehrliche Antwort auf die Frage, wie lange man wartet.
+              </p>
+              <p class="platzhalter">
+                Sobald du Ansichten davon hast, kommen sie in <code>bilder/</code>
+                und werden hier an der Folie eingetragen.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd>Physiotherapie</dd></div>
+                <div><dt>Leistung</dt><dd>Konzept &amp; Entwurf</dd></div>
+                <div><dt>Umfang</dt><dd>Startseite</dd></div>
+              </dl>
+            </article>
+
+            <!-- ── 3 · der freie Platz ── -->
+            <article class="referenz-folie" data-vorschau-text="Ihr Projekt">
+              <span class="badge">Frei</span>
+              <h3>Vielleicht ist Ihres bald dabei.</h3>
+              <p>
+                Ich nehme bewusst wenige Projekte gleichzeitig an, damit jedes die
+                Aufmerksamkeit bekommt, die es braucht. Gerade ist ein Platz offen.
+              </p>
+              <p>
+                Erzählen Sie mir kurz von Ihrer Praxis — ich sage Ihnen ehrlich,
+                ob und wie ich helfen kann.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="#" data-mail="link">Interessiert?</a>
+              </div>
+            </article>
+
           </div>
         </div>
 
