@@ -213,10 +213,16 @@ function kopfleisteVerwandelnAufsetzen() {
   const hero  = document.getElementById('willkommen');
   const insel = nav.querySelector('.nav-links');
 
-  /* Für die Markierung: alle Abschnitts-Links, auch die im Untermenü */
+  const logo = document.querySelector('.logo-band');
+
+  /* Für die Markierung: alle Abschnitts-Links, auch die im Untermenü.
+     Das Häuschen bleibt außen vor — es zeigt keinen Abschnitt an,
+     sondern führt nach oben, und würde sonst kurz schwarz markiert. */
   const punkte = Array.prototype.slice
     .call(nav.querySelectorAll('.nav-links a[href^="#"]'))
-    .filter(function (a) { return !a.classList.contains('btn'); })
+    .filter(function (a) {
+      return !a.classList.contains('btn') && !a.classList.contains('nav-heim');
+    })
     .map(function (a) { return { knopf: a, ziel: document.querySelector(a.getAttribute('href')) }; })
     .filter(function (p) { return p.ziel; });
 
@@ -251,6 +257,11 @@ function kopfleisteVerwandelnAufsetzen() {
 
     nav.classList.toggle('ist-gedimmt', heroDurch);
     if (heim) heim.classList.toggle('ist-sichtbar', heroDurch);
+
+    /* Das Häuschen oben übernimmt genau dann, wenn das Logo aus dem
+       Bild gescrollt ist — nicht erst am Ende des Landing-Bereichs. */
+    const logoWeg = logo ? logo.getBoundingClientRect().bottom <= 0 : window.scrollY > 80;
+    nav.classList.toggle('hat-logo-verlassen', logoWeg);
 
     /* Was man schon gesehen hat, bleibt etwas präsenter — und der
        zuletzt erreichte Abschnitt ist der, auf dem man steht. */

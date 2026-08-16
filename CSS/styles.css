@@ -352,6 +352,37 @@ body.platzhalter-zeigen .platzhalter {
 }
 
 
+/* Das Häuschen fährt seitlich aus, sobald das Logo weggescrollt ist.
+   Es sieht aus wie ein Menüpunkt und verhält sich auch so — dimmen
+   und Scanner greifen ohne Zusatzregel.
+   Die Auswahl steht bewusst als ".nav-links > a.nav-heim": ".nav-heim"
+   allein wäre weniger spezifisch als ".nav-links > a" und würde von
+   dessen Werten überstimmt. */
+.nav-links > a.nav-heim {
+  max-width: 0;
+  padding-inline: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.35s var(--ease),
+              padding 0.35s var(--ease),
+              opacity 0.25s var(--ease),
+              color var(--duration) var(--ease),
+              background var(--duration) var(--ease);
+}
+.nav-heim svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+.nav.hat-logo-verlassen .nav-links > a.nav-heim {
+  max-width: 3rem;
+  padding-inline: 0.6rem;
+  opacity: 1;
+}
+
+/* Auf dem Handy übernimmt das der Knopf unten rechts */
+@media (max-width: 1139px) {
+  .nav-links > a.nav-heim { display: none; }
+}
+
+
 /* ── Untermenü ─────────────────────────────────────────────
    Gebaut nach dem üblichen Muster für Navigations-Aufklapper: der
    Auslöser ist ein Knopf mit aria-expanded, nicht ein Link. Maus zum
