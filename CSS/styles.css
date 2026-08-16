@@ -262,6 +262,26 @@ body.platzhalter-zeigen .platzhalter {
   box-shadow: var(--shadow-sm);
 }
 
+/* Das Logo liegt in einem eigenen Band ganz oben auf der Seite, nicht
+   in der festen Leiste. Dadurch scrollt es einfach mit weg — ohne
+   Ausblenden, ohne Bewegung. */
+.logo-band {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  z-index: 99;
+  pointer-events: none;          /* nur das Logo selbst fängt Klicks */
+}
+/* inline-block, damit es nur so breit ist wie sein Inhalt — sonst
+   spannt es als Inline-Element über die ganze Zeile und käme dem
+   Menü-Knopf rechts in die Quere. */
+.logo-band .nav-logo {
+  pointer-events: auto;
+  display: inline-block;
+}
+
 .nav-logo {
   font-family: var(--font-display);
   font-weight: var(--weight-bold);
@@ -276,8 +296,6 @@ body.platzhalter-zeigen .platzhalter {
   text-shadow: 0 1px 2px rgba(23, 24, 26, 0.22),
                0 0 14px rgba(255, 255, 255, 0.80),
                0 0 4px rgba(255, 255, 255, 0.90);
-  transition: opacity var(--duration) var(--ease),
-              transform var(--duration) var(--ease);
 }
 .nav-logo small {
   display: block;
@@ -312,60 +330,41 @@ body.platzhalter-zeigen .platzhalter {
 }
 
 
-/* ── Die Menüpunkte fahren in den Knopf ein ────────────────
-   Beim Scrollen nach unten rutschen die Punkte nacheinander in den
-   Termin-Knopf und verblassen — die Insel schrumpft auf den Knopf
-   zusammen. Beim Hochscrollen kommen sie erst wieder heraus, wenn man
-   einen neuen Block anschneidet (das steuert main.js). */
+/* ── Die Leiste wird leiser ────────────────────────────────
+   Ab dem Ende des Landing-Bereichs tritt die Leiste zurück: gut zu
+   sehen ist nur noch, wo man gerade ist, und wie weit man schon
+   gekommen ist. Fährt die Maus darüber, hellen sich die Punkte in
+   ihrer Nähe wieder auf — wie ein Scanner, der darüberwandert.
+   Die Nähe zum Zeiger rechnet main.js in --naehe (0 bis 1). */
 @media (min-width: 1041px) {
-  .nav-links a:not(.btn) {
-    max-width: 12rem;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: opacity 0.28s var(--ease),
-                max-width 0.38s var(--ease),
-                padding 0.38s var(--ease),
-                transform 0.38s var(--ease);
+  .nav-links a {
+    position: relative;
+    transition: opacity 0.16s linear,
+                color var(--duration) var(--ease),
+                background var(--duration) var(--ease);
   }
 
-  /* Bewusst KEIN visibility: hidden — das würde die Punkte
-     unfokussierbar machen und die Tastatur-Ausnahme unten könnte
-     nie greifen. Bei Breite 0 kann man sie ohnehin nicht treffen. */
-  .nav.ist-eingeklappt .nav-links a:not(.btn) {
-    max-width: 0;
-    opacity: 0;
-    padding-left: 0; padding-right: 0;
-    transform: translateX(18px);
+  .nav.ist-gedimmt .nav-links {
+    background: rgba(255, 255, 255, 0.30);
+    box-shadow: none;
+  }
+  .nav.ist-gedimmt .nav-links:hover,
+  .nav.ist-gedimmt .nav-links:focus-within {
+    background: rgba(255, 255, 255, 0.74);
+    box-shadow: var(--shadow-sm);
   }
 
-  /* Der hinterste Punkt geht zuerst — dadurch wirkt es wie ein
-     Einfädeln in den Knopf statt wie ein gleichzeitiges Ausblenden. */
-  .nav.ist-eingeklappt .nav-links a:nth-child(6) { transition-delay: 0s;    }
-  .nav.ist-eingeklappt .nav-links a:nth-child(5) { transition-delay: 0.04s; }
-  .nav.ist-eingeklappt .nav-links a:nth-child(4) { transition-delay: 0.08s; }
-  .nav.ist-eingeklappt .nav-links a:nth-child(3) { transition-delay: 0.12s; }
-  .nav.ist-eingeklappt .nav-links a:nth-child(2) { transition-delay: 0.16s; }
-  .nav.ist-eingeklappt .nav-links a:nth-child(1) { transition-delay: 0.20s; }
-
-  /* Tastatur-Nutzer nicht aussperren: sobald etwas in der Insel den
-     Fokus bekommt, fährt sie sofort wieder aus. */
-  .nav.ist-eingeklappt .nav-links:focus-within a:not(.btn) {
-    max-width: 12rem;
-    opacity: 1;
-    padding-left: 0.85rem; padding-right: 0.85rem;
-    transform: none;
-    transition-delay: 0s;
+  /* Noch nicht erreichte Abschnitte treten am weitesten zurück … */
+  .nav.ist-gedimmt .nav-links a:not(.btn):not(.is-active) {
+    opacity: calc(0.24 + 0.76 * var(--naehe, 0));
   }
-}
-
-/* Auf dem Handy verschwindet das Logo hinter dem Landing-Bereich —
-   zurück kommt man über den Haus-Knopf unten rechts. */
-@media (max-width: 1040px) {
-  .nav.hat-hero-verlassen .nav-logo {
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
+  /* … schon gesehene bleiben etwas präsenter. Das ist der Verlauf. */
+  .nav.ist-gedimmt .nav-links a.ist-vorbei:not(.is-active) {
+    opacity: calc(0.46 + 0.54 * var(--naehe, 0));
   }
+
+  /* Mit der Tastatur gibt es keinen Zeiger — dann alles zeigen. */
+  .nav.ist-gedimmt .nav-links:focus-within a { opacity: 1; }
 }
 
 
@@ -389,10 +388,7 @@ body.platzhalter-zeigen .platzhalter {
   transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
 }
 .heim-knopf svg { width: 22px; height: 22px; }
-
-@media (max-width: 1040px) {
-  .heim-knopf { display: flex; }
-}
+.heim-knopf { display: flex; }
 .heim-knopf.ist-sichtbar {
   opacity: 1;
   transform: none;

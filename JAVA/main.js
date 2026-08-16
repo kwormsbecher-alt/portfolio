@@ -111,59 +111,71 @@ function navAufsetzen() {
 /* ───────────────────────────────────────────────────────────
    2b. KOPFLEISTE BEIM SCROLLEN
 
-   Nach unten: die Menüpunkte fahren in den Termin-Knopf ein.
-   Nach oben: sie kommen bewusst nicht sofort zurück, sondern erst,
-   wenn man einen neuen Block anschneidet.
-   Auf dem Handy verschwindet stattdessen das Logo und der Haus-Knopf
-   unten rechts taucht auf.
+   Ab dem Ende des Landing-Bereichs tritt die Leiste zurück: klar zu
+   sehen bleiben nur der Punkt, auf dem man steht, und wie weit man
+   gekommen ist. Fährt die Maus darüber, hellen sich die Punkte in
+   ihrer Nähe auf — wie ein Scanner.
+   Gleichzeitig taucht der Haus-Knopf auf, weil das Logo dann
+   weggescrollt ist.
    ─────────────────────────────────────────────────────────── */
 
 function kopfleisteVerwandelnAufsetzen() {
   const nav = document.querySelector('.nav');
   if (!nav) return;
 
-  const heim = document.querySelector('.heim-knopf');
-  const hero = document.getElementById('willkommen');
-  const abschnitte = Array.prototype.slice.call(
-    document.querySelectorAll('main section[id]')
-  );
+  const heim  = document.querySelector('.heim-knopf');
+  const hero  = document.getElementById('willkommen');
+  const insel = nav.querySelector('.nav-links');
 
-  let letzteHoehe = window.scrollY;
-  let letzterBlock = 0;
+  /* Menüpunkte mit ihrem Abschnitt verknüpfen — ohne den Termin-Knopf */
+  const punkte = Array.prototype.slice
+    .call(nav.querySelectorAll('.nav-links a[href^="#"]'))
+    .filter(function (a) { return !a.classList.contains('btn'); })
+    .map(function (a) { return { knopf: a, ziel: document.querySelector(a.getAttribute('href')) }; })
+    .filter(function (p) { return p.ziel; });
+
   let letzterLauf = 0;
   let nachzuegler = null;
 
-  /* Welcher Block steht gerade oben an? */
-  function aktuellerBlock() {
-    const grenze = nav.getBoundingClientRect().height + 8;
-    let index = 0;
-    abschnitte.forEach(function (abschnitt, i) {
-      if (abschnitt.getBoundingClientRect().top <= grenze) index = i;
-    });
-    return index;
-  }
-
   function pruefen() {
-    const hoehe = window.scrollY;
-    const geht_runter = hoehe > letzteHoehe;
-    const block = aktuellerBlock();
+    const grenze = nav.getBoundingClientRect().height + 8;
 
     /* Landing-Bereich durch? */
-    const heroDurch = hero ? hero.getBoundingClientRect().bottom <= 80 : hoehe > 400;
-    nav.classList.toggle('hat-hero-verlassen', heroDurch);
+    const heroDurch = hero
+      ? hero.getBoundingClientRect().bottom <= 80
+      : window.scrollY > 400;
+
+    nav.classList.toggle('ist-gedimmt', heroDurch);
     if (heim) heim.classList.toggle('ist-sichtbar', heroDurch);
 
-    if (hoehe <= 140) {
-      nav.classList.remove('ist-eingeklappt');
-    } else if (geht_runter) {
-      nav.classList.add('ist-eingeklappt');
-    } else if (block < letzterBlock) {
-      /* Beim Hochscrollen erst beim nächsten Block wieder ausfahren */
-      nav.classList.remove('ist-eingeklappt');
-    }
+    /* Was man schon gesehen hat, bleibt etwas präsenter — und der
+       zuletzt erreichte Abschnitt ist der, auf dem man steht. */
+    let aktiv = null;
+    punkte.forEach(function (p) {
+      const vorbei = p.ziel.getBoundingClientRect().top <= grenze;
+      p.knopf.classList.toggle('ist-vorbei', vorbei);
+      if (vorbei) aktiv = p;
+    });
+    punkte.forEach(function (p) {
+      p.knopf.classList.toggle('is-active', p === aktiv);
+    });
+  }
 
-    letzterBlock = block;
-    letzteHoehe = hoehe;
+  /* Der Scanner: je näher der Zeiger, desto klarer der Punkt. */
+  if (insel) {
+    insel.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      punkte.forEach(function (p) {
+        const kasten = p.knopf.getBoundingClientRect();
+        const abstand = Math.abs(e.clientX - (kasten.left + kasten.width / 2));
+        const naehe = Math.max(0, 1 - abstand / 200);
+        p.knopf.style.setProperty('--naehe', naehe.toFixed(3));
+      });
+    });
+
+    insel.addEventListener('pointerleave', function () {
+      punkte.forEach(function (p) { p.knopf.style.setProperty('--naehe', '0'); });
+    });
   }
 
   /* Höchstens alle 60 ms rechnen, aber am Ende einer Scroll-Bewegung
@@ -184,33 +196,6 @@ function kopfleisteVerwandelnAufsetzen() {
   }, { passive: true });
 
   pruefen();
-}
-
-
-/* ───────────────────────────────────────────────────────────
-   3. AKTIVER MENÜPUNKT — hebt hervor, wo man gerade ist
-   ─────────────────────────────────────────────────────────── */
-
-function aktivenMenuepunktVerfolgen() {
-  const links = document.querySelectorAll('.nav-links a[href^="#"]');
-  if (!links.length || !('IntersectionObserver' in window)) return;
-
-  const zuordnung = new Map();
-  links.forEach(function (link) {
-    const ziel = document.querySelector(link.getAttribute('href'));
-    if (ziel) zuordnung.set(ziel, link);
-  });
-
-  const beobachter = new IntersectionObserver(function (eintraege) {
-    eintraege.forEach(function (eintrag) {
-      if (!eintrag.isIntersecting) return;
-      links.forEach(function (l) { l.classList.remove('is-active'); });
-      const link = zuordnung.get(eintrag.target);
-      if (link) link.classList.add('is-active');
-    });
-  }, { rootMargin: '-45% 0px -50% 0px' });
-
-  zuordnung.forEach(function (_link, ziel) { beobachter.observe(ziel); });
 }
 
 
@@ -848,7 +833,6 @@ document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
   kopfleisteVerwandelnAufsetzen();
-  aktivenMenuepunktVerfolgen();
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
   spielfeldAufsetzen();
