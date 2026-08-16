@@ -622,6 +622,56 @@ function memoryAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   4bc. BAUSTEIN IM DETAIL
+
+   Klick auf eine Kachel dreht sie mittig auf, der Rest verschwimmt
+   dahinter. Der Inhalt kommt aus der Kachel selbst — der lange Text
+   steht dort versteckt im HTML und muss nicht doppelt gepflegt
+   werden.
+   ─────────────────────────────────────────────────────────── */
+
+let bausteinZeigen = null;
+
+function bausteinFensterAufsetzen() {
+  const fenster = document.querySelector('.baustein-fenster');
+  if (!fenster || typeof fenster.showModal !== 'function') return null;
+
+  const symbol = fenster.querySelector('[data-detail-symbol]');
+  const titel  = fenster.querySelector('[data-detail-titel]');
+  const kurz   = fenster.querySelector('[data-detail-kurz]');
+  const lang   = fenster.querySelector('[data-detail-lang]');
+  const zu     = fenster.querySelector('[data-detail-zu]');
+
+  if (zu) zu.addEventListener('click', function () { fenster.close(); });
+
+  /* Klick auf den verschwommenen Rand schließt ebenfalls */
+  fenster.addEventListener('click', function (e) {
+    if (e.target === fenster) fenster.close();
+  });
+
+  return function zeigen(stein) {
+    const quelleSymbol = stein.querySelector('.baustein-symbol');
+    const quelleTitel  = stein.querySelector('h3');
+    const quelleKurz   = stein.querySelector('p');
+    const quelleLang   = stein.querySelector('.baustein-mehr');
+
+    /* trim(), weil der Text im Quelltext eingerückt steht und die
+       Umbrüche sonst mit ins Fenster wandern. */
+    symbol.innerHTML  = quelleSymbol ? quelleSymbol.innerHTML : '';
+    titel.textContent = quelleTitel ? quelleTitel.textContent.trim() : '';
+    kurz.textContent  = quelleKurz  ? quelleKurz.textContent.trim()  : '';
+    lang.innerHTML    = quelleLang  ? quelleLang.innerHTML           : '';
+
+    fenster.classList.toggle('ist-dunkel', stein.classList.contains('baustein--spiel'));
+
+    if (!fenster.open) {
+      try { fenster.showModal(); } catch (fehler) { /* dann eben nicht */ }
+    }
+  };
+}
+
+
+/* ───────────────────────────────────────────────────────────
    4c. SPIELFELD — die Bausteine lassen sich herumschieben
 
    Der Kniff: Erst wird das ganz normale Raster ausgemessen, dann
@@ -780,7 +830,19 @@ function spielfeldAufsetzen() {
     let greifX = 0, greifY = 0;
     let startX = 0, startY = 0;
     let aktiv = false;
+    let bewegt = false;
     let halteUhr = null;
+
+    /* Die Kachel ist anklickbar — das muss auch die Tastatur können.
+       Gesetzt per JavaScript, weil sie ohne main.js nichts täte. */
+    karte.setAttribute('role', 'button');
+    karte.setAttribute('tabindex', '0');
+    karte.setAttribute('aria-haspopup', 'dialog');
+    karte.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      if (typeof bausteinZeigen === 'function') bausteinZeigen(karte);
+    });
 
     /* Schütteln erkennen: Richtungswechsel nach links und rechts
        zählen. Sieben Wechsel dicht hintereinander starten Memory.
@@ -839,6 +901,7 @@ function spielfeldAufsetzen() {
       letzteX = e.clientX;
       richtung = 0;
       wechsel = 0;
+      bewegt = false;
 
       if (e.pointerType === 'touch') {
         /* Mit dem Finger erst nach kurzem Halten. Wischt jemand nur
@@ -861,6 +924,11 @@ function spielfeldAufsetzen() {
     }, { passive: false });
 
     karte.addEventListener('pointermove', function (e) {
+      /* Merken, ob überhaupt gezogen wurde — sonst war es ein Tippen */
+      if (Math.abs(e.clientX - startX) > 6 || Math.abs(e.clientY - startY) > 6) {
+        bewegt = true;
+      }
+
       if (!aktiv) {
         /* Noch in der Wartezeit: Bewegt sich der Finger, war es ein
            Wischen — dann Ziehen abblasen und weiterscrollen lassen. */
@@ -897,20 +965,30 @@ function spielfeldAufsetzen() {
       karte.style.top  = y + 'px';
     });
 
-    function loslassen(e) {
+    function loslassen(e, abgebrochen) {
       uhrStoppen();
       karte.classList.remove('wackelt');
       wechsel = 0;
-      if (!aktiv) return;
+
+      const warAktiv = aktiv;
       aktiv = false;
-      karte.classList.remove('wird-gezogen');
-      try {
-        if (karte.hasPointerCapture(e.pointerId)) karte.releasePointerCapture(e.pointerId);
-      } catch (fehler) { /* egal */ }
-      einrasten(karte);
+
+      if (warAktiv) {
+        karte.classList.remove('wird-gezogen');
+        try {
+          if (karte.hasPointerCapture(e.pointerId)) karte.releasePointerCapture(e.pointerId);
+        } catch (fehler) { /* egal */ }
+        einrasten(karte);
+      }
+
+      /* Kein Weg zurückgelegt heißt: getippt, nicht gezogen. Dann
+         klappt die Kachel auf statt sich zu verschieben. */
+      if (!abgebrochen && !bewegt && typeof bausteinZeigen === 'function') {
+        bausteinZeigen(karte);
+      }
     }
-    karte.addEventListener('pointerup', loslassen);
-    karte.addEventListener('pointercancel', loslassen);
+    karte.addEventListener('pointerup', function (e) { loslassen(e, false); });
+    karte.addEventListener('pointercancel', function (e) { loslassen(e, true); });
   }
 
   karten.forEach(ziehenAufsetzen);
@@ -990,6 +1068,7 @@ document.addEventListener('DOMContentLoaded', function () {
   kopfleisteVerwandelnAufsetzen();
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
+  bausteinZeigen = bausteinFensterAufsetzen();   /* muss vor dem Spielfeld stehen */
   spielfeldAufsetzen();
   geraeteGalerieAufsetzen();
   einblendenAufsetzen();

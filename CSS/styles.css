@@ -874,6 +874,7 @@ body.platzhalter-zeigen .platzhalter {
 .auswahl-fenster {
   width: min(94vw, 560px);
   max-height: 86vh;
+  margin: auto;                  /* siehe Hinweis beim Baustein-Fenster */
   padding: 0;
   border: 0;
   border-radius: var(--radius-lg);
@@ -1067,6 +1068,90 @@ body.platzhalter-zeigen .platzhalter {
   background: rgba(255, 255, 255, 0.16);
   color: var(--hero-text);
 }
+
+
+/* ── 8c2. BAUSTEIN IM DETAIL ───────────────────────────────
+   Klick auf eine Kachel dreht sie mittig auf, alles dahinter
+   verschwimmt. Als <dialog>, damit Escape, Tastaturführung und die
+   Verdunklung des Hintergrunds vom Browser kommen. */
+
+.baustein-fenster {
+  width: min(92vw, 540px);
+  /* margin: auto zentriert ein modales <dialog>. Steht hier
+     ausdrücklich, weil der Reset ganz oben allen Elementen margin: 0
+     gibt und die eingebaute Zentrierung damit wegfällt. */
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+.baustein-fenster::backdrop {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+}
+
+/* Die Kachel dreht sich herein wie eine umgedrehte Karte */
+.baustein-fenster[open] { animation: karteDreht 0.55s var(--ease); }
+@keyframes karteDreht {
+  from { opacity: 0; transform: perspective(1500px) rotateY(-88deg) scale(0.82); }
+  55%  { opacity: 1; }
+  to   { opacity: 1; transform: perspective(1500px) rotateY(0) scale(1); }
+}
+
+.baustein-gross {
+  padding: clamp(var(--space-3), 5vw, var(--space-5));
+  max-height: 74vh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.baustein-gross .baustein-symbol { margin-bottom: var(--space-3); }
+.baustein-gross h3 { font-size: var(--size-h3); margin-bottom: var(--space-2); }
+
+.baustein-kurz {
+  font-size: var(--size-lead);
+  line-height: 1.55;
+  color: var(--text);
+}
+.baustein-lang { margin-top: var(--space-3); }
+.baustein-lang p {
+  color: var(--text-mid);
+  font-size: var(--size-small);
+}
+
+/* Die dunkle Spiel-Kachel öffnet auch dunkel */
+.baustein-fenster.ist-dunkel .baustein-gross {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--hero-text);
+}
+.baustein-fenster.ist-dunkel .baustein-kurz { color: var(--hero-text); }
+.baustein-fenster.ist-dunkel .baustein-lang p { color: var(--hero-text-mid); }
+.baustein-fenster.ist-dunkel .baustein-symbol {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--hero-text);
+}
+
+/* Zurück steht als Text unter der Karte, nicht als Knopf darin */
+.baustein-zurueck {
+  display: block;
+  margin: var(--space-3) auto 0;
+  padding: 0.4rem 0.8rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--duration) var(--ease);
+}
+.baustein-zurueck:hover { color: var(--text); }
+
+/* Kacheln sind anklickbar — das darf man auch sehen */
+.baustein[role="button"] { cursor: pointer; }
+.spielfeld.ist-spielbar .baustein[role="button"] { cursor: grab; }
 
 
 /* ── 8d. SPIELFELD ─────────────────────────────────────── */
