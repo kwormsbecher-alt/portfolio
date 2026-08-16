@@ -42,20 +42,22 @@
 
     <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
 
-      <!-- Fest in der Leiste: auf Unterseiten gibt es keinen
-           Landing-Bereich, aus dem es herausfahren könnte. -->
-      <a class="nav-heim nav-heim--fest" href="../index.html"
-         aria-label="Startseite" title="Startseite">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+      <!-- Eine Ebene zurück. Kein Haus: das gehört zur Startseite,
+           hier geht es nach oben in der Gliederung. -->
+      <a class="nav-zurueck" href="../index.html"
+         aria-label="Zurück zur Startseite" title="Zurück zur Startseite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3.5 10.6L12 3.8l8.5 6.8" />
-          <path d="M5.6 9.4V20h12.8V9.4" />
-          <path d="M9.9 20v-5.4h4.2V20" />
+          <path d="M20 12H4M10 6l-6 6 6 6" />
         </svg>
-        <span class="nav-heim-wort">Startseite</span>
+        <span class="nav-zurueck-wort">Zurück</span>
       </a>
 
+      <span class="nav-ebene-strich" aria-hidden="true"></span>
+
+      <a href="impressum.html">Impressum</a>
       <a href="datenschutz.html" class="is-active" aria-current="page">Datenschutz</a>
+
       <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
     </nav>
   </div>

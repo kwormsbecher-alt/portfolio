@@ -382,29 +382,41 @@ body.platzhalter-zeigen .platzhalter {
   .nav-links > a.nav-heim { display: none; }
 }
 
-/* Auf den Unterseiten steht das Häuschen fest in der Leiste — dort
-   gibt es keinen Landing-Bereich, aus dem es herausfahren könnte.
-   Muss nach der Regel oben stehen: gleiche Spezifität, es gewinnt
-   die spätere. */
-.nav-links > a.nav-heim--fest {
-  max-width: 3rem;
+/* Auf Unterseiten führt ein Pfeil eine Ebene zurück — kein Haus, das
+   gehört zur Startseite. Daneben stehen die Seiten derselben Ebene,
+   damit man zwischen ihnen wechseln kann, ohne den Umweg über die
+   Startseite. */
+.nav-links > a.nav-zurueck {
   padding-inline: 0.6rem;
-  opacity: 1;
-  overflow: visible;
+  color: var(--text-mid);
 }
-.nav-heim-wort { display: none; }
+.nav-zurueck svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-zurueck-wort { display: none; }
 
 @media (max-width: 1139px) {
-  .nav-links > a.nav-heim--fest {
-    display: inline-flex;
+  .nav-links > a.nav-zurueck {
     justify-content: flex-start;
     gap: var(--space-2);
-    max-width: none;
     padding: 0.9rem 0.5rem;
     font-size: 1rem;
   }
   /* Im aufgeklappten Menü ist ein Symbol allein zu wenig */
-  .nav-heim-wort { display: inline; }
+  .nav-zurueck-wort { display: inline; }
+}
+
+/* Trennt den Pfeil optisch von den Punkten derselben Ebene */
+.nav-ebene-strich {
+  width: 1px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-inline: 0.15rem;
+  background: var(--border-strong);
+}
+@media (max-width: 1139px) {
+  .nav-ebene-strich {
+    width: auto; height: 1px;
+    margin: var(--space-1) 0.5rem;
+  }
 }
 
 
