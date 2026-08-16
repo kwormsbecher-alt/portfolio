@@ -94,8 +94,24 @@
       <a href="#leistungen">Leistungen</a>
       <a href="#bausteine">Galerie</a>
       <a href="#bildung">Werdegang</a>
-      <a href="#referenz">Referenz</a>
-      <a href="HTML/portfolio.html">Portfolio</a>
+
+      <!-- Aufklapper: der Auslöser ist bewusst ein Knopf, kein Link.
+           Der Weg zum Abschnitt selbst steht als erster Eintrag drin. -->
+      <div class="nav-gruppe">
+        <button class="nav-aufklapp" type="button"
+                aria-expanded="false" aria-controls="untermenue-arbeiten">
+          Referenz
+          <svg class="nav-pfeil" viewBox="0 0 12 8" aria-hidden="true">
+            <path d="M1 1.6L6 6.4L11 1.6" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-untermenue" id="untermenue-arbeiten" hidden>
+          <a href="#referenz">Referenz auf der Startseite</a>
+          <a href="HTML/portfolio.html">Portfolio &amp; Arbeiten</a>
+        </div>
+      </div>
+
       <a href="#faq">Fragen</a>
       <a class="btn btn--primary" href="#kontakt" data-mail="link">Termin anfragen</a>
     </nav>

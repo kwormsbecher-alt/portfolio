@@ -43,8 +43,21 @@
     <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
       <a href="../index.html#ueber">Über mich</a>
       <a href="../index.html#leistungen">Leistungen</a>
-      <a href="../index.html#referenz">Referenz</a>
-      <a href="portfolio.html">Portfolio</a>
+
+      <div class="nav-gruppe">
+        <button class="nav-aufklapp" type="button"
+                aria-expanded="false" aria-controls="untermenue-arbeiten">
+          Referenz
+          <svg class="nav-pfeil" viewBox="0 0 12 8" aria-hidden="true">
+            <path d="M1 1.6L6 6.4L11 1.6" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-untermenue" id="untermenue-arbeiten" hidden>
+          <a href="../index.html#referenz">Referenz auf der Startseite</a>
+          <a href="portfolio.html">Portfolio &amp; Arbeiten</a>
+        </div>
+      </div>
       <a href="../index.html#faq">Fragen</a>
       <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
     </nav>

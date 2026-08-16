@@ -313,7 +313,11 @@ body.platzhalter-zeigen .platzhalter {
   margin-left: auto;
   padding: 0.28rem;
 }
-.nav-links a {
+/* Punkte der obersten Ebene — Links und der Aufklapp-Knopf sehen
+   gleich aus, damit man den Unterschied nicht sieht. */
+.nav-links > a,
+.nav-aufklapp {
+  display: inline-flex; align-items: center; gap: 0.35rem;
   padding: 0.48rem 0.85rem;
   font-size: var(--size-small);
   color: var(--text-mid);
@@ -322,11 +326,81 @@ body.platzhalter-zeigen .platzhalter {
   white-space: nowrap;
   transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
 }
-.nav-links a:hover { color: var(--text); background: var(--accent-soft); }
-.nav-links a.is-active {
+.nav-links > a:hover,
+.nav-aufklapp:hover { color: var(--text); background: var(--accent-soft); }
+
+.nav-links > a.is-active,
+.nav-aufklapp.is-active {
   color: var(--surface);
   background: var(--accent);
   font-weight: var(--weight-medium);
+}
+
+
+/* ── Untermenü ─────────────────────────────────────────────
+   Gebaut nach dem üblichen Muster für Navigations-Aufklapper: der
+   Auslöser ist ein Knopf mit aria-expanded, nicht ein Link. Maus zum
+   Aufklappen, Tastatur mit Pfeiltasten, Escape schließt und springt
+   zurück auf den Knopf. Auf dem Handy klappt es eingerückt im Menü
+   auf statt zu schweben. */
+
+.nav-gruppe { position: relative; }
+
+.nav-pfeil {
+  width: 10px; height: 7px;
+  flex-shrink: 0;
+  transition: transform var(--duration) var(--ease);
+}
+.nav-aufklapp[aria-expanded="true"] .nav-pfeil { transform: rotate(180deg); }
+
+.nav-untermenue {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav-untermenue[hidden] { display: none; }
+
+.nav-untermenue a {
+  display: block;
+  padding: 0.55rem 0.9rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+.nav-untermenue a:hover { color: var(--text); background: var(--accent-soft); }
+.nav-untermenue a.is-active { color: var(--text); font-weight: var(--weight-medium); }
+
+/* Am Rechner schwebt es unter dem Punkt */
+@media (min-width: 1140px) {
+  .nav-untermenue {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 240px;
+    padding: 0.4rem;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    animation: untermenueAuf 0.2s var(--ease);
+  }
+  /* Unsichtbare Brücke: sonst klappt es zu, wenn die Maus die Lücke
+     zwischen Knopf und Untermenü überquert. */
+  .nav-untermenue::before {
+    content: '';
+    position: absolute;
+    top: -14px; left: 0; right: 0;
+    height: 14px;
+  }
+}
+@keyframes untermenueAuf {
+  from { opacity: 0; transform: translate(-50%, -6px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
 }
 
 
@@ -337,7 +411,8 @@ body.platzhalter-zeigen .platzhalter {
    ihrer Nähe wieder auf — wie ein Scanner, der darüberwandert.
    Die Nähe zum Zeiger rechnet main.js in --naehe (0 bis 1). */
 @media (min-width: 1140px) {
-  .nav-links a {
+  .nav-links > a,
+  .nav-aufklapp {
     position: relative;
     transition: opacity 0.16s linear,
                 color var(--duration) var(--ease),
@@ -355,16 +430,19 @@ body.platzhalter-zeigen .platzhalter {
   }
 
   /* Noch nicht erreichte Abschnitte treten am weitesten zurück … */
-  .nav.ist-gedimmt .nav-links a:not(.btn):not(.is-active) {
+  .nav.ist-gedimmt .nav-links > a:not(.btn):not(.is-active),
+  .nav.ist-gedimmt .nav-aufklapp:not(.is-active) {
     opacity: calc(0.24 + 0.76 * var(--naehe, 0));
   }
   /* … schon gesehene bleiben etwas präsenter. Das ist der Verlauf. */
-  .nav.ist-gedimmt .nav-links a.ist-vorbei:not(.is-active) {
+  .nav.ist-gedimmt .nav-links > a.ist-vorbei:not(.is-active),
+  .nav.ist-gedimmt .nav-aufklapp.ist-vorbei:not(.is-active) {
     opacity: calc(0.46 + 0.54 * var(--naehe, 0));
   }
 
   /* Mit der Tastatur gibt es keinen Zeiger — dann alles zeigen. */
-  .nav.ist-gedimmt .nav-links:focus-within a { opacity: 1; }
+  .nav.ist-gedimmt .nav-links:focus-within > a,
+  .nav.ist-gedimmt .nav-links:focus-within .nav-aufklapp { opacity: 1; }
 }
 
 
@@ -473,8 +551,23 @@ body.platzhalter-zeigen .platzhalter {
   }
   .nav.is-open .nav-links { opacity: 1; visibility: visible; transform: translateY(0); }
 
-  .nav-links a { padding: 0.9rem 0.5rem; font-size: 1rem; border-radius: var(--radius-sm); }
+  .nav-links > a { padding: 0.9rem 0.5rem; font-size: 1rem; border-radius: var(--radius-sm); }
   .nav-links .btn { margin-left: 0; margin-top: var(--space-2); }
+
+  /* Aufklapper im Handy-Menü: volle Breite, Untermenü eingerückt */
+  .nav-aufklapp {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.9rem 0.5rem;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
+  }
+  .nav-untermenue {
+    margin: 0.1rem 0 0.4rem var(--space-2);
+    padding-left: var(--space-2);
+    border-left: 2px solid var(--accent-line);
+  }
+  .nav-untermenue a { padding: 0.75rem 0.5rem; font-size: 0.95rem; }
 }
 
 

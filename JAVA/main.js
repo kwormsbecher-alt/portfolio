@@ -109,6 +109,92 @@ function navAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   2a. UNTERMENÜ
+
+   Nach dem üblichen Muster für Navigations-Aufklapper gebaut: der
+   Auslöser ist ein Knopf mit aria-expanded, kein Link. Am Rechner
+   reicht Darüberfahren, mit der Tastatur geht es über Pfeiltasten,
+   Escape schließt und springt zurück auf den Knopf. Auf dem Handy
+   klappt es eingerückt im Menü auf.
+   ─────────────────────────────────────────────────────────── */
+
+function aufklapperAufsetzen() {
+  const gruppen = document.querySelectorAll('.nav-gruppe');
+  if (!gruppen.length) return;
+
+  /* Muss zum Umschaltpunkt in styles.css passen (dort 1140px). */
+  const alsPopup = window.matchMedia('(min-width: 1140px)');
+
+  gruppen.forEach(function (gruppe) {
+    const knopf = gruppe.querySelector('.nav-aufklapp');
+    const feld  = gruppe.querySelector('.nav-untermenue');
+    if (!knopf || !feld) return;
+
+    let schliessUhr = null;
+
+    function oeffnen() {
+      window.clearTimeout(schliessUhr);
+      feld.hidden = false;
+      knopf.setAttribute('aria-expanded', 'true');
+    }
+    function schliessen() {
+      window.clearTimeout(schliessUhr);
+      feld.hidden = true;
+      knopf.setAttribute('aria-expanded', 'false');
+    }
+
+    knopf.addEventListener('click', function () {
+      if (feld.hidden) oeffnen(); else schliessen();
+    });
+
+    /* Maus: aufklappen beim Darüberfahren. Beim Verlassen mit kurzer
+       Verzögerung, damit man die Strecke zum Untermenü schafft. */
+    gruppe.addEventListener('pointerenter', function (e) {
+      if (e.pointerType === 'touch' || !alsPopup.matches) return;
+      oeffnen();
+    });
+    gruppe.addEventListener('pointerleave', function (e) {
+      if (e.pointerType === 'touch' || !alsPopup.matches) return;
+      schliessUhr = window.setTimeout(schliessen, 220);
+    });
+
+    gruppe.addEventListener('keydown', function (e) {
+      const eintraege = Array.prototype.slice.call(feld.querySelectorAll('a'));
+      const jetzt = eintraege.indexOf(document.activeElement);
+
+      if (e.key === 'Escape' && !feld.hidden) {
+        e.stopPropagation();            /* nicht auch das Hauptmenü zu */
+        schliessen();
+        knopf.focus();
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (feld.hidden) oeffnen();
+        (eintraege[jetzt + 1] || eintraege[0]).focus();
+        return;
+      }
+      if (e.key === 'ArrowUp' && !feld.hidden) {
+        e.preventDefault();
+        if (jetzt <= 0) knopf.focus(); else eintraege[jetzt - 1].focus();
+      }
+    });
+
+    /* Fokus raus oder Klick daneben — beides schließt */
+    gruppe.addEventListener('focusout', function (e) {
+      if (!gruppe.contains(e.relatedTarget)) schliessen();
+    });
+    document.addEventListener('click', function (e) {
+      if (!gruppe.contains(e.target)) schliessen();
+    });
+
+    /* Beim Wechsel zwischen Handy- und Rechner-Ansicht aufräumen */
+    alsPopup.addEventListener('change', schliessen);
+  });
+}
+
+
+/* ───────────────────────────────────────────────────────────
    2b. KOPFLEISTE BEIM SCROLLEN
 
    Ab dem Ende des Landing-Bereichs tritt die Leiste zurück: klar zu
@@ -127,12 +213,20 @@ function kopfleisteVerwandelnAufsetzen() {
   const hero  = document.getElementById('willkommen');
   const insel = nav.querySelector('.nav-links');
 
-  /* Menüpunkte mit ihrem Abschnitt verknüpfen — ohne den Termin-Knopf */
+  /* Für die Markierung: alle Abschnitts-Links, auch die im Untermenü */
   const punkte = Array.prototype.slice
     .call(nav.querySelectorAll('.nav-links a[href^="#"]'))
     .filter(function (a) { return !a.classList.contains('btn'); })
     .map(function (a) { return { knopf: a, ziel: document.querySelector(a.getAttribute('href')) }; })
     .filter(function (p) { return p.ziel; });
+
+  /* Für Scanner und Dimmen: nur was in der Leiste wirklich zu sehen
+     ist — ein zugeklapptes Untermenü hat keine Position. */
+  const sichtbare = Array.prototype.slice.call(
+    nav.querySelectorAll('.nav-links > a:not(.btn), .nav-links .nav-aufklapp')
+  );
+
+  const gruppen = Array.prototype.slice.call(nav.querySelectorAll('.nav-gruppe'));
 
   let letzterLauf = 0;
   let nachzuegler = null;
@@ -169,22 +263,31 @@ function kopfleisteVerwandelnAufsetzen() {
     punkte.forEach(function (p) {
       p.knopf.classList.toggle('is-active', p === aktiv);
     });
+
+    /* Steckt der aktive Punkt in einem zugeklappten Untermenü, würde
+       man die Markierung nicht sehen — dann erbt sie der Knopf. */
+    gruppen.forEach(function (gruppe) {
+      const knopf = gruppe.querySelector('.nav-aufklapp');
+      if (!knopf) return;
+      knopf.classList.toggle('is-active',  !!gruppe.querySelector('.nav-untermenue a.is-active'));
+      knopf.classList.toggle('ist-vorbei', !!gruppe.querySelector('.nav-untermenue a.ist-vorbei'));
+    });
   }
 
   /* Der Scanner: je näher der Zeiger, desto klarer der Punkt. */
   if (insel) {
     insel.addEventListener('pointermove', function (e) {
       if (e.pointerType === 'touch') return;
-      punkte.forEach(function (p) {
-        const kasten = p.knopf.getBoundingClientRect();
+      sichtbare.forEach(function (el) {
+        const kasten = el.getBoundingClientRect();
         const abstand = Math.abs(e.clientX - (kasten.left + kasten.width / 2));
         const naehe = Math.max(0, 1 - abstand / 200);
-        p.knopf.style.setProperty('--naehe', naehe.toFixed(3));
+        el.style.setProperty('--naehe', naehe.toFixed(3));
       });
     });
 
     insel.addEventListener('pointerleave', function () {
-      punkte.forEach(function (p) { p.knopf.style.setProperty('--naehe', '0'); });
+      sichtbare.forEach(function (el) { el.style.setProperty('--naehe', '0'); });
     });
   }
 
@@ -883,6 +986,7 @@ function jahrEintragen() {
 document.addEventListener('DOMContentLoaded', function () {
   kontaktEintragen();
   navAufsetzen();
+  aufklapperAufsetzen();
   kopfleisteVerwandelnAufsetzen();
   auswahlAufsetzen();
   memoryStarten = memoryAufsetzen();   /* muss vor dem Spielfeld stehen */
