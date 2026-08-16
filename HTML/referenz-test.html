@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testseite: Referenzen zum Blättern — [DEIN NAME]</title>
+  <meta name="description" content="Testfassung des Referenz-Bereichs mit Blätterfunktion." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1F2023" />
+  <link rel="icon" href="data:," />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../CSS/tokens.css" />
+  <link rel="stylesheet" href="../CSS/styles.css" />
+</head>
+
+<body>
+
+<a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+<div class="logo-band">
+  <div class="container">
+    <a class="nav-logo" href="../index.html">
+      [DEIN NAME]
+      <small>Websites für Praxen</small>
+    </a>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="container">
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="hauptmenue">
+      <span class="nav-toggle-striche" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+      <span class="sr-only">Menü öffnen</span>
+    </button>
+
+    <nav class="nav-links" id="hauptmenue" aria-label="Hauptmenü">
+      <a href="referenz-test.html" class="is-active" aria-current="page">Testseite</a>
+      <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
+    </nav>
+  </div>
+</header>
+
+
+<main id="inhalt">
+
+  <section class="page-head">
+    <div class="container">
+      <span class="label">Testseite</span>
+      <h1 style="font-size: var(--size-h2); max-width: 20ch;">Referenzen zum Blättern</h1>
+      <p class="lead" style="margin-top: var(--space-3); max-width: 56ch;">
+        Links bleibt die Geräte-Vorschau, rechts blättert der Text weiter.
+        Nur über die Pfeile — es läuft nichts von selbst.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+
+      <p class="hinweis" style="max-width: var(--container-text);">
+        <strong>Nur zum Ansehen.</strong> Diese Seite ist von der Startseite
+        nicht verlinkt und für Google gesperrt. Nur die erste Folie hat echte
+        Bilder — bei den anderen steht der Platzhalter. Sobald du Beispielbilder
+        hast, kommen sie in <code>bilder/</code> und werden an der jeweiligen
+        Folie eingetragen.
+      </p>
+
+      <div class="split" style="align-items: start; margin-top: var(--space-5);">
+
+        <!-- ══ LINKS: Vorschau ══
+             Verwandelt sich weiter wie auf der Startseite. Die Bilder
+             darin wechseln mit der Folie, gesteuert über die
+             data-bild-Angaben an den Folien rechts. -->
+        <div class="geraete-galerie">
+          <div class="geraet-buehne">
+            <div class="geraet hat-bilder" data-geraet="desktop">
+              <span class="geraet-schlitz" aria-hidden="true"></span>
+              <div class="geraet-schirm">
+                <div class="geraet-leiste" aria-hidden="true">
+                  <span class="browser-punkte"><span></span><span></span><span></span></span>
+                  <span class="browser-adresse platzhalter">zahnarztpraxis-pforzheim.de</span>
+                </div>
+                <div class="geraet-inhalt">
+                  <img class="geraet-bild" data-fuer="desktop" alt="" decoding="async" />
+                  <img class="geraet-bild" data-fuer="tablet"  alt="" decoding="async" />
+                  <img class="geraet-bild" data-fuer="handy"   alt="" decoding="async" />
+                  <div class="geraet-fuellung">
+                    <span class="geraet-plus" aria-hidden="true">+</span>
+                    <span data-geraet-fuelltext>Vorschau folgt</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="geraet-name" aria-hidden="true">Ansicht: <span data-geraet-name>Desktop</span></p>
+        </div>
+
+
+        <!-- ══ RECHTS: Text zum Blättern ══ -->
+        <div class="referenz-blaettern">
+
+          <div class="blaetter-kopf">
+            <button class="blaetter-knopf" type="button"
+                    data-blaettern="zurueck" aria-label="Vorheriges Projekt">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 2.5L4.5 8l5.5 5.5" />
+              </svg>
+            </button>
+            <button class="blaetter-knopf" type="button"
+                    data-blaettern="vor" aria-label="Nächstes Projekt">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 2.5L11.5 8 6 13.5" />
+              </svg>
+            </button>
+            <span class="blaetter-stand">
+              <strong data-blaetter-stand>1</strong> von <span data-blaetter-gesamt>6</span>
+            </span>
+          </div>
+
+          <div class="blaetter-buehne" aria-live="polite">
+
+            <!-- ── 1 · echtes Projekt ── -->
+            <article class="referenz-folie is-aktiv"
+                     data-bild-desktop="../bilder/referenz-desktop.jpg"
+                     data-bild-tablet="../bilder/referenz-tablet.jpg"
+                     data-bild-handy="../bilder/referenz-handy.jpg"
+                     data-bild-text="Startseite der Zahnarztpraxis">
+              <span class="badge">Launch in Kürze</span>
+              <h3>Zahnarztpraxis in Pforzheim</h3>
+              <p>
+                Eine komplett neu gebaute Praxis-Website: ruhiges, warmes Design,
+                klare Struktur für Leistungen und Team, alle Angaben zu Sprechzeiten
+                und Anfahrt sofort auffindbar — und ein Ablauf für Terminanfragen,
+                der auch auf dem Handy funktioniert.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd>Zahnmedizin</dd></div>
+                <div><dt>Leistung</dt><dd>Design &amp; Umsetzung</dd></div>
+                <div><dt>Umfang</dt><dd>Startseite + Unterseiten</dd></div>
+              </dl>
+              <div class="btn-row">
+                <a class="btn btn--ghost" href="referenz-zahnarzt.html">Fallstudie lesen</a>
+              </div>
+            </article>
+
+            <!-- ── 2 bis 5 · Plätze für die nächsten Projekte ── -->
+            <article class="referenz-folie" data-vorschau-text="Bild folgt">
+              <span class="badge platzhalter">Projekt zwei</span>
+              <h3 class="platzhalter">Titel des zweiten Projekts</h3>
+              <p class="platzhalter">
+                Zwei bis drei Sätze: Was war die Ausgangslage, was hast du gebaut,
+                was ist dadurch besser geworden. Konkret bleiben — hier erkennt
+                sich der nächste Kunde wieder.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Leistung</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Jahr</dt><dd class="platzhalter">—</dd></div>
+              </dl>
+            </article>
+
+            <article class="referenz-folie" data-vorschau-text="Bild folgt">
+              <span class="badge platzhalter">Projekt drei</span>
+              <h3 class="platzhalter">Titel des dritten Projekts</h3>
+              <p class="platzhalter">
+                Auch kleine Aufträge zählen: eine überarbeitete Seite, ein neuer
+                Terminbereich, ein aufgeräumter Google-Eintrag.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Leistung</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Jahr</dt><dd class="platzhalter">—</dd></div>
+              </dl>
+            </article>
+
+            <article class="referenz-folie" data-vorschau-text="Bild folgt">
+              <span class="badge platzhalter">Projekt vier</span>
+              <h3 class="platzhalter">Titel des vierten Projekts</h3>
+              <p class="platzhalter">
+                Wenn du magst, kann hier auch ein Satz des Kunden stehen. Ein
+                echtes Zitat wiegt mehr als drei Absätze Eigenlob.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Leistung</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Jahr</dt><dd class="platzhalter">—</dd></div>
+              </dl>
+            </article>
+
+            <article class="referenz-folie" data-vorschau-text="Bild folgt">
+              <span class="badge platzhalter">Projekt fünf</span>
+              <h3 class="platzhalter">Titel des fünften Projekts</h3>
+              <p class="platzhalter">
+                Fünf Referenzen sind ein guter Stand. Kommen mehr dazu, wandern
+                die ältesten auf die Portfolio-Seite.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Branche</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Leistung</dt><dd class="platzhalter">—</dd></div>
+                <div><dt>Jahr</dt><dd class="platzhalter">—</dd></div>
+              </dl>
+            </article>
+
+            <!-- ── 6 · der freie Platz ── -->
+            <article class="referenz-folie" data-vorschau-text="Ihr Projekt">
+              <span class="badge">Frei</span>
+              <h3>Vielleicht ist Ihres bald dabei.</h3>
+              <p>
+                Ich nehme bewusst wenige Projekte gleichzeitig an, damit jedes die
+                Aufmerksamkeit bekommt, die es braucht. Gerade ist ein Platz offen.
+              </p>
+              <p>
+                Erzählen Sie mir kurz von Ihrer Praxis — ich sage Ihnen ehrlich,
+                ob und wie ich helfen kann.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="#" data-mail="link">Interessiert?</a>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+      </div>
+
+      <p style="margin-top: var(--space-6);">
+        <a href="../index.html">← Zurück zur Startseite</a>
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="footer">
+  <div class="container">
+    <p>© <span data-jahr>2026</span> [DEIN NAME]</p>
+    <nav aria-label="Rechtliches">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="../index.html">Startseite</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="../JAVA/main.js"></script>
+
+</body>
+</html>

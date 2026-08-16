@@ -423,6 +423,88 @@ function geraeteGalerieAufsetzen() {
 
 
 /* ───────────────────────────────────────────────────────────
+   3c. REFERENZ ZUM BLÄTTERN
+
+   Rechts blättert der Text, links wechselt die Vorschau mit. Nur auf
+   Knopfdruck oder Pfeiltaste — bewusst nichts, was von selbst läuft.
+   Die Bildquellen stehen als data-Attribute an der Folie, damit
+   Inhalt und Technik nicht auseinanderdriften.
+   ─────────────────────────────────────────────────────────── */
+
+function referenzBlaetternAufsetzen() {
+  const buehne = document.querySelector('.blaetter-buehne');
+  if (!buehne) return;
+
+  const folien = Array.prototype.slice.call(buehne.querySelectorAll('.referenz-folie'));
+  if (folien.length < 2) return;
+
+  const zurueck = document.querySelector('[data-blaettern="zurueck"]');
+  const vor     = document.querySelector('[data-blaettern="vor"]');
+  const stand   = document.querySelector('[data-blaetter-stand]');
+  const gesamt  = document.querySelector('[data-blaetter-gesamt]');
+
+  const geraet    = document.querySelector('.geraet');
+  const bilder    = geraet ? Array.prototype.slice.call(geraet.querySelectorAll('.geraet-bild')) : [];
+  const fuelltext = document.querySelector('[data-geraet-fuelltext]');
+
+  let jetzt = 0;
+
+  if (gesamt) gesamt.textContent = String(folien.length);
+
+  function vorschauSetzen(folie) {
+    if (!geraet) return;
+
+    /* Fehlt eine Form, springt sie auf die Desktop-Fassung zurück. */
+    const quellen = {
+      desktop: folie.dataset.bildDesktop || '',
+      tablet:  folie.dataset.bildTablet  || folie.dataset.bildDesktop || '',
+      handy:   folie.dataset.bildHandy   || folie.dataset.bildDesktop || ''
+    };
+    const hatBilder = !!quellen.desktop;
+
+    bilder.forEach(function (bild) {
+      const quelle = quellen[bild.dataset.fuer] || '';
+      if (quelle) bild.setAttribute('src', quelle); else bild.removeAttribute('src');
+      bild.alt = hatBilder ? (folie.dataset.bildText || '') : '';
+    });
+
+    geraet.classList.toggle('hat-bilder', hatBilder);
+    if (fuelltext) fuelltext.textContent = folie.dataset.vorschauText || 'Vorschau folgt';
+  }
+
+  function zeigen(index) {
+    jetzt = Math.max(0, Math.min(index, folien.length - 1));
+
+    folien.forEach(function (folie, i) {
+      const aktiv = i === jetzt;
+      folie.classList.toggle('is-aktiv', aktiv);
+      /* aria-hidden statt hidden: die Folie muss für die Überblendung
+         noch sichtbar bleiben, soll aber nicht vorgelesen werden. */
+      folie.setAttribute('aria-hidden', String(!aktiv));
+    });
+
+    if (stand) stand.textContent = String(jetzt + 1);
+    if (zurueck) zurueck.disabled = jetzt === 0;
+    if (vor)     vor.disabled     = jetzt === folien.length - 1;
+
+    vorschauSetzen(folien[jetzt]);
+  }
+
+  if (zurueck) zurueck.addEventListener('click', function () { zeigen(jetzt - 1); });
+  if (vor)     vor.addEventListener('click',     function () { zeigen(jetzt + 1); });
+
+  /* Pfeiltasten, solange der Fokus im Blätterbereich steht */
+  const bereich = buehne.closest('.referenz-blaettern') || buehne;
+  bereich.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); zeigen(jetzt - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); zeigen(jetzt + 1); }
+  });
+
+  zeigen(0);
+}
+
+
+/* ───────────────────────────────────────────────────────────
    4. EINBLENDEN BEIM SCROLLEN
    ─────────────────────────────────────────────────────────── */
 
@@ -1169,6 +1251,7 @@ document.addEventListener('DOMContentLoaded', function () {
   spielfeldAufsetzen();
   hintergrundFilmAufsetzen();
   geraeteGalerieAufsetzen();
+  referenzBlaetternAufsetzen();
   einblendenAufsetzen();
   bildflaechenPruefen();
   jahrEintragen();

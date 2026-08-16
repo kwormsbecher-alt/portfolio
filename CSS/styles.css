@@ -1643,6 +1643,33 @@ body.platzhalter-zeigen .platzhalter {
 .geraet[data-geraet="tablet"]  .geraet-bild[data-fuer="tablet"],
 .geraet[data-geraet="handy"]   .geraet-bild[data-fuer="handy"] { opacity: 1; }
 
+/* Füllung für Vorschauen ohne Bild — liegt ÜBER den Bildern und
+   blendet sich weg, sobald welche da sind. So braucht es keine
+   Sonderregel für jede einzelne Geräteform. */
+.geraet-fuellung {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  align-content: center;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  text-align: center;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  font-size: var(--size-small);
+  line-height: 1.4;
+  opacity: 1;
+  transition: opacity 0.45s var(--ease);
+}
+.geraet.hat-bilder .geraet-fuellung { opacity: 0; }
+
+.geraet-plus {
+  display: block;
+  font-size: clamp(2.4rem, 7vw, 3.6rem);
+  font-weight: var(--weight-normal);
+  line-height: 1;
+  color: var(--accent-line);
+}
+
 .geraet-name {
   margin-top: var(--space-3);
   text-align: center;
@@ -1652,6 +1679,70 @@ body.platzhalter-zeigen .platzhalter {
   color: var(--text-soft);
 }
 .geraet-name span { color: var(--text-mid); }
+
+/* ── REFERENZ ZUM BLÄTTERN ─────────────────────────────────
+   Links bleibt die Geräte-Vorschau, rechts blättert der Text weiter.
+   Nur auf Knopfdruck — nichts läuft von selbst. Die Folien liegen
+   alle in derselben Rasterzelle übereinander, dadurch ist die Bühne
+   automatisch so hoch wie die längste und nichts springt. */
+
+.blaetter-kopf {
+  display: flex; align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.blaetter-knopf {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--text-mid);
+  transition: color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              background var(--duration) var(--ease);
+}
+.blaetter-knopf:hover:not(:disabled) {
+  color: var(--surface);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.blaetter-knopf:disabled { opacity: 0.3; cursor: default; }
+.blaetter-knopf svg { width: 15px; height: 15px; }
+
+.blaetter-stand {
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+.blaetter-stand strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+}
+
+.blaetter-buehne { display: grid; }
+
+.referenz-folie {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  /* Erst ausblenden, dann unsichtbar schalten — sonst blitzt beim
+     Wechsel kurz die alte Folie durch die neue. */
+  transition: opacity 0.4s var(--ease),
+              visibility 0s linear 0.4s;
+}
+.referenz-folie.is-aktiv {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s var(--ease) 0.12s,
+              visibility 0s linear 0s;
+}
+
+.referenz-folie h3 { font-size: var(--size-h3); margin-bottom: var(--space-2); }
+.referenz-folie > p { color: var(--text-mid); }
+
 
 /* ── ARBEITEN-LISTE (Portfolio-Seite) ──────────────────── */
 
