@@ -58,7 +58,31 @@
       <span class="nav-ebene-strich" aria-hidden="true"></span>
 
       <a href="portfolio.html" class="is-active" aria-current="page">Portfolio</a>
-      <a href="referenz-zahnarzt.html">Zahnarztpraxis Pforzheim</a>
+      <div class="nav-gruppe ist-tief">
+        <button class="nav-aufklapp nav-aufklapp--tief" type="button"
+                aria-expanded="false" aria-controls="flyout-fach">
+          Fachrichtungen
+          <svg class="nav-pfeil" viewBox="0 0 12 8" aria-hidden="true">
+            <path d="M1 1.6L6 6.4L11 1.6" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-untermenue nav-flyout" id="flyout-fach" hidden>
+          <div>
+            <p class="nav-spalte-titel">Nach Fachrichtung</p>
+            <a href="portfolio.html#zahnmedizin">Zahnmedizin<span class="nav-menge">1</span></a>
+            <a href="portfolio.html#allgemeinmedizin">Allgemeinmedizin</a>
+            <a href="portfolio.html#gynaekologie">Gynäkologie</a>
+            <a href="portfolio.html#physiotherapie">Physiotherapie</a>
+            <a href="portfolio.html#weitere">Weitere Betriebe</a>
+          </div>
+          <div>
+            <p class="nav-spalte-titel">Zuletzt bearbeitet</p>
+            <a href="referenz-zahnarzt.html">Zahnarztpraxis Pforzheim</a>
+            <span class="nav-leer">Weitere folgen</span>
+          </div>
+        </div>
+      </div>
 
       <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
     </nav>
@@ -73,8 +97,8 @@
       <span class="label">Arbeiten</span>
       <h1 style="font-size: var(--size-h2); max-width: 18ch;">Portfolio &amp; Arbeiten</h1>
       <p class="lead" style="margin-top: var(--space-3); max-width: 54ch;">
-        Jedes Projekt hat eine Geschichte — wo es angefangen hat, was
-        wir entschieden haben und was am Ende dabei herauskam.
+        Sortiert nach Fachrichtung. Jedes Projekt hat eine Geschichte — wo es
+        angefangen hat, was wir entschieden haben und was dabei herauskam.
       </p>
     </div>
   </section>
@@ -82,64 +106,126 @@
   <section class="section" style="padding-top: var(--space-4);">
     <div class="container">
 
-      <ul class="arbeiten">
+      <!-- Überblick zum Anspringen. Dieselbe Reihenfolge wie im
+           Klappmenü oben — wer dort klickt, landet hier. -->
+      <nav class="fach-chips" aria-label="Fachrichtungen">
+        <a href="#zahnmedizin">Zahnmedizin <span>1</span></a>
+        <a href="#allgemeinmedizin">Allgemeinmedizin</a>
+        <a href="#gynaekologie">Gynäkologie</a>
+        <a href="#physiotherapie">Physiotherapie <span>1</span></a>
+        <a href="#weitere">Weitere Betriebe</a>
+      </nav>
 
-        <!-- ══ Echtes Projekt ══ -->
-        <li class="arbeit reveal">
-          <div class="arbeit-bild">
-            <div class="image-slot ratio-wide">
-              <!-- <img src="../bilder/referenz-desktop.png" alt="Startseite der Zahnarztpraxis" /> -->
-              <div class="image-slot-note">
-                <strong>Startseite</strong>
-                <small>Screenshot folgt nach dem Launch</small>
+
+      <section class="fach-block" id="zahnmedizin">
+        <h2>Zahnmedizin<span class="fach-menge">1 Arbeit</span></h2>
+
+        <ul class="arbeiten">
+          <li class="arbeit reveal">
+            <div class="arbeit-bild">
+              <div class="image-slot ratio-wide">
+                <!-- <img src="../bilder/referenz-desktop.jpg" alt="Startseite der Zahnarztpraxis" /> -->
+                <div class="image-slot-note">
+                  <strong>Startseite</strong>
+                  <small>Screenshot folgt nach dem Launch</small>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="arbeit-text">
-            <span class="badge">Launch in Kürze</span>
-            <h2>Zahnarztpraxis in Pforzheim</h2>
-            <p>
-              Eine komplett neu gebaute Praxis-Website: ruhiges Design,
-              klare Struktur für Leistungen und Team, Sprechzeiten und
-              Anfahrt sofort auffindbar — und Terminanfragen, die auch
-              auf dem Handy funktionieren.
-            </p>
-            <dl class="referenz-meta">
-              <div><dt>Branche</dt><dd>Zahnmedizin</dd></div>
-              <div><dt>Leistung</dt><dd>Design &amp; Umsetzung</dd></div>
-              <div><dt>Jahr</dt><dd class="platzhalter">2026</dd></div>
-            </dl>
-            <div class="btn-row">
-              <a class="btn btn--ghost" href="referenz-zahnarzt.html">Fallstudie lesen</a>
+            <div class="arbeit-text">
+              <span class="badge">Launch in Kürze</span>
+              <h3>Zahnarztpraxis in Pforzheim</h3>
+              <p>
+                Eine komplett neu gebaute Praxis-Website: ruhiges Design,
+                klare Struktur für Leistungen und Team, Sprechzeiten und
+                Anfahrt sofort auffindbar — und Terminanfragen, die auch
+                auf dem Handy funktionieren.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Leistung</dt><dd>Design &amp; Umsetzung</dd></div>
+                <div><dt>Umfang</dt><dd>Startseite + Unterseiten</dd></div>
+                <div><dt>Jahr</dt><dd class="platzhalter">2026</dd></div>
+              </dl>
+              <div class="btn-row">
+                <a class="btn btn--ghost" href="referenz-zahnarzt.html">Fallstudie lesen</a>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        </ul>
+      </section>
 
-        <!-- ══ Freie Plätze ══
-             Ehrlich als frei gekennzeichnet statt mit erfundenen
-             Projekten gefüllt. Sobald etwas dazukommt, wird aus so
-             einem Platz ein Eintrag wie oben. -->
-        <li class="arbeit arbeit--frei reveal">
-          <div class="arbeit-bild">
-            <div class="arbeit-frei-flaeche">
-              <span aria-hidden="true">+</span>
-            </div>
-          </div>
-          <div class="arbeit-text">
-            <span class="badge">Frei</span>
-            <h2>Ihr Projekt könnte hier stehen</h2>
-            <p>
-              Ich nehme bewusst wenige Projekte gleichzeitig an, damit
-              jedes die Aufmerksamkeit bekommt, die es braucht. Aktuell
-              ist Platz.
-            </p>
-            <div class="btn-row">
-              <a class="btn btn--primary" href="#" data-mail="link">Platz anfragen</a>
-            </div>
-          </div>
-        </li>
 
-      </ul>
+      <section class="fach-block" id="allgemeinmedizin">
+        <h2>Allgemeinmedizin<span class="fach-menge">noch frei</span></h2>
+        <p class="fach-leer">
+          <span class="fach-plus" aria-hidden="true">+</span>
+          <span>Noch keine Arbeit in diesem Fach. Hausarztpraxen haben andere Schwerpunkte als Zahnärzte — Sprechzeiten, Notdienst und Terminvergabe stehen weiter vorne.</span>
+        </p>
+      </section>
+
+
+      <section class="fach-block" id="gynaekologie">
+        <h2>Gynäkologie<span class="fach-menge">noch frei</span></h2>
+        <p class="fach-leer">
+          <span class="fach-plus" aria-hidden="true">+</span>
+          <span>Noch keine Arbeit in diesem Fach. Hier zählt vor allem, dass Patientinnen vorab wissen, wen sie erwartet und wie diskret der Ablauf ist.</span>
+        </p>
+      </section>
+
+
+      <section class="fach-block" id="physiotherapie">
+        <h2>Physiotherapie<span class="fach-menge">1 Entwurf</span></h2>
+
+        <ul class="arbeiten">
+          <li class="arbeit reveal">
+            <div class="arbeit-bild">
+              <div class="image-slot ratio-wide">
+                <div class="image-slot-note">
+                  <strong>Entwurf</strong>
+                  <small>Ansichten folgen</small>
+                </div>
+              </div>
+            </div>
+            <div class="arbeit-text">
+              <span class="badge">Beispielprojekt</span>
+              <h3>Physiotherapie am Park</h3>
+              <p>
+                Eine Konzeptarbeit, kein Auftrag: So würde ich eine Praxis
+                aufbauen, bei der die Terminlage das größte Thema ist. Im
+                Mittelpunkt stehen freie Zeiten, Behandlungsschwerpunkte und
+                eine ehrliche Antwort auf die Frage, wie lange man wartet.
+              </p>
+              <dl class="referenz-meta">
+                <div><dt>Leistung</dt><dd>Konzept &amp; Entwurf</dd></div>
+                <div><dt>Umfang</dt><dd>Startseite</dd></div>
+                <div><dt>Jahr</dt><dd class="platzhalter">2026</dd></div>
+              </dl>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+
+      <section class="fach-block" id="weitere">
+        <h2>Weitere Betriebe<span class="fach-menge">noch frei</span></h2>
+        <p class="fach-leer">
+          <span class="fach-plus" aria-hidden="true">+</span>
+          <span>Heilpraktiker, Logopädie, Ergotherapie, Tierarzt — oder etwas ganz anderes. Die Fragen sind meist dieselben: Wo, wann, und wie komme ich dran.</span>
+        </p>
+      </section>
+
+
+      <div class="kontakt-box reveal">
+        <span class="label" style="justify-content: center;">Platz frei</span>
+        <h2>Ihr Fach fehlt hier noch.</h2>
+        <p class="lead" style="margin-top: var(--space-2);">
+          Ich nehme bewusst wenige Projekte gleichzeitig an. Erzählen Sie mir
+          kurz von Ihrer Praxis — ich sage Ihnen ehrlich, ob und wie ich
+          helfen kann.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#" data-mail="link">Platz anfragen</a>
+        </div>
+      </div>
 
       <p style="margin-top: var(--space-6);">
         <a href="../index.html">← Zurück zur Startseite</a>

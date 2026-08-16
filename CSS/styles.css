@@ -487,6 +487,112 @@ body.platzhalter-zeigen .platzhalter {
 }
 
 
+/* ── Zweite Ebene: das Klappmenü ───────────────────────────
+   Hängt an einem Punkt im Untermenü und fährt am Rechner seitlich
+   heraus. Links die Fachrichtungen, rechts die zuletzt bearbeiteten
+   Arbeiten — beides auf einen Blick, ohne Klickstrecke. */
+
+.nav-gruppe.ist-tief { position: relative; }
+
+/* Der Auslöser sieht aus wie ein Eintrag, zeigt aber nach rechts */
+.nav-aufklapp--tief {
+  display: flex; align-items: center; gap: var(--space-2);
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+  text-align: left;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+.nav-aufklapp--tief:hover { color: var(--text); background: var(--accent-soft); }
+.nav-aufklapp--tief .nav-pfeil { margin-left: auto; }
+
+.nav-spalte-titel {
+  font-size: var(--size-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-soft);
+  padding: 0.3rem 0.9rem 0.4rem;
+}
+.nav-menge {
+  margin-left: auto;
+  padding-left: var(--space-2);
+  font-size: var(--size-label);
+  color: var(--text-soft);
+}
+.nav-untermenue a { display: flex; align-items: center; }
+
+/* Eintrag ohne Ziel: es gibt dort noch nichts */
+.nav-leer {
+  display: block;
+  padding: 0.55rem 0.9rem;
+  font-size: var(--size-small);
+  color: var(--text-soft);
+  opacity: 0.7;
+}
+
+.nav-alle {
+  border-top: 1px solid var(--border);
+  margin-top: 0.2rem;
+  padding-top: 0.6rem !important;
+  font-weight: var(--weight-medium);
+}
+
+@media (min-width: 1140px) {
+  /* Öffnet nach LINKS: die Leiste sitzt am rechten Bildrand, dort ist
+     kein Platz. Reicht es links auch nicht, dreht main.js es um. */
+  .nav-flyout {
+    top: -0.45rem;
+    right: calc(100% + 8px);
+    left: auto;
+    transform: none;
+    min-width: 400px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--space-2);
+    animation: flyoutAuf 0.2s var(--ease);
+  }
+  .nav-flyout.oeffnet-rechts {
+    right: auto;
+    left: calc(100% + 8px);
+  }
+  .nav-flyout .nav-alle { grid-column: 1 / -1; }
+
+  /* Brücke über die Lücke: sonst klappt es zu, während die Maus vom
+     Auslöser hinüberwandert. Alle vier Seiten müssen hier stehen —
+     .nav-untermenue::before setzt oben schon top/left/right/height für
+     die Brücke nach oben, und die gilt sonst weiter. */
+  .nav-flyout::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: auto; right: -10px;
+    width: 10px; height: auto;
+  }
+  .nav-flyout.oeffnet-rechts::before { left: -10px; right: auto; }
+}
+/* Bewusst ohne seitliche Bewegung — die Richtung wechselt ja. */
+@keyframes flyoutAuf {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Auf dem Handy klappt es als weitere Stufe ein Stück tiefer auf */
+@media (max-width: 1139px) {
+  .nav-aufklapp--tief { padding: 0.75rem 0.5rem; font-size: 0.95rem; }
+  .nav-aufklapp--tief .nav-pfeil { transform: rotate(90deg); }
+  .nav-aufklapp--tief[aria-expanded="true"] .nav-pfeil { transform: rotate(-90deg); }
+  .nav-flyout {
+    margin: 0.1rem 0 0.4rem var(--space-2);
+    padding-left: var(--space-2);
+    border-left: 2px solid var(--accent-line);
+  }
+  .nav-spalte-titel { padding-inline: 0.5rem; margin-top: var(--space-1); }
+}
+
+
 /* ── Die Leiste wird leiser ────────────────────────────────
    Ab dem Ende des Landing-Bereichs tritt die Leiste zurück: gut zu
    sehen ist nur noch, wo man gerade ist, und wie weit man schon
@@ -1779,6 +1885,86 @@ body.platzhalter-zeigen .platzhalter {
 
 .referenz-folie h3 { font-size: var(--size-h3); margin-bottom: var(--space-2); }
 .referenz-folie > p { color: var(--text-mid); }
+
+
+/* ── FACHRICHTUNGEN (Portfolio-Seite) ──────────────────────
+   Eine Reihe Marken oben zum Überblick, darunter je ein Block.
+   Bewusst Abschnitte auf einer Seite statt eigener Unterseiten:
+   bei einem Projekt pro Fach wären das lauter leere Seiten. */
+
+.fach-chips {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.fach-chips a {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: var(--size-small);
+  color: var(--text-mid);
+  text-decoration: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  transition: color var(--duration) var(--ease),
+              background var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+.fach-chips a:hover {
+  color: var(--surface);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.fach-chips span {
+  font-size: var(--size-label);
+  color: var(--text-soft);
+}
+.fach-chips a:hover span { color: rgba(255, 255, 255, 0.7); }
+
+/* Sprungziel aus dem Menü. Die Abschnitte der Startseite bringen ihre
+   Luft nach oben über ihr eigenes Innenmaß mit — diese hier fangen
+   direkt mit der Überschrift an. Ohne scroll-margin landet sie also
+   hinter der festen Leiste. */
+.fach-block {
+  margin-bottom: var(--space-7);
+  scroll-margin-top: calc(var(--nav-height-sm) + var(--space-3));
+}
+@media (min-width: 760px) {
+  .fach-block { scroll-margin-top: calc(var(--nav-height) + var(--space-3)); }
+}
+.fach-block:last-of-type { margin-bottom: var(--space-5); }
+.fach-block > h2 {
+  font-size: var(--size-h3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+.fach-block > h2 .fach-menge {
+  font-family: var(--font-body);
+  font-size: var(--size-small);
+  font-weight: var(--weight-normal);
+  color: var(--text-soft);
+  margin-left: var(--space-2);
+  letter-spacing: 0;
+}
+
+/* Fach ohne Projekt — ehrlich als frei gekennzeichnet, statt es
+   mit Erfundenem zu füllen. */
+.fach-leer {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px dashed var(--accent-line);
+  border-radius: var(--radius);
+  color: var(--text-mid);
+  font-size: var(--size-small);
+}
+.fach-leer .fach-plus {
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--accent-line);
+  flex-shrink: 0;
+}
 
 
 /* ── ARBEITEN-LISTE (Portfolio-Seite) ──────────────────── */

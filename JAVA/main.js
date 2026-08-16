@@ -132,10 +132,23 @@ function aufklapperAufsetzen() {
 
     let schliessUhr = null;
 
+    /* Das seitliche Klappmenü geht normalerweise nach links auf, weil
+       die Leiste am rechten Bildrand klebt. Bei sehr breiten Fenstern
+       oder schmalen Seiten kann links aber der Platz fehlen — dann
+       drehen wir es nach rechts. Gemessen wird erst nach dem Einblenden,
+       weil ein verstecktes Element keine Maße hat. */
+    function seiteWaehlen() {
+      if (!feld.classList.contains('nav-flyout') || !alsPopup.matches) return;
+      feld.classList.remove('oeffnet-rechts');
+      const kasten = feld.getBoundingClientRect();
+      if (kasten.left < 8) feld.classList.add('oeffnet-rechts');
+    }
+
     function oeffnen() {
       window.clearTimeout(schliessUhr);
       feld.hidden = false;
       knopf.setAttribute('aria-expanded', 'true');
+      seiteWaehlen();
     }
     function schliessen() {
       window.clearTimeout(schliessUhr);
@@ -159,7 +172,11 @@ function aufklapperAufsetzen() {
     });
 
     gruppe.addEventListener('keydown', function (e) {
-      const eintraege = Array.prototype.slice.call(feld.querySelectorAll('a'));
+      /* Nur die eigenen Einträge — nicht die einer tiefer liegenden
+         Gruppe, sonst blättern die Pfeiltasten in ein zugeklapptes
+         Klappmenü hinein. */
+      const eintraege = Array.prototype.slice.call(feld.querySelectorAll('a'))
+        .filter(function (a) { return a.closest('.nav-gruppe') === gruppe; });
       const jetzt = eintraege.indexOf(document.activeElement);
 
       if (e.key === 'Escape' && !feld.hidden) {
@@ -350,6 +367,12 @@ function hintergrundFilmAufsetzen() {
 
   film.muted = true;              /* ohne das startet iOS nicht */
   film.playsInline = true;
+
+  /* Im HTML steht preload="none", damit die Datei bei Standbild-
+     Hintergrund gar nicht erst geladen wird. Hier ist Film gewollt —
+     also jetzt vorladen. */
+  film.preload = 'auto';
+  film.load();
 
   let imBild = true;
 

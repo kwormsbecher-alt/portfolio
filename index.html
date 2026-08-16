@@ -138,8 +138,36 @@
         </button>
         <div class="nav-untermenue" id="untermenue-arbeiten" hidden>
           <a href="#referenz">Referenz auf der Startseite</a>
-          <a href="HTML/portfolio.html">Portfolio &amp; Arbeiten</a>
+
+        <!-- Zweite Ebene: links die Fachrichtungen, rechts was
+             zuletzt dran war. Beides auf einen Blick. -->
+        <div class="nav-gruppe ist-tief">
+          <button class="nav-aufklapp nav-aufklapp--tief" type="button"
+                  aria-expanded="false" aria-controls="flyout-arbeiten">
+            Portfolio &amp; Arbeiten
+            <svg class="nav-pfeil" viewBox="0 0 12 8" aria-hidden="true">
+              <path d="M1 1.6L6 6.4L11 1.6" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <div class="nav-untermenue nav-flyout" id="flyout-arbeiten" hidden>
+            <div>
+              <p class="nav-spalte-titel">Nach Fachrichtung</p>
+          <a href="HTML/portfolio.html#zahnmedizin">Zahnmedizin<span class="nav-menge">1</span></a>
+          <a href="HTML/portfolio.html#allgemeinmedizin">Allgemeinmedizin</a>
+          <a href="HTML/portfolio.html#gynaekologie">Gynäkologie</a>
+          <a href="HTML/portfolio.html#physiotherapie">Physiotherapie</a>
+          <a href="HTML/portfolio.html#weitere">Weitere Betriebe</a>
+            </div>
+            <div>
+              <p class="nav-spalte-titel">Zuletzt bearbeitet</p>
           <a href="HTML/referenz-zahnarzt.html">Zahnarztpraxis Pforzheim</a>
+              <span class="nav-leer">Weitere folgen</span>
+            </div>
+            <a class="nav-alle" href="HTML/portfolio.html">Alle Arbeiten ansehen →</a>
+          </div>
+        </div>
         </div>
       </div>
 
@@ -172,9 +200,11 @@
 
   <!-- ══════════ 1. WILLKOMMEN ══════════ -->
   <!-- data-hintergrund schaltet zwischen Video und Standbild um:
-       "video" = Film läuft, alles andere = nur das Bild. Eine Zeile,
-       falls du dich dagegen entscheidest. -->
-  <section class="hero" id="willkommen" data-hintergrund="video">
+       "video" = Film läuft, alles andere = nur das Bild.
+       Steht gerade auf "bild" — der Film bleibt eingebaut, wird aber
+       nicht geladen. Willst du ihn zurück: hier "video" eintragen,
+       sonst nichts. -->
+  <section class="hero" id="willkommen" data-hintergrund="bild">
     <!-- ══ BILDFLÄCHE ══
          Das Standbild liegt immer darunter: es ist sofort da, dient
          als Rückfall und bleibt stehen, wenn der Film nicht starten
@@ -196,8 +226,12 @@
            und Her statt wie ein harter Schnitt — und der Browser
            spielt einfach ganz normal ab. Rückwärts abspielen kann er
            von sich aus nämlich nicht.
-           Erzeugt aus wallpaper_video_version2.mp4, siehe HINWEIS.txt. -->
-      <video class="hero-video" loop muted playsinline preload="auto"
+           Erzeugt aus wallpaper_video_version2.mp4, siehe HINWEIS.txt.
+
+           preload="none": so lädt der Browser die 0,4 MB nur dann,
+           wenn oben auch wirklich "video" steht. main.js schaltet
+           das Vorladen in dem Fall selbst ein. -->
+      <video class="hero-video" loop muted playsinline preload="none"
              poster="bilder/wallpaper_version1_800.jpg" tabindex="-1">
         <source src="videos/wallpaper_version2_pendel.mp4" type="video/mp4" />
       </video>

@@ -56,7 +56,31 @@
       <span class="nav-ebene-strich" aria-hidden="true"></span>
 
       <a href="portfolio.html">Portfolio</a>
-      <a href="referenz-zahnarzt.html" class="is-active" aria-current="page">Zahnarztpraxis Pforzheim</a>
+      <div class="nav-gruppe ist-tief">
+        <button class="nav-aufklapp nav-aufklapp--tief" type="button"
+                aria-expanded="false" aria-controls="flyout-fach">
+          Fachrichtungen
+          <svg class="nav-pfeil" viewBox="0 0 12 8" aria-hidden="true">
+            <path d="M1 1.6L6 6.4L11 1.6" fill="none" stroke="currentColor"
+                  stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="nav-untermenue nav-flyout" id="flyout-fach" hidden>
+          <div>
+            <p class="nav-spalte-titel">Nach Fachrichtung</p>
+            <a href="portfolio.html#zahnmedizin">Zahnmedizin<span class="nav-menge">1</span></a>
+            <a href="portfolio.html#allgemeinmedizin">Allgemeinmedizin</a>
+            <a href="portfolio.html#gynaekologie">Gynäkologie</a>
+            <a href="portfolio.html#physiotherapie">Physiotherapie</a>
+            <a href="portfolio.html#weitere">Weitere Betriebe</a>
+          </div>
+          <div>
+            <p class="nav-spalte-titel">Zuletzt bearbeitet</p>
+            <a href="referenz-zahnarzt.html">Zahnarztpraxis Pforzheim</a>
+            <span class="nav-leer">Weitere folgen</span>
+          </div>
+        </div>
+      </div>
 
       <a class="btn btn--primary" href="#" data-mail="link">Termin anfragen</a>
     </nav>
