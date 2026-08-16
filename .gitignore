@@ -6,3 +6,6 @@ Thumbs.db
 # offene Tabs und muessen nicht oeffentlich im Repo liegen.
 # Die zugeschnittenen Fassungen in bilder/ werden veroeffentlicht.
 bilder/_quellen/
+
+# Roh-Videos: nur die fertige Pendel-Fassung wird veroeffentlicht.
+videos/_quellen/

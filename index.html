@@ -171,10 +171,17 @@
            alt="" fetchpriority="high" decoding="async" />
 
       <!-- Kein Player: ohne Bedienelemente, ohne Ton, in Endlosschleife.
-           muted und playsinline sind Pflicht, sonst startet iOS nicht. -->
+           muted und playsinline sind Pflicht, sonst startet iOS nicht.
+
+           Die Datei enthält den Film zweimal: einmal vorwärts, dann
+           rückwärts zurück. Dadurch wirkt die Schleife wie ein Hin
+           und Her statt wie ein harter Schnitt — und der Browser
+           spielt einfach ganz normal ab. Rückwärts abspielen kann er
+           von sich aus nämlich nicht.
+           Erzeugt aus wallpaper_video_version2.mp4, siehe HINWEIS.txt. -->
       <video class="hero-video" loop muted playsinline preload="auto"
              poster="bilder/wallpaper_version1_800.jpg" tabindex="-1">
-        <source src="videos/wallpaper_video_version1.mp4" type="video/mp4" />
+        <source src="videos/wallpaper_version2_pendel.mp4" type="video/mp4" />
       </video>
     </div>
 

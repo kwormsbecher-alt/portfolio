@@ -1,25 +1,52 @@
 Hintergrundvideo der Startseite
 ==============================
 
-wallpaper_video_version1.mp4  —  0,9 MB, 13 Sekunden
+Veröffentlicht wird nur:
 
-Wird als Hintergrund im Willkommens-Bereich abgespielt:
-Endlosschleife, ohne Ton, ohne Bedienelemente.
+    wallpaper_version2_pendel.mp4   —  0,38 MB, 20 Sekunden
 
-Austauschen
------------
-Neue Datei mit demselben Namen hier ablegen. Bitte klein halten —
-alles über etwa 3 MB wird auf dem Handy unangenehm.
+Es läuft im Willkommens-Bereich als Hintergrund: Endlosschleife,
+ohne Ton, ohne Bedienelemente.
 
-Wieder auf das Standbild umstellen
-----------------------------------
+
+Warum "Pendel"
+--------------
+Ein Browser kann Videos nicht rückwärts abspielen. Damit die Schleife
+nicht hart zurückspringt, steckt der Film zweimal in der Datei: erst
+vorwärts, dann rückwärts zurück zum Anfang. Der Browser spielt also
+ganz normal ab, es sieht aber aus wie ein Hin und Her.
+
+Am Wendepunkt und am Schleifenpunkt ist je ein Bild weggelassen —
+sonst würde dort ein Einzelbild doppelt stehen und kurz stocken.
+
+
+Neue Fassung bauen
+------------------
+Die Rohdatei nach videos/_quellen/ legen, dann (ffmpeg vorausgesetzt):
+
+    ffprobe -v error -select_streams v:0 -count_frames ^
+        -show_entries stream=nb_read_frames -of csv=p=0 quelle.mp4
+
+Die Zahl merken, sie heißt hier N. Dann:
+
+    ffmpeg -i quelle.mp4 -filter_complex ^
+      "[0:v]split[a][b];[b]reverse,trim=start_frame=1:end_frame=(N-1),setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1[out]" ^
+      -map "[out]" -an -c:v libx264 -crf 27 -preset slow ^
+      -pix_fmt yuv420p -movflags +faststart wallpaper_version2_pendel.mp4
+
+-an wirft die Tonspur weg. Das Video ist ohnehin stumm, und die Spur
+hat bei der Rohdatei mehr Platz gekostet als das Bild.
+
+
+Umschalten auf das Standbild
+----------------------------
 In index.html beim Willkommens-Abschnitt:
 
     <section class="hero" id="willkommen" data-hintergrund="video">
 
-Den Wert "video" durch irgendetwas anderes ersetzen, zum Beispiel
-"bild". Dann bleibt das Foto stehen und das Video wird gar nicht
-erst geladen.
+"video" durch etwas anderes ersetzen, zum Beispiel "bild". Dann bleibt
+das Foto stehen und die Videodatei wird gar nicht erst geladen.
+
 
 Wann das Video von selbst ausbleibt
 -----------------------------------
@@ -28,3 +55,9 @@ Wann das Video von selbst ausbleibt
 - wenn der Browser das Abspielen verweigert
 
 In allen Fällen bleibt einfach das Standbild stehen.
+
+
+_quellen/
+---------
+Die Rohdateien. Bleiben auf der Festplatte, werden aber nicht
+veröffentlicht — die Seite braucht nur die fertige Pendel-Fassung.
