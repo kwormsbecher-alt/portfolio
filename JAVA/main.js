@@ -934,31 +934,94 @@ function referenzBlaetternAufsetzen() {
    ─────────────────────────────────────────────────────────── */
 
 function einblendenAufsetzen() {
-  const elemente = document.querySelectorAll('.reveal');
+
+  /* ── Reihenfolge vorbereiten ──
+     Ein Container mit data-folge lässt seine Kinder nacheinander
+     hereinkommen statt alle auf einmal. data-folge sagt, welche Kinder
+     gemeint sind, data-folge-art mit welcher Bewegung, data-folge-takt
+     wie viele Millisekunden dazwischenliegen.
+     Ausgelöst wird der ganze Satz vom Container — dadurch läuft es als
+     eine Welle und nicht als Einzelauftritte beim Weiterscrollen. */
+  const folgen = Array.prototype.slice.call(document.querySelectorAll('[data-folge]'));
+
+  function kinderVon(container) {
+    return Array.prototype.slice.call(container.querySelectorAll(container.dataset.folge));
+  }
+
+  folgen.forEach(function (container) {
+    const takt = Number(container.dataset.folgeTakt) || 70;
+    kinderVon(container).forEach(function (kind, i) {
+      kind.classList.add('reveal');
+      if (container.dataset.folgeArt) kind.classList.add(container.dataset.folgeArt);
+      kind.style.setProperty('--verzoegerung', (i * takt) + 'ms');
+    });
+  });
+
+  /* Beobachtet werden die Container und alle übrigen .reveal —
+     nicht die Kinder einer Folge, die hängen an ihrem Container. */
+  const elemente = Array.prototype.slice.call(document.querySelectorAll('.reveal'))
+    .filter(function (el) {
+      return !folgen.some(function (c) { return c !== el && c.contains(el); });
+    })
+    .concat(folgen);
+
   if (!elemente.length) return;
+
+  /* Längste mögliche Laufzeit: 0,85 s Bewegung plus die Staffelung
+     der größten Reihe. Danach ist garantiert nichts mehr unterwegs. */
+  const NACHLAUFZEIT = 1600;
+
+  function zeigen(el) {
+    const ziele = el.hasAttribute('data-folge') ? kinderVon(el) : [el];
+    ziele.forEach(function (z) { z.classList.add('is-visible'); });
+
+    /* Sicherheitsgurt: Bleibt animationend aus — etwa weil eine andere
+       Regel die Animation abschaltet, wie .misst beim Ausmessen des
+       Spielfelds — stünde das Element sonst dauerhaft auf Deckkraft 0.
+       Nach der Laufzeit räumen wir deshalb selbst auf. */
+    window.setTimeout(function () {
+      ziele.forEach(function (z) { z.classList.add('ist-fertig'); });
+    }, NACHLAUFZEIT);
+  }
+
+  /* Nach dem Lauf die Animation abräumen, sonst hält ihr Endzustand
+     transform fest — das stört später das Verschieben der Bausteine. */
+  document.addEventListener('animationend', function (e) {
+    if (e.target.classList && e.target.classList.contains('reveal')) {
+      e.target.classList.add('ist-fertig');
+    }
+  }, true);
 
   const ruhigerModus = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (ruhigerModus || !('IntersectionObserver' in window)) {
-    elemente.forEach(function (el) { el.classList.add('is-visible'); });
+    elemente.forEach(zeigen);
     return;
   }
+
+  let hatAusgeloest = false;
 
   const beobachter = new IntersectionObserver(function (eintraege, selbst) {
     eintraege.forEach(function (eintrag) {
       if (!eintrag.isIntersecting) return;
-      eintrag.target.classList.add('is-visible');
+      hatAusgeloest = true;
+      zeigen(eintrag.target);
       selbst.unobserve(eintrag.target);   /* einmal reicht */
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
   elemente.forEach(function (el) { beobachter.observe(el); });
 
-  /* Notbremse: Sollte der Beobachter aus irgendeinem Grund nicht
-     auslösen, wird nach 2 Sekunden trotzdem alles sichtbar.
-     Lieber ohne Animation als eine leere Seite. */
+  /* Notbremse — aber nur, wenn der Beobachter wirklich nicht arbeitet.
+     Vorher stand hier ein pauschales "nach 2 Sekunden alles sichtbar".
+     Das hat jede Animation unterhalb des ersten Bildschirms verschluckt:
+     wer länger als zwei Sekunden oben las, sah danach gar nichts mehr
+     hereinkommen. Beim Laden liegt immer etwas im Bild — hat bis dahin
+     nichts ausgelöst, stimmt etwas nicht, und dann lieber ohne
+     Animation als mit einer leeren Seite. */
   window.setTimeout(function () {
-    elemente.forEach(function (el) { el.classList.add('is-visible'); });
+    if (hatAusgeloest) return;
+    elemente.forEach(zeigen);
   }, 2000);
 }
 

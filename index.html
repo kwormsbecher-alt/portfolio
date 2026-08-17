@@ -276,7 +276,7 @@
        Liegt halb im Hintergrundbild, halb im nächsten Abschnitt.
        Vier Punkte, getrennt durch senkrechte Striche. Kommen mehr
        dazu, bricht die Leiste von selbst in eine zweite Reihe um. -->
-  <div class="container zwischenstueck reveal">
+  <div class="container zwischenstueck reveal reveal--knapp">
     <ul class="leistungsleiste">
 
       <li class="leistung">
@@ -343,7 +343,7 @@
     <div class="container">
       <div class="split split--media-left">
 
-        <div class="reveal">
+        <div class="reveal reveal--rechts">
           <span class="label">Wer bin ich</span>
           <h2>Ein Ansprechpartner. Vom ersten Gespräch bis nach dem Launch.</h2>
           <p class="lead" style="margin-top: var(--space-3);">
@@ -361,7 +361,7 @@
           </p>
         </div>
 
-        <div class="reveal">
+        <div class="reveal reveal--links">
           <div class="image-slot ratio-portrait">
             <!-- Wenn dein Foto da ist: <img src="bilder/kevin.jpg" alt="Porträt von [DEIN NAME]" /> -->
             <div class="image-slot-note">
@@ -394,9 +394,9 @@
            Links die Auswahl, rechts das Detailfenster. Aufgebaut als
            echte Reiter (role="tab"), damit es auch mit der Tastatur und
            mit Screenreadern funktioniert. Pfeiltasten blättern durch. -->
-      <div class="auswahl reveal">
+      <div class="auswahl">
 
-        <ul class="auswahl-liste" role="tablist" aria-label="Leistungen" aria-orientation="vertical">
+        <ul class="auswahl-liste" data-folge="li" data-folge-art="reveal--links" data-folge-takt="90" role="tablist" aria-label="Leistungen" aria-orientation="vertical">
 
           <li>
             <button class="auswahl-knopf" type="button" role="tab"
@@ -469,7 +469,7 @@
 
         <!-- Unter 940px zeigt main.js das hier als Pop-up-Fenster,
              darüber steht es ganz normal rechts daneben. -->
-        <dialog class="auswahl-fenster" aria-label="Leistung im Detail">
+        <dialog class="auswahl-fenster reveal reveal--rechts" aria-label="Leistung im Detail">
         <button class="auswahl-fenster-zu" type="button" data-fenster-zu aria-label="Fenster schließen">&times;</button>
         <div class="auswahl-detail">
 
@@ -623,8 +623,8 @@
       <!-- Der graue Rahmen ist ein Spielfeld: main.js macht die Kacheln
            ab 720px Breite mit Maus und Finger verschiebbar. Ohne
            JavaScript bleibt es ein ganz normales Raster. -->
-      <div class="spielfeld reveal">
-      <ul class="bausteine">
+      <div class="spielfeld">
+      <ul class="bausteine" data-folge="li" data-folge-art="reveal--knapp" data-folge-takt="55">
 
         <li class="baustein baustein--spiel">
           <span class="baustein-symbol" aria-hidden="true">
@@ -830,7 +830,7 @@
         <h2>Weil gute Arbeit es verdient, auch gut auszusehen. 🙂</h2>
       </div>
 
-      <div class="container-text reveal" style="padding-inline: 0;">
+      <div class="container-text reveal reveal--tief" style="padding-inline: 0;">
         <p class="lead">
           <span class="platzhalter">
             Hier kommt deine Haltung hin — in deinen eigenen Worten, ohne
@@ -859,7 +859,7 @@
     <div class="container">
       <div class="split">
 
-        <div class="reveal">
+        <div class="reveal reveal--links">
           <span class="label">Werdegang · Schulisch</span>
           <h2>Wo ich gelernt habe, was ich kann.</h2>
           <p class="lead" style="margin-top: var(--space-3);">
@@ -867,7 +867,7 @@
           </p>
         </div>
 
-        <div class="timeline reveal">
+        <div class="timeline" data-folge=".timeline-item" data-folge-art="reveal--rechts" data-folge-takt="80">
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">Jahr – Jahr</span>
@@ -905,7 +905,7 @@
     <div class="container">
       <div class="split split--media-left">
 
-        <div class="timeline reveal">
+        <div class="timeline" data-folge=".timeline-item" data-folge-art="reveal--rechts" data-folge-takt="80">
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">seit Jahr</span>
@@ -933,7 +933,7 @@
 
         </div>
 
-        <div class="reveal">
+        <div class="reveal reveal--links">
           <span class="label">Werdegang · Beruflich</span>
           <h2>Wo ich gearbeitet habe.</h2>
           <p class="lead" style="margin-top: var(--space-3);">
@@ -951,7 +951,7 @@
     <div class="container">
       <div class="split">
 
-        <div class="reveal">
+        <div class="reveal reveal--links">
           <span class="label">Werdegang · Eigene Erfahrung</span>
           <h2>Was ich mir selbst beigebracht habe.</h2>
           <p class="lead" style="margin-top: var(--space-3);">
@@ -959,7 +959,7 @@
           </p>
         </div>
 
-        <div class="timeline reveal">
+        <div class="timeline" data-folge=".timeline-item" data-folge-art="reveal--rechts" data-folge-takt="80">
 
           <div class="timeline-item">
             <span class="timeline-time platzhalter">seit Jahr</span>
@@ -1007,7 +1007,7 @@
 
       <div class="split" style="align-items: start;">
 
-        <div class="geraete-galerie reveal">
+        <div class="geraete-galerie reveal reveal--links">
           <div class="geraet-buehne">
             <div class="geraet hat-bilder" data-geraet="desktop">
               <span class="geraet-schlitz" aria-hidden="true"></span>
@@ -1031,7 +1031,7 @@
           <p class="geraet-name" aria-hidden="true">Ansicht: <span data-geraet-name>Desktop</span></p>
         </div>
 
-        <div class="referenz-blaettern reveal">
+        <div class="referenz-blaettern reveal reveal--rechts">
 
           <div class="blaetter-kopf">
             <button class="blaetter-knopf" type="button"
@@ -1141,7 +1141,7 @@
         <h2>Was Kunden mich vorher fragen.</h2>
       </div>
 
-      <div class="faq reveal">
+      <div class="faq" data-folge=".faq-item" data-folge-art="reveal--knapp" data-folge-takt="60">
 
         <details class="faq-item">
           <summary>Was kostet eine Website bei Ihnen?</summary>
@@ -1223,7 +1223,7 @@
   <!-- ══════════ 9. KONTAKT ══════════ -->
   <section class="section" id="kontakt">
     <div class="container">
-      <div class="kontakt-box reveal">
+      <div class="kontakt-box reveal reveal--tief">
 
         <span class="label" style="justify-content: center;">Kontakt</span>
         <h2>Lassen Sie uns kurz sprechen.</h2>

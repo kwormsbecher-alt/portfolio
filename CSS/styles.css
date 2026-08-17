@@ -1488,6 +1488,11 @@ body.platzhalter-zeigen .platzhalter {
   transition: none !important;
   animation: none !important;
 }
+/* Wichtig dazu: ohne laufende Animation bliebe die Deckkraft aus
+   .reveal auf 0 und die Steine wären unsichtbar. Fällt die Messung
+   also mit dem Einblenden zusammen, gilt hier schlicht "sichtbar ist
+   sichtbar" — lieber ohne Bewegung als ein leeres Feld. */
+.spielfeld.misst .baustein.reveal.is-visible { opacity: 1; }
 .spielfeld.ist-spielbar .baustein {
   cursor: grab;
   user-select: none;
@@ -2367,12 +2372,65 @@ body.platzhalter-zeigen .platzhalter {
    Erst wenn main.js läuft, setzt es .js auf <html> und die Animation
    schaltet sich ein. So bleibt die Seite auch dann lesbar, wenn das
    Skript blockiert wird oder nicht lädt. */
-.reveal {
-  transition: opacity var(--duration-lg) var(--ease),
-              transform var(--duration-lg) var(--ease);
+/* Eine Handschrift, mehrere Richtungen. Überall dieselbe Kurve,
+   dasselbe Aufblenden, nie eine Drehung und nie ein Zoom — anders
+   sind nur Richtung, Weglänge und Rhythmus. So wirkt jeder Abschnitt
+   eigen, ohne dass die Seite aus verschiedenen Baukästen zusammen-
+   gesetzt aussieht.
+
+   Bewusst animation statt transition: Bausteine, Nav-Punkte und
+   Karussell bringen eigene transition-Regeln mit, die eine transition
+   an dieser Stelle überschreiben würde. Animationen laufen daneben her.
+
+   Einmal eingeblendet bleibt es sichtbar — main.js hört nach dem
+   ersten Mal auf zu beobachten. Beim Zurückscrollen passiert nichts. */
+
+html.js .reveal { opacity: 0; }
+html.js .reveal.is-visible {
+  animation: reveal-hoch var(--reveal-dauer, 0.7s) var(--ease)
+             var(--verzoegerung, 0ms) both;
 }
-html.js .reveal { opacity: 0; transform: translateY(20px); }
-html.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Nach dem Lauf die Animation abräumen. Ein stehengebliebenes
+   animation-fill-mode hält den Endwert für transform fest und würde
+   spätere Werte blockieren — etwa beim Verschieben der Bausteine. */
+html.js .reveal.ist-fertig { opacity: 1; animation: none; }
+
+html.js .reveal--links.is-visible  { animation-name: reveal-links; }
+html.js .reveal--rechts.is-visible { animation-name: reveal-rechts; }
+html.js .reveal--tief.is-visible   { animation-name: reveal-tief;  --reveal-dauer: 0.85s; }
+html.js .reveal--knapp.is-visible  { animation-name: reveal-knapp; --reveal-dauer: 0.55s; }
+
+@keyframes reveal-hoch {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes reveal-links {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes reveal-rechts {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: none; }
+}
+/* Weiter und langsamer — für die großen Blöcke, die einen Abschnitt
+   abschließen. */
+@keyframes reveal-tief {
+  from { opacity: 0; transform: translateY(42px); }
+  to   { opacity: 1; transform: none; }
+}
+/* Kaum Weg, dafür schnell — für alles, was nur kurz antippen soll. */
+@keyframes reveal-knapp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Das Detailfenster der Leistungen ist am Handy ein echtes Pop-up und
+   damit display:none, bis es geöffnet wird. Der Beobachter sieht es
+   dort nie — ohne diese Zeile bliebe es beim Öffnen unsichtbar. */
+@media (max-width: 939px) {
+  html.js .auswahl-fenster.reveal { opacity: 1; animation: none; }
+}
 
 /* Wer Bewegung im System abgeschaltet hat, bekommt keine. */
 @media (prefers-reduced-motion: reduce) {
@@ -2381,5 +2439,5 @@ html.js .reveal.is-visible { opacity: 1; transform: none; }
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  html.js .reveal { opacity: 1; transform: none; }
+  html.js .reveal { opacity: 1; transform: none; animation: none; }
 }
